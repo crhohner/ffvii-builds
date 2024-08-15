@@ -1,0 +1,59 @@
+{
+  "id": "96ac9323-ac80-45c6-83c6-36e38372966d",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {},
+  "enums": {
+    "public.character": {
+      "name": "character",
+      "schema": "public",
+      "values": [
+        "cloud",
+        "barret",
+        "tifa",
+        "aerith",
+        "red-xiii",
+        "yuffie",
+        "cait-sith",
+        "cid",
+        "vincent"
+      ]
+    },
+    "public.game": {
+      "name": "game",
+      "schema": "public",
+      "values": [
+        "og",
+        "remake",
+        "rebirth"
+      ]
+    },
+    "public.materia_type": {
+      "name": "materia_type",
+      "schema": "public",
+      "values": [
+        "red",
+        "yellow",
+        "green",
+        "blue",
+        "purple"
+      ]
+    },
+    "public.slot_type": {
+      "name": "slot_type",
+      "schema": "public",
+      "values": [
+        "single",
+        "double"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

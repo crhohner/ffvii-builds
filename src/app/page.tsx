@@ -1,7 +1,17 @@
 import Image from "next/image";
 import styles from "./page.module.css";
 
-export default function Home() {
+import { cache } from "react";
+import { db } from "@/db";
+import { Materia } from "@/db/schema";
+
+export const getAllMateria = cache(async () => {
+  const item = await db.select().from(Materia);
+  return item;
+});
+
+export default async function Home() {
+  const materia = await getAllMateria();
   return (
     <main className={styles.main}>
       <div className={styles.description}>
@@ -9,6 +19,9 @@ export default function Home() {
           Get started by editing&nbsp;
           <code className={styles.code}>src/app/page.tsx</code>
         </p>
+        <h1>
+          <span>MATERIA: {JSON.stringify(materia)}</span>
+        </h1>
         <div>
           <a
             href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
