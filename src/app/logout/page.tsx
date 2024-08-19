@@ -12,7 +12,7 @@ export default async function Page() {
     initialize();
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        router.push("/login");
+        router.push("/");
       }
     );
     return () => {
