@@ -1,0 +1,1 @@
+ALTER TABLE "materia" ALTER COLUMN "description" DROP NOT NULL;

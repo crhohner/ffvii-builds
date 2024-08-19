@@ -1,0 +1,19 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  max-width: 20rem;
+}
+
+.login-buttons {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}

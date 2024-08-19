@@ -1,108 +1,28 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-
 import { cache } from "react";
-import { db } from "@/db";
-import { Materia } from "@/db/schema";
+import { createClient } from "@/utils/supabase/client";
+import { Database } from "../../database.types";
+import { type SupabaseClient } from "@supabase/auth-helpers-nextjs";
 
-export const getAllMateria = cache(async () => {
-  const item = await db.select().from(Materia);
+const supabase: SupabaseClient<Database> = createClient();
+
+const getAllMateria = cache(async () => {
+  const item = await supabase.from("materia").select("*");
+  return item;
+});
+
+const getAllAccessories = cache(async () => {
+  const item = await supabase.from("accessory").select("*");
   return item;
 });
 
 export default async function Home() {
   const materia = await getAllMateria();
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <h1>
-          <span>MATERIA: {JSON.stringify(materia)}</span>
-        </h1>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const accessories = await getAllAccessories();
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  );
+  return <>home page</>;
 }
+
+/*<span>MATERIA: {JSON.stringify(materia)}</span>
+      <br />
+      <span>ACCESSORIES: {JSON.stringify(accessories)}</span>
+      <br />*/

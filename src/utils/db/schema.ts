@@ -1,12 +1,4 @@
-import {
-  pgTable,
-  serial,
-  text,
-  varchar,
-  pgEnum,
-  uuid,
-  primaryKey,
-} from "drizzle-orm/pg-core";
+import { pgTable, text, pgEnum, uuid, primaryKey } from "drizzle-orm/pg-core";
 
 export const MateriaType = pgEnum("materia_type", [
   "red",
@@ -32,7 +24,7 @@ export const SlotType = pgEnum("slot_type", ["single", "double"]);
 export const Materia = pgTable("materia", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
-  description: text("description").notNull(),
+  description: text("description"),
   type: MateriaType("materia_type").notNull(),
   games: Game("games").array().notNull(),
 });
@@ -57,7 +49,7 @@ export const MateriaLink = pgTable(
 export const Accessory = pgTable("accessory", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: text("name").notNull(),
-  description: text("description").notNull(),
+  description: text("description"),
   games: text("games").array().notNull(),
 });
 
