@@ -1,0 +1,374 @@
+{
+  "id": "00efba52-2f98-47b8-89dc-44ec4805e5e8",
+  "prevId": "fde1a560-5d43-46f1-a740-f92886a84220",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.accessory": {
+      "name": "accessory",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "games": {
+          "name": "games",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.build": {
+      "name": "build",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user": {
+          "name": "user",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "character": {
+          "name": "character",
+          "type": "character",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "accessory": {
+          "name": "accessory",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "weapon_schema": {
+          "name": "weapon_schema",
+          "type": "slot_type[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "armor_schema": {
+          "name": "armor_schema",
+          "type": "slot_type[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "weapon_materia": {
+          "name": "weapon_materia",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "armor_materia": {
+          "name": "armor_materia",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "summon_materia": {
+          "name": "summon_materia",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "build_accessory_accessory_id_fk": {
+          "name": "build_accessory_accessory_id_fk",
+          "tableFrom": "build",
+          "tableTo": "accessory",
+          "columnsFrom": [
+            "accessory"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.materia": {
+      "name": "materia",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "materia_type": {
+          "name": "materia_type",
+          "type": "materia_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "games": {
+          "name": "games",
+          "type": "game[]",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.materia_link": {
+      "name": "materia_link",
+      "schema": "",
+      "columns": {
+        "blue_id": {
+          "name": "blue_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "target_id": {
+          "name": "target_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "materia_link_blue_id_materia_id_fk": {
+          "name": "materia_link_blue_id_materia_id_fk",
+          "tableFrom": "materia_link",
+          "tableTo": "materia",
+          "columnsFrom": [
+            "blue_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "materia_link_target_id_materia_id_fk": {
+          "name": "materia_link_target_id_materia_id_fk",
+          "tableFrom": "materia_link",
+          "tableTo": "materia",
+          "columnsFrom": [
+            "target_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "materia_link_blue_id_target_id_pk": {
+          "name": "materia_link_blue_id_target_id_pk",
+          "columns": [
+            "blue_id",
+            "target_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.party": {
+      "name": "party",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "user": {
+          "name": "user",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "game": {
+          "name": "game",
+          "type": "game",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "leader": {
+          "name": "leader",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "second": {
+          "name": "second",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "third": {
+          "name": "third",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "party_leader_build_id_fk": {
+          "name": "party_leader_build_id_fk",
+          "tableFrom": "party",
+          "tableTo": "build",
+          "columnsFrom": [
+            "leader"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "party_second_build_id_fk": {
+          "name": "party_second_build_id_fk",
+          "tableFrom": "party",
+          "tableTo": "build",
+          "columnsFrom": [
+            "second"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "party_third_build_id_fk": {
+          "name": "party_third_build_id_fk",
+          "tableFrom": "party",
+          "tableTo": "build",
+          "columnsFrom": [
+            "third"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "public.character": {
+      "name": "character",
+      "schema": "public",
+      "values": [
+        "cloud",
+        "barret",
+        "tifa",
+        "aerith",
+        "red-xiii",
+        "yuffie",
+        "cait-sith",
+        "cid",
+        "vincent"
+      ]
+    },
+    "public.game": {
+      "name": "game",
+      "schema": "public",
+      "values": [
+        "og",
+        "remake",
+        "rebirth"
+      ]
+    },
+    "public.materia_type": {
+      "name": "materia_type",
+      "schema": "public",
+      "values": [
+        "red",
+        "yellow",
+        "green",
+        "blue",
+        "purple"
+      ]
+    },
+    "public.slot_type": {
+      "name": "slot_type",
+      "schema": "public",
+      "values": [
+        "single",
+        "double"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
