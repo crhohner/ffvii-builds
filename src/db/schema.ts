@@ -59,11 +59,11 @@ export const Build = pgTable("build", {
   user: uuid("user").notNull(),
   character: Character("character").notNull(),
   accessory: uuid("accessory").references(() => Accessory.id),
-  weaponSchema: SlotType("weapon_schema").array().notNull(),
-  armorSchema: SlotType("armor_schema").array().notNull(),
   weaponMateria: text("weapon_materia").array().notNull(),
   armorMateria: text("armor_materia").array().notNull(),
   summonMateria: text("summon_materia"),
+  weaponSchema: SlotType("weapon_schema").array().notNull(),
+  armorSchema: SlotType("armor_schema").array().notNull(),
 });
 
 export const Party = pgTable("party", {

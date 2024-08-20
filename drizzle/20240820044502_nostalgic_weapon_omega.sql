@@ -1,0 +1,1 @@
+ALTER TABLE "build" ALTER COLUMN "weapon_schema" SET NOT NULL;
