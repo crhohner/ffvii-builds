@@ -53,45 +53,28 @@ export const Accessory = pgTable("accessory", {
   games: text("games").array().notNull(),
 });
 
-export const Schema = pgTable("schema", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  user: uuid("user").notNull(),
-  name: text("name").notNull(),
-  slots: SlotType("slots").array().notNull(),
-});
-
 export const Build = pgTable("build", {
+  //don't expose these for now..
   id: uuid("id").primaryKey().defaultRandom(),
   user: uuid("user").notNull(),
-  game: Game("game").notNull(),
   character: Character("character").notNull(),
-  name: text("name").notNull(),
-  description: text("description"),
-  accessory: uuid("accessory")
-    .references(() => Accessory.id)
-    .notNull(),
-  weaponSchema: uuid("weapon_schema")
-    .references(() => Schema.id)
-    .notNull(),
-  armorSchema: uuid("armor_schema")
-    .references(() => Schema.id)
-    .notNull(),
+  accessory: uuid("accessory").references(() => Accessory.id),
+  weaponSchema: SlotType("weapon_schema").array().notNull(),
+  armorSchema: SlotType("armor_schema").array().notNull(),
   weaponMateria: text("weapon_materia").array().notNull(),
   armorMateria: text("armor_materia").array().notNull(),
   summonMateria: text("summon_materia"),
 });
 
 export const Party = pgTable("party", {
+  //each party made with nine builds??? so switching back later saves info?
+  //for later ^^ for now, switching chars wipes out build info
   id: uuid("id").primaryKey().defaultRandom(),
   user: uuid("user").notNull(),
   game: Game("game").notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  leader: uuid("leader")
-    .references(() => Build.id)
-    .notNull(),
-  second: uuid("second")
-    .references(() => Build.id)
-    .notNull(),
+  leader: uuid("leader").references(() => Build.id),
+  second: uuid("second").references(() => Build.id),
   third: uuid("third").references(() => Build.id),
 });
