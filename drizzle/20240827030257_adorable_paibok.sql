@@ -1,0 +1,1 @@
+ALTER TABLE "build" ADD COLUMN "weapon_name" text NOT NULL;

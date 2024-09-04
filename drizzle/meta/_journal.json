@@ -50,6 +50,20 @@
       "when": 1724129102094,
       "tag": "20240820044502_nostalgic_weapon_omega",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1724727777522,
+      "tag": "20240827030257_adorable_paibok",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1724727930926,
+      "tag": "20240827030530_hesitant_wind_dancer",
+      "breakpoints": true
     }
   ]
 }

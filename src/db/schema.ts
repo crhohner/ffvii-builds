@@ -60,7 +60,9 @@ export const Build = pgTable("build", {
   character: Character("character").notNull(),
   accessory: uuid("accessory").references(() => Accessory.id),
   weaponMateria: text("weapon_materia").array().notNull(),
+  weaponName: text("weapon_name").notNull(),
   armorMateria: text("armor_materia").array().notNull(),
+  armorName: text("armor_name").notNull(),
   summonMateria: text("summon_materia"),
   weaponSchema: SlotType("weapon_schema").array().notNull(),
   armorSchema: SlotType("armor_schema").array().notNull(),
@@ -69,7 +71,8 @@ export const Build = pgTable("build", {
 export const Party = pgTable("party", {
   //each party made with nine builds??? so switching back later saves info?
   //for later ^^ for now, switching chars wipes out build info
-  id: uuid("id").primaryKey().defaultRandom(),
+  //sleep on this actually..
+  id: uuid("id").primaryKey().defaultRandom(), //implement copy-paste for builds?
   user: uuid("user").notNull(),
   game: Game("game").notNull(),
   name: text("name").notNull(),

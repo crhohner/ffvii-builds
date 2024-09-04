@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 
 import { SupabaseClient } from "@supabase/supabase-js";
 import { Database } from "../../database.types";
@@ -44,12 +45,34 @@ export default function Header() {
 
   return (
     <header>
-      <Link href="/">ffvii builds</Link>
-      {session?.user ? (
-        <Link href="/logout">logout</Link>
-      ) : (
-        <Link href="/login">login</Link>
-      )}
+      <Link
+        href="/"
+        style={{
+          display: "flex",
+          gap: ".5rem",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <Image src="/logo.png" alt="Savepoint logo" width={22} height={22} />
+        </div>
+        <h1>Savepoint</h1>
+      </Link>
+
+      <div
+        style={{
+          display: "flex",
+          gap: "3rem",
+          color: "var(--secondary-text-color)",
+        }}
+      >
+        <Link href="/about">About</Link>
+        {session?.user ? (
+          <Link href="/logout">Logout</Link>
+        ) : (
+          <Link href="/login">Login</Link>
+        )}
+      </div>
     </header>
-  ); //why is logout so hard
+  );
 }
