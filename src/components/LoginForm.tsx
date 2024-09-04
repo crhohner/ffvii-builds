@@ -1,8 +1,5 @@
 "use client";
-
-import { Session } from "@supabase/supabase-js";
 import styles from "@/app/login/page.module.css";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface LoginProps {
@@ -11,7 +8,7 @@ interface LoginProps {
 }
 //needs username and logout action
 
-export const LoginForm: React.FC<LoginProps> = async (props: LoginProps) => {
+export const LoginForm: React.FC<LoginProps> = (props: LoginProps) => {
   return (
     <div className="center">
       <div className={"container"}>
