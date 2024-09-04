@@ -97,6 +97,10 @@ input {
   font: inherit;
 }
 
+button:active {
+  transform: scale(1.05, 1.05);
+}
+
 label {
   font-size: var(--body-size);
   color: var(--secondary-text-color);

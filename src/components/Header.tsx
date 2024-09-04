@@ -12,6 +12,7 @@ import { Session } from "@supabase/supabase-js";
 const supabase: SupabaseClient<Database> = createClient();
 
 export default function Header() {
+  //dont like this bc this is server call in client component - ask ibi..
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
