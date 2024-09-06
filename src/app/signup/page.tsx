@@ -3,7 +3,7 @@
 import styles from "./page.module.css";
 import Link from "next/link";
 
-export default function Login() {
+export default function Signup() {
   return (
     <div className="center">
       <div className={"container"}>
@@ -17,13 +17,13 @@ export default function Login() {
           <label htmlFor="password">password:</label>
           <input id="password" name="password" type="password" />
           <br />
-          <button formAction="/auth/login" formMethod="post">
-            log in
+          <button formAction="/auth/signup" formMethod="post">
+            sign up
           </button>
         </form>
         <br />
         <br />
-        <Link href="/signup">New user?</Link>
+        <Link href="/login">Already have an account?</Link>
         <Link href="/">Forgot password?</Link>
       </div>
     </div>

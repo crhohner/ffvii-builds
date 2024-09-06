@@ -1,7 +1,8 @@
 @font-face {
   font-family: "Reactor7";
   src: url("/font/Reactor7.woff") format("woff"),
-    url("/font/Reactor7.ttf") format("truetype");
+    url("/font/Reactor7.ttf") format("truetype"),
+    url("/font/Reactor7.svg#Reactor7") format("svg");
 }
 
 :root {

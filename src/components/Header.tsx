@@ -1,19 +1,20 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-
-import { SupabaseClient } from "@supabase/supabase-js";
-import { Database } from "../../database.types";
-import { useState, useEffect } from "react";
-import { createClient } from "@/utils/supabase/client";
-import { Session } from "@supabase/supabase-js";
-
-//needs username and logout action
-const supabase: SupabaseClient<Database> = createClient();
+import { supabase } from "@/utils/supabase";
+import { SetStateAction, useEffect, useState } from "react";
+import { Session } from "inspector";
 
 export default function Header() {
-  //dont like this bc this is server call in client component - ask ibi..
-  const [session, setSession] = useState<Session | null>(null);
+  const logout = async () => {
+    try {
+      let { error } = await supabase.auth.signOut();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  /*const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -42,7 +43,7 @@ export default function Header() {
     return () => {
       subscription?.unsubscribe();
     };
-  });
+  });*/
 
   return (
     <header>
@@ -56,8 +57,8 @@ export default function Header() {
       >
         <div>
           <Image src="/logo.png" alt="Savepoint logo" width={22} height={22} />
+          <h1>Savepoint</h1>
         </div>
-        <h1>Savepoint</h1>
       </Link>
 
       <div
@@ -68,11 +69,8 @@ export default function Header() {
         }}
       >
         <Link href="/about">About</Link>
-        {session?.user ? (
-          <Link href="/logout">Logout</Link>
-        ) : (
-          <Link href="/login">Login</Link>
-        )}
+        <Link href="/login">Login</Link>
+        <button onClick={logout}>log out</button>
       </div>
     </header>
   );

@@ -55,7 +55,7 @@ export const Accessory = pgTable("accessory", {
 
 export const Build = pgTable("build", {
   //don't expose these for now..
-  id: uuid("id").primaryKey().defaultRandom(),
+  user_id: uuid("user_id").primaryKey().defaultRandom(),
   user: uuid("user").notNull(),
   character: Character("character").notNull(),
   accessory: uuid("accessory").references(() => Accessory.id),
@@ -72,12 +72,12 @@ export const Party = pgTable("party", {
   //each party made with nine builds??? so switching back later saves info?
   //for later ^^ for now, switching chars wipes out build info
   //sleep on this actually..
-  id: uuid("id").primaryKey().defaultRandom(), //implement copy-paste for builds?
+  user_id: uuid("user_id").primaryKey().defaultRandom(), //implement copy-paste for builds?
   user: uuid("user").notNull(),
   game: Game("game").notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  leader: uuid("leader").references(() => Build.id),
-  second: uuid("second").references(() => Build.id),
-  third: uuid("third").references(() => Build.id),
+  leader: uuid("leader").references(() => Build.user_id),
+  second: uuid("second").references(() => Build.user_id),
+  third: uuid("third").references(() => Build.user_id),
 });

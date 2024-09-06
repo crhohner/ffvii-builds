@@ -1,9 +1,8 @@
 import { cache } from "react";
-import { createClient } from "@/utils/supabase/client";
 import { Database } from "../../database.types";
 import { type SupabaseClient } from "@supabase/auth-helpers-nextjs";
 
-const supabase: SupabaseClient<Database> = createClient();
+/*const supabase: SupabaseClient<Database> = createClient();
 
 const getAllMateria = cache(async () => {
   const item = await supabase.from("materia").select("*");
@@ -13,11 +12,11 @@ const getAllMateria = cache(async () => {
 const getAllAccessories = cache(async () => {
   const item = await supabase.from("accessory").select("*");
   return item;
-});
+});*/
 
 export default async function Home() {
-  const materia = await getAllMateria();
-  const accessories = await getAllAccessories();
+  /*const materia = await getAllMateria();
+  const accessories = await getAllAccessories();*/
 
   return <>home page</>;
 }
