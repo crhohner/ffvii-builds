@@ -17,7 +17,7 @@ export async function middleware(req: NextRequest) {
 export const config = {
   //slap all auth-locked page names in?
   matcher: [
-    "/about:path", //test for later
-    //"/((?!api|_next/static|_next/image|favicon.ico).*)", //matches on all but these here
+    //"/about:path", //test for later
+    "/((?!api|_next/static|_next/image|favicon.ico).*)", //matches on all but these here
   ],
 };

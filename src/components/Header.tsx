@@ -2,8 +2,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/utils/supabase";
-import { SetStateAction, useEffect, useState } from "react";
-import { Session } from "inspector";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
@@ -17,37 +15,6 @@ export default function Header() {
       router.push("/error");
     }
   };
-
-  /*const [session, setSession] = useState<Session | null>(null);
-
-  useEffect(() => {
-    const fetchSession = async () => {
-      try {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-        setSession(session);
-      } catch (error) {
-        if (error instanceof Error)
-          console.error("Error fetching session:", error.message);
-      }
-    };
-
-    fetchSession();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (session === null) {
-        console.log("null session");
-      }
-      setSession(session);
-    });
-
-    return () => {
-      subscription?.unsubscribe();
-    };
-  });*/
 
   return (
     <header>
@@ -64,7 +31,7 @@ export default function Header() {
           <h1>Savepoint</h1>
         </div>
       </Link>
-
+      {"user: " + null}
       <div
         style={{
           display: "flex",
@@ -73,12 +40,12 @@ export default function Header() {
         }}
       >
         <Link href="/about">About</Link>
-        <Link href="/login">Login</Link>
-        <Link href="/login" onClick={logout}>
-          Logout
-        </Link>
+        {null ? (
+          <button onClick={logout}>Logout</button>
+        ) : (
+          <Link href="/login">Login</Link>
+        )}
       </div>
     </header>
   );
-  //make button based on session
 }

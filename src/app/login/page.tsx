@@ -10,16 +10,14 @@ export default function Login() {
         <br />
         <h1>Welcome!</h1>
         <br />
-        <form className={styles["form"]}>
+        <form action="/auth/login" method="post" className={styles["form"]}>
           <label htmlFor="email">email:</label>
           <input id="email" name="email" type="email" />
           <br />
           <label htmlFor="password">password:</label>
           <input id="password" name="password" type="password" />
           <br />
-          <button formAction="/auth/login" formMethod="post">
-            log in
-          </button>
+          <button type="submit">log in</button>
         </form>
         <br />
         <br />

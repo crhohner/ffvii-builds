@@ -17,5 +17,6 @@ export async function POST(req: NextRequest) {
     email,
     password,
   });
+  console.log("logging in");
   return NextResponse.redirect(url.origin, { status: 301 });
 }
