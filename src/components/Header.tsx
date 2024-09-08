@@ -4,13 +4,17 @@ import Image from "next/image";
 import { supabase } from "@/utils/supabase";
 import { SetStateAction, useEffect, useState } from "react";
 import { Session } from "inspector";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
+  const router = useRouter();
   const logout = async () => {
     try {
       let { error } = await supabase.auth.signOut();
+      router.push("/login");
     } catch (error) {
       console.log(error);
+      router.push("/error");
     }
   };
 
@@ -55,7 +59,7 @@ export default function Header() {
           alignItems: "center",
         }}
       >
-        <div>
+        <div style={{ display: "flex", gap: "10px" }}>
           <Image src="/logo.png" alt="Savepoint logo" width={22} height={22} />
           <h1>Savepoint</h1>
         </div>
@@ -70,8 +74,11 @@ export default function Header() {
       >
         <Link href="/about">About</Link>
         <Link href="/login">Login</Link>
-        <button onClick={logout}>log out</button>
+        <Link href="/login" onClick={logout}>
+          Logout
+        </Link>
       </div>
     </header>
   );
+  //make button based on session
 }
