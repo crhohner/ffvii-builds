@@ -2,6 +2,7 @@
 
 import styles from "./page.module.css";
 import Link from "next/link";
+import { signup } from "./action";
 
 export default function Signup() {
   return (
@@ -10,16 +11,14 @@ export default function Signup() {
         <br />
         <h1>Welcome!</h1>
         <br />
-        <form className={styles["form"]}>
+        <form action={signup} className={styles["form"]}>
           <label htmlFor="email">email:</label>
           <input id="email" name="email" type="email" />
           <br />
           <label htmlFor="password">password:</label>
           <input id="password" name="password" type="password" />
           <br />
-          <button formAction="/auth/signup" formMethod="post">
-            sign up
-          </button>
+          <button type="submit">sign up</button>
         </form>
         <br />
         <br />

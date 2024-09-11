@@ -2,6 +2,7 @@
 
 import styles from "./page.module.css";
 import Link from "next/link";
+import { login } from "./action";
 
 export default function Login() {
   return (
@@ -10,7 +11,7 @@ export default function Login() {
         <br />
         <h1>Welcome!</h1>
         <br />
-        <form action="/auth/login" method="post" className={styles["form"]}>
+        <form action={login} className={styles["form"]}>
           <label htmlFor="email">email:</label>
           <input id="email" name="email" type="email" />
           <br />

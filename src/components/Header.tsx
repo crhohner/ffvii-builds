@@ -1,20 +1,10 @@
-"use client";
 import Link from "next/link";
 import Image from "next/image";
-import { supabase } from "@/utils/supabase";
-import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/server";
 
-export default function Header() {
-  const router = useRouter();
-  const logout = async () => {
-    try {
-      let { error } = await supabase.auth.signOut();
-      router.push("/login");
-    } catch (error) {
-      console.log(error);
-      router.push("/error");
-    }
-  };
+export default async function Header() {
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.getUser();
 
   return (
     <header>
@@ -31,7 +21,7 @@ export default function Header() {
           <h1>Savepoint</h1>
         </div>
       </Link>
-      {"user: " + null}
+      {"user: " + data.user?.email}
       <div
         style={{
           display: "flex",
@@ -40,8 +30,8 @@ export default function Header() {
         }}
       >
         <Link href="/about">About</Link>
-        {null ? (
-          <button onClick={logout}>Logout</button>
+        {data.user ? (
+          <Link href="/logout">Logout</Link>
         ) : (
           <Link href="/login">Login</Link>
         )}
