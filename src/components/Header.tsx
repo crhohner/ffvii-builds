@@ -21,7 +21,7 @@ export default async function Header() {
           <h1>Savepoint</h1>
         </div>
       </Link>
-      {"user: " + data.user?.email}
+
       <div
         style={{
           display: "flex",
