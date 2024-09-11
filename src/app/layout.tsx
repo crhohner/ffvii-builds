@@ -18,9 +18,9 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={reactor7.className}>
         <Header />
-        <main className={reactor7.className}>{children}</main>
+        <main>{children}</main>
         <Footer />
       </body>
     </html>
