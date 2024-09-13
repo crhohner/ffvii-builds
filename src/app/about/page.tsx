@@ -5,20 +5,19 @@ export default function Page() {
         <h2>About This Project</h2>
         <br />
         <p style={{ maxWidth: "240px" }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
+          Savepoint is a companion application to various games in the Final
+          Fantasy VII compilation: FFVII, FFVII Remake, and FFVII Rebirth.
         </p>
         <br />
         <p style={{ maxWidth: "240px" }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Savepoint users can create, edit, and save builds for parties of up to
+          three characters. If the app gains enough users, I hope to later add
+          ways to share builds with others!
         </p>
         <br />
         <p style={{ maxWidth: "240px" }}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          If you have any suggestions for improvement, or notice any bugs,
+          please reach out using the link in the footer!
         </p>
       </div>
     </div>
