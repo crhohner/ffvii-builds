@@ -1,23 +1,21 @@
 "use client";
-
+import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import { useState } from "react";
-import { createClient } from "@/utils/supabase/client";
 
-export default function Signup() {
+export default function ForgotPassword() {
   const supabase = createClient();
-  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<boolean>(false);
 
-  async function signup(email: string, password: string) {
+  async function reset(password: string) {
     const data = {
-      email: email,
       password: password,
     };
-
-    const { error } = await supabase.auth.signUp(data);
+    const { error } = await supabase.auth.updateUser({
+      password: data.password,
+    });
 
     if (error) {
       setError(error.message || "An unexpected error occured.");
@@ -29,44 +27,28 @@ export default function Signup() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (email === "") {
-      setError("Please enter your email.");
-      return;
-    }
-
     if (password === "") {
-      setError("Please enter a password.");
+      setError("Please enter your new password.");
       return;
     }
-
-    try {
-      signup(email, password);
-    } catch (error) {
-      console.log(error);
-    }
+    reset(password);
   };
 
   return (
     <div className="center">
       <div className={"container"}>
         {success ? (
-          <h3>Check your email for a validation link!</h3>
+          <>
+            <h3>{"Password reset! :)"}</h3>
+            <br />
+            <Link href={"/"}>Return home</Link>
+          </>
         ) : (
           <>
-            {" "}
             <br />
-            <h1>Welcome!</h1>
-            <br />
+            <h1>Reset password</h1>
             <form onSubmit={handleSubmit} className="form">
-              <label htmlFor="email">email:</label>
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                id="email"
-                name="email"
-                type="email"
-              />
-              <br />
-              <label htmlFor="password">password:</label>
+              <label htmlFor="password">new password:</label>
               <input
                 onChange={(e) => setPassword(e.target.value)}
                 id="password"
@@ -74,12 +56,10 @@ export default function Signup() {
                 type="password"
               />
               <br />
-              <button type="submit">sign up</button>
+              <button type="submit">reset</button>
             </form>
             <br />
             <div className="err">{error}</div>
-            <br />
-            <Link href="/login">Already have an account?</Link>
           </>
         )}
       </div>

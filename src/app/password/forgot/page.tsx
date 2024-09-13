@@ -1,23 +1,18 @@
 "use client";
-
-import Link from "next/link";
-import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
 
-export default function Signup() {
+export default function ForgotPassword() {
   const supabase = createClient();
   const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<boolean>(false);
 
-  async function signup(email: string, password: string) {
+  async function send(email: string) {
     const data = {
       email: email,
-      password: password,
     };
-
-    const { error } = await supabase.auth.signUp(data);
+    const { error } = await supabase.auth.resetPasswordForEmail(data.email);
 
     if (error) {
       setError(error.message || "An unexpected error occured.");
@@ -33,29 +28,19 @@ export default function Signup() {
       setError("Please enter your email.");
       return;
     }
-
-    if (password === "") {
-      setError("Please enter a password.");
-      return;
-    }
-
-    try {
-      signup(email, password);
-    } catch (error) {
-      console.log(error);
-    }
+    send(email);
   };
 
   return (
     <div className="center">
       <div className={"container"}>
         {success ? (
-          <h3>Check your email for a validation link!</h3>
+          <h3>Check your email for a reset link!</h3>
         ) : (
           <>
-            {" "}
             <br />
-            <h1>Welcome!</h1>
+            <h1>Forgot your password?</h1>
+            <h3>No worries!</h3>
             <br />
             <form onSubmit={handleSubmit} className="form">
               <label htmlFor="email">email:</label>
@@ -66,20 +51,10 @@ export default function Signup() {
                 type="email"
               />
               <br />
-              <label htmlFor="password">password:</label>
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                id="password"
-                name="password"
-                type="password"
-              />
-              <br />
-              <button type="submit">sign up</button>
+              <button type="submit">send reset link</button>
             </form>
             <br />
             <div className="err">{error}</div>
-            <br />
-            <Link href="/login">Already have an account?</Link>
           </>
         )}
       </div>
