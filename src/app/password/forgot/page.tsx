@@ -51,7 +51,9 @@ export default function ForgotPassword() {
                 type="email"
               />
               <br />
-              <button type="submit">send reset link</button>
+              <div className="center">
+                <button type="submit">send reset link</button>
+              </div>
             </form>
             <br />
             <div className="err">{error}</div>

@@ -10,11 +10,14 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-three/drei": "^9.112.0",
+    "@react-three/fiber": "^8.17.7",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/auth-helpers-react": "^0.5.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/ssr": "^0.4.1",
     "@supabase/supabase-js": "^2.45.1",
+    "@types/three": "^0.168.0",
     "drizzle-orm": "^0.33.0",
     "net": "^1.0.2",
     "next": "14.2.5",
@@ -23,6 +26,7 @@
     "react": "^18",
     "react-dom": "^18",
     "supabase": "^1.190.0",
+    "three": "^0.168.0",
     "tls": "^0.0.1"
   },
   "devDependencies": {

@@ -96,6 +96,7 @@ input {
   border-width: 2px;
   border-style: solid;
   font: inherit;
+  max-width: fit-content;
 }
 
 button.link {

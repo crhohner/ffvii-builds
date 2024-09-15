@@ -24,6 +24,7 @@ export default function Login() {
       setError(error.message || "An unexpected error occured.");
     } else {
       router.push("/");
+      router.refresh();
     }
   }
 
@@ -69,7 +70,9 @@ export default function Login() {
             type="password"
           />
           <br />
-          <button type="submit">log in</button>
+          <div className="center">
+            <button type="submit">log in</button>
+          </div>
         </form>
         <br />
         <div className="err">{error}</div>

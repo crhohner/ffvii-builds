@@ -74,7 +74,9 @@ export default function Signup() {
                 type="password"
               />
               <br />
-              <button type="submit">sign up</button>
+              <div className="center">
+                <button type="submit">sign up</button>
+              </div>
             </form>
             <br />
             <div className="err">{error}</div>
