@@ -39,7 +39,6 @@ export default async function Home() {
         <h3>{"Final Fantasy VII"}</h3>
         <br />
         <div
-          className="container"
           style={{ maxWidth: "200px", minHeight: "250px" }}
           id="canvas-container"
         >
