@@ -7,7 +7,6 @@ import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Model } from "@/components/Model";
-import { OrbitControls } from "@react-three/drei";
 import { useRouter } from "next/navigation";
 
 export default async function Home() {
@@ -17,6 +16,7 @@ export default async function Home() {
   useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "PASSWORD_RECOVERY") {
+        console.log("got in");
         redirect("/password/reset");
       }
     });
@@ -34,7 +34,7 @@ export default async function Home() {
           alignItems: "center",
         }}
       >
-        <h2>Savepoint</h2>
+        <h1 style={{ fontSize: "42px" }}>Savepoint</h1>
         <h3>{"A build management system for"}</h3>
         <h3>{"Final Fantasy VII"}</h3>
         <br />
@@ -46,14 +46,11 @@ export default async function Home() {
             <ambientLight intensity={0.1} />
             <directionalLight color="red" position={[0, 0, 5]} />
             <Model />
-            <OrbitControls />
           </Canvas>
         </div>
         <br />
 
-        <button onClick={() => router.push("/login")}>
-          Let's get started!
-        </button>
+        <button onClick={() => router.push("/login")}>Get started!</button>
       </div>
     </div>
   );

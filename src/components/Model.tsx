@@ -24,9 +24,9 @@ export function Model(props: any) {
           ref={myMesh}
           geometry={nodes.point.geometry}
           material={materials.main}
-          position={[0, -3, 0]}
+          position={[0, -2.4, 0]}
           rotation={[0, Math.PI / 4, 0]}
-          scale={[0.784 * 1.5, 0.913 * 1.5, 0.784 * 1.5]}
+          scale={[0.784 * 1.2, 0.913 * 1.2, 0.784 * 1.2]}
         />
       </group>
     );

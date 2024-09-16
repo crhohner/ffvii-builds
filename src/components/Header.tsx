@@ -1,10 +1,15 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
-import { createClient } from "@/utils/supabase/server";
+import { User } from "@supabase/supabase-js";
+import { useState } from "react";
 
-export default async function Header() {
-  const supabase = createClient();
-  const { data, error } = await supabase.auth.getUser();
+type HeaderProps = {
+  user: User | null;
+  mobile: boolean;
+};
+export default function Header(props: HeaderProps) {
+  const [menu, setMenu] = useState(false);
 
   return (
     <header>
@@ -17,25 +22,36 @@ export default async function Header() {
         }}
       >
         <div style={{ display: "flex", gap: "10px" }}>
-          <Image src="/logo.png" alt="Savepoint logo" width={22} height={22} />
+          <div style={{ position: "relative", top: "-2px" }}>
+            <Image
+              src="/logo.png"
+              alt="Savepoint logo"
+              width={22}
+              height={22}
+            />
+          </div>
+
           <h1>Savepoint</h1>
         </div>
       </Link>
 
-      <div
-        style={{
-          display: "flex",
-          gap: "3rem",
-          color: "var(--secondary-text-color)",
-        }}
-      >
-        <Link href="/about">About</Link>
-        {data.user ? (
-          <Link href="/logout">Logout</Link>
-        ) : (
-          <Link href="/login">Login</Link>
-        )}
-      </div>
+      {!props.mobile && (
+        <div
+          style={{
+            display: "flex",
+            gap: "3rem",
+            color: "var(--secondary-text-color)",
+          }}
+        >
+          <Link href="/about">About</Link>
+          {props.user ? (
+            <Link href="/logout">Logout</Link>
+          ) : (
+            <Link href="/login">Login</Link>
+          )}
+        </div>
+      )}
+      {props.mobile && <></>}
     </header>
   );
 }

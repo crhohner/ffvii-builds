@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import localFont from "next/font/local";
+import { createClient } from "@/utils/supabase/server";
+import { isMobile } from "@/utils/device";
+import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Savepoint",
@@ -16,10 +19,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const userAgent = headers().get("user-agent") || "";
+  const mobileCheck = isMobile(userAgent);
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.getUser();
   return (
     <html lang="en">
       <body className={reactor7.className}>
-        <Header />
+        <Header user={data.user} mobile={mobileCheck} />
         <main>{children}</main>
         <Footer />
       </body>
