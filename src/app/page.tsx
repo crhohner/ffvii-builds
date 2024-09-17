@@ -1,29 +1,23 @@
 "use client";
-/*import { cache } from "react";
-import { Database } from "../../database.types";
-import { type SupabaseClient } from "@supabase/auth-helpers-nextjs";*/
-import { createClient } from "@/utils/supabase/client";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
+
 import { Canvas } from "@react-three/fiber";
 import { Model } from "@/components/Model";
 import { useRouter } from "next/navigation";
 
-export default async function Home() {
-  const supabase = createClient();
+export default function Home() {
   const router = useRouter();
 
-  useEffect(() => {
+  /*useEffect(() => {
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === "PASSWORD_RECOVERY") {
         console.log("got in");
-        redirect("/password/reset");
+        router.push("/password/reset");
       }
     });
     return () => {
       data.subscription.unsubscribe();
     };
-  }, []);
+  }, []);*/
 
   return (
     <div className="center">

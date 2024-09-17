@@ -29,21 +29,17 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // supabase.auth.getUser(). A simple mistake could make it very hard to debug
-  // issues with users being randomly logged out.
-
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const params = request.nextUrl.searchParams;
 
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/login") &&
     !request.nextUrl.pathname.startsWith("/auth") &&
-    !(request.nextUrl.pathname == "/") && //weird extra case
-    !request.nextUrl.pathname.includes(".") &&
-    !request.nextUrl.pathname.startsWith("/password/forgot")
+    !(params.get("type") == "recovery") && //UGH WHATEVER
+    !(params.get("type") == "signup")
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();

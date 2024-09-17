@@ -12,7 +12,9 @@ export default function ForgotPassword() {
     const data = {
       email: email,
     };
-    const { error } = await supabase.auth.resetPasswordForEmail(data.email);
+    const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+      redirectTo: "http://localhost:3000/password/reset",
+    });
 
     if (error) {
       setError(error.message || "An unexpected error occured.");
