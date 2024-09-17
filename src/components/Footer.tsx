@@ -6,3 +6,5 @@ export default function Footer() {
     </footer>
   );
 }
+
+//do not use personal email for this lmaoo
