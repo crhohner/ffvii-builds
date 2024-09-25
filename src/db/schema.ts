@@ -55,13 +55,13 @@ export const Accessory = pgTable("accessory", {
 
 export const Build = pgTable("build", {
   //don't expose these for now..
-  user_id: uuid("user_id").primaryKey().defaultRandom(),
-  user: uuid("user").notNull(),
+  id: uuid("id").primaryKey().defaultRandom(),
+  user: uuid("user_id").notNull(),
   character: Character("character").notNull(),
   accessory: uuid("accessory").references(() => Accessory.id),
-  weaponMateria: text("weapon_materia").array().notNull(),
+  weaponMateria: uuid("weapon_materia").array().notNull(),
   weaponName: text("weapon_name").notNull(),
-  armorMateria: text("armor_materia").array().notNull(),
+  armorMateria: uuid("armor_materia").array().notNull(),
   armorName: text("armor_name").notNull(),
   summonMateria: text("summon_materia"),
   weaponSchema: SlotType("weapon_schema").array().notNull(),
@@ -72,12 +72,12 @@ export const Party = pgTable("party", {
   //each party made with nine builds??? so switching back later saves info?
   //for later ^^ for now, switching chars wipes out build info
   //sleep on this actually..
-  user_id: uuid("user_id").primaryKey().defaultRandom(), //implement copy-paste for builds?
-  user: uuid("user").notNull(),
+  id: uuid("id").primaryKey().defaultRandom(), //implement copy-paste for builds?
+  user: uuid("user_id").notNull(),
   game: Game("game").notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  leader: uuid("leader").references(() => Build.user_id),
-  second: uuid("second").references(() => Build.user_id),
-  third: uuid("third").references(() => Build.user_id),
+  leader: uuid("leader").references(() => Build.id),
+  second: uuid("second").references(() => Build.id),
+  third: uuid("third").references(() => Build.id),
 });

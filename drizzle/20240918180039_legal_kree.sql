@@ -1,0 +1,2 @@
+ALTER TABLE "build" ALTER COLUMN "weapon_materia" SET DATA TYPE uuid[] using "weapon_materia"::uuid[];--> statement-breakpoint
+ALTER TABLE "build" ALTER COLUMN "armor_materia" SET DATA TYPE uuid[] using "armor_materia"::uuid[];
