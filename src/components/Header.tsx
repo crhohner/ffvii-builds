@@ -19,22 +19,6 @@ export default function Header(props: HeaderProps) {
     links.push(<Link href="/login">Login</Link>);
   }
 
-  function Burger() {
-    return (
-      <div>
-        <Image
-          onClick={() => {
-            setBurger(!burger);
-          }}
-          src="burger.svg"
-          alt="burger"
-          height={"22"}
-          width={"22"}
-        />
-      </div>
-    );
-  }
-
   return (
     <>
       <header>
@@ -56,33 +40,16 @@ export default function Header(props: HeaderProps) {
             {links}
           </div>
         )}
-        {props.mobile && <Burger />}
       </header>
-      {burger && (
+      {props.mobile && (
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "0.6rem",
-            position: "fixed",
-            right: "0.55rem",
-            top: "3.3%",
-            zIndex: "10",
-            borderColor: "white",
-            borderRadius: "12px",
-            borderWidth: "2px",
-            borderStyle: "solid",
-            padding: "1rem",
-            height: "fit-content",
-            background: "var(--background-color)",
-            width: "3rem",
+            justifyContent: "space-between",
+            padding: "0 5rem 1rem 5rem",
           }}
         >
-          <Burger />
-          {links.map((link) => (
-            <div>{link}</div>
-          ))}
+          {links}
         </div>
       )}
     </>

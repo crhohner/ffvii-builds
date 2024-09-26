@@ -134,7 +134,8 @@ label {
   border-width: 2px;
   border-style: solid;
   font: inherit;
-  /*background: var(--background-color);*/
+
+  background: var(--background-color);
 }
 
 .blob {
