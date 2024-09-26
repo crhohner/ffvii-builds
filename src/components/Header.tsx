@@ -19,6 +19,22 @@ export default function Header(props: HeaderProps) {
     links.push(<Link href="/login">Login</Link>);
   }
 
+  function Burger() {
+    return (
+      <div>
+        <Image
+          onClick={() => {
+            setBurger(!burger);
+          }}
+          src="burger.svg"
+          alt="burger"
+          height={"22"}
+          width={"22"}
+        />
+      </div>
+    );
+  }
+
   return (
     <>
       <header>
@@ -40,36 +56,32 @@ export default function Header(props: HeaderProps) {
             {links}
           </div>
         )}
-        {props.mobile && (
-          <div>
-            <Image
-              onClick={() => {
-                setBurger(!burger);
-              }}
-              src="burger.svg"
-              alt="burger"
-              height={"22"}
-              width={"22"}
-            />
-          </div>
-        )}
+        {props.mobile && <Burger />}
       </header>
       {burger && (
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            gap: "0.5rem",
+            alignItems: "center",
+            gap: "0.6rem",
             position: "fixed",
-            right: "2.5rem",
-            top: "4.2rem",
+            right: "0.55rem",
+            top: "3.3%",
             zIndex: "10",
-            background: "var(--blob-color)",
+            borderColor: "white",
             borderRadius: "12px",
+            borderWidth: "2px",
+            borderStyle: "solid",
+            padding: "1rem",
+            height: "fit-content",
+            background: "var(--background-color)",
+            width: "3rem",
           }}
         >
+          <Burger />
           {links.map((link) => (
-            <div className="blob">{link}</div>
+            <div>{link}</div>
           ))}
         </div>
       )}
