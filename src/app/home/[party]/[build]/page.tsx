@@ -24,5 +24,5 @@ export default async function Page({ params }: Params) {
   const build: Database["public"]["Tables"]["build"]["Row"] = builds.data![0];
   console.log(id);
 
-  return <>{JSON.stringify(builds)}</>;
+  return <>{JSON.stringify(build)}</>;
 }

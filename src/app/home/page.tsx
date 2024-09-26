@@ -16,5 +16,5 @@ export default async function Page() {
     await getAllParties()
   ).data!;
 
-  return <>{JSON.stringify(parties)}</>;
+  return <div className="centered">{JSON.stringify(parties)}</div>;
 }

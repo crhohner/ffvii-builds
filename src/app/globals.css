@@ -7,6 +7,7 @@
   --h-size: 27px;
   --footer-height: 13rem;
   --body-font: "Reactor7";
+  --blob-color: rgb(1, 1, 174);
 }
 
 html,
@@ -19,7 +20,6 @@ body {
   background: var(--background-color);
   font-family: var(--body-font);
   font-size: var(--body-size);
-  min-width: 360px;
 }
 
 a {
@@ -36,7 +36,7 @@ p {
 main {
   display: flex;
   flex-direction: column;
-  padding: 1rem 0rem;
+  padding: 1rem 2rem;
   min-height: calc(100vh - var(--footer-height));
 }
 
@@ -128,15 +128,29 @@ label {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: var(--background-color);
   border-radius: 16px;
   padding: var(--h-size) var(--h-size);
   border-color: white;
   border-width: 2px;
   border-style: solid;
   font: inherit;
+  /*background: var(--background-color);*/
 }
 
+.blob {
+  color: var(--body-text-color);
+  border-radius: 10px;
+  padding: 4px var(--body-size);
+  border-color: white;
+  border-width: 2px;
+  border-style: solid;
+  font: inherit;
+  width: 3rem;
+  background: var(--blob-color);
+}
+.blob a {
+  color: white;
+}
 .center {
   display: flex;
   flex-direction: row;

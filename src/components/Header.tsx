@@ -9,49 +9,70 @@ type HeaderProps = {
   mobile: boolean;
 };
 export default function Header(props: HeaderProps) {
-  const [menu, setMenu] = useState(false);
+  const [burger, setBurger] = useState(false);
+
+  const links = [<Link href="/about">About</Link>];
+  if (props.user) {
+    links.push(<Link href="/home">Home</Link>);
+    links.push(<Link href="/logout">Logout</Link>);
+  } else {
+    links.push(<Link href="/login">Login</Link>);
+  }
 
   return (
-    <header>
-      <Link
-        href="/"
-        style={{
-          display: "flex",
-          gap: ".5rem",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", gap: "10px" }}>
-          <div style={{ position: "relative", top: "-2px" }}>
+    <>
+      <header>
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          <Image src="/logo.png" width={"22"} height={"22"} alt="" />
+          <Link href="/">
+            <h1>Savepoint</h1>
+          </Link>
+        </div>
+
+        {!props.mobile && (
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              color: "var(--secondary-text-color)",
+            }}
+          >
+            {links}
+          </div>
+        )}
+        {props.mobile && (
+          <div>
             <Image
-              src="/logo.png"
-              alt="Savepoint logo"
-              width={22}
-              height={22}
+              onClick={() => {
+                setBurger(!burger);
+              }}
+              src="burger.svg"
+              alt="burger"
+              height={"22"}
+              width={"22"}
             />
           </div>
-
-          <h1>Savepoint</h1>
-        </div>
-      </Link>
-
-      {!props.mobile && (
+        )}
+      </header>
+      {burger && (
         <div
           style={{
             display: "flex",
-            gap: "3rem",
-            color: "var(--secondary-text-color)",
+            flexDirection: "column",
+            gap: "0.5rem",
+            position: "fixed",
+            right: "2.5rem",
+            top: "4.2rem",
+            zIndex: "10",
+            background: "var(--blob-color)",
+            borderRadius: "12px",
           }}
         >
-          <Link href="/about">About</Link>
-          {props.user ? (
-            <Link href="/logout">Logout</Link>
-          ) : (
-            <Link href="/login">Login</Link>
-          )}
+          {links.map((link) => (
+            <div className="blob">{link}</div>
+          ))}
         </div>
       )}
-      {props.mobile && <></>}
-    </header>
+    </>
   );
 }
