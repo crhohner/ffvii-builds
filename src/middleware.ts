@@ -17,5 +17,6 @@ export const config = {
     // "/((?!error|public|signup|about|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
     "/password/reset/:path*",
     "/logout/:path*",
+    "/home/:path*",
   ],
 };

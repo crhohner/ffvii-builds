@@ -80,8 +80,8 @@ export default function PartyList(props: { parties: Party[] }) {
   }
 
   //TODO:
-  //get characters in party obj..?
-  //filters
+  //add filter menu
+  //filter actually working
   //search
   //then after other pages are complete: add + delete
   //validation (are you sure??) for delete
@@ -105,3 +105,6 @@ export default function PartyList(props: { parties: Party[] }) {
     </>
   );
 }
+
+/*<div className="shade"></div>
+      <div className="popup">testing popups testing hi</div>*/
