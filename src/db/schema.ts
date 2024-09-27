@@ -60,9 +60,9 @@ export const Build = pgTable("build", {
   character: Character("character").notNull(),
   accessory: uuid("accessory").references(() => Accessory.id),
   weaponMateria: uuid("weapon_materia").array().notNull(),
-  weaponName: text("weapon_name").notNull(),
+  weaponName: text("weapon_name"),
   armorMateria: uuid("armor_materia").array().notNull(),
-  armorName: text("armor_name").notNull(),
+  armorName: text("armor_name"),
   summonMateria: text("summon_materia"),
   weaponSchema: SlotType("weapon_schema").array().notNull(),
   armorSchema: SlotType("armor_schema").array().notNull(),
@@ -77,7 +77,9 @@ export const Party = pgTable("party", {
   game: Game("game").notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  leader: uuid("leader").references(() => Build.id),
+  leader: uuid("leader")
+    .references(() => Build.id)
+    .notNull(),
   second: uuid("second").references(() => Build.id),
   third: uuid("third").references(() => Build.id),
 });

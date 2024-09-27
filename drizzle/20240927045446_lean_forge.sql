@@ -1,0 +1,1 @@
+ALTER TABLE "party" ALTER COLUMN "leader" SET NOT NULL;

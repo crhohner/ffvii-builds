@@ -3,6 +3,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { Database } from "@/utils/supabase/types";
 import { cache } from "react";
+import PartyList from "./PartyList";
 
 //will need to redo SQL queries when filters are added.. or filter some custom way
 //probably will have to just use filter functions   + prefix tree
@@ -15,6 +16,5 @@ export default async function Page() {
   const parties: Database["public"]["Tables"]["party"]["Row"][] = (
     await getAllParties()
   ).data!;
-
-  return <div className="centered">{JSON.stringify(parties)}</div>;
+  return <PartyList parties={parties} />;
 }

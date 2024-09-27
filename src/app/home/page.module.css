@@ -1,0 +1,67 @@
+.parties {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 4rem;
+}
+
+.card {
+  width: 12rem;
+  gap: 0.2rem;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  padding: 1rem 1rem;
+  border-color: white;
+  border-width: 2px;
+  border-style: solid;
+  font: inherit;
+  cursor: pointer;
+  background: var(--background-color);
+}
+
+@media only screen and (max-device-width: 600px) {
+  .card {
+    width: 100%;
+  }
+}
+
+.desc {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Number of lines */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--secondary-text-color);
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem 1rem;
+  flex-wrap: wrap;
+  padding-bottom: 1rem;
+}
+
+.circle {
+  border: 2px solid white;
+  height: 16px;
+  border-radius: 50%;
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  width: 16px;
+}
+
+.tag {
+  display: flex;
+  gap: 1rem;
+  color: var(--body-text-color);
+  border-radius: 10px;
+  padding: 4px var(--body-size);
+  background: none;
+  border-color: white;
+  border-width: 2px;
+  border-style: solid;
+  font: inherit;
+  max-width: fit-content;
+}

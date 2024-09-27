@@ -92,6 +92,20 @@
       "when": 1726979035986,
       "tag": "20240922042355_strong_rattler",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1727412771189,
+      "tag": "20240927045251_strange_hobgoblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1727412886085,
+      "tag": "20240927045446_lean_forge",
+      "breakpoints": true
     }
   ]
 }
