@@ -7,18 +7,6 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const router = useRouter();
 
-  /*useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "PASSWORD_RECOVERY") {
-        console.log("got in");
-        router.push("/password/reset");
-      }
-    });
-    return () => {
-      data.subscription.unsubscribe();
-    };
-  }, []);*/
-
   return (
     <div className="center">
       <div
@@ -37,8 +25,6 @@ export default function Home() {
           id="canvas-container"
         >
           <Canvas>
-            <ambientLight intensity={0.1} />
-            <directionalLight color="red" position={[0, 0, 5]} />
             <Model />
           </Canvas>
         </div>
@@ -49,23 +35,3 @@ export default function Home() {
     </div>
   );
 }
-
-/*<span>MATERIA: {JSON.stringify(materia)}</span>
-      <br />
-      <span>ACCESSORIES: {JSON.stringify(accessories)}</span>
-      <br />*/
-
-/*const materia = await getAllMateria();
-  const accessories = await getAllAccessories();*/
-
-/*const supabase: SupabaseClient<Database> = createClient();
-
-const getAllMateria = cache(async () => {
-  const item = await supabase.from("materia").select("*");
-  return item;
-});
-
-const getAllAccessories = cache(async () => {
-  const item = await supabase.from("accessory").select("*");
-  return item;
-});*/

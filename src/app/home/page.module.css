@@ -65,3 +65,16 @@
   font: inherit;
   max-width: fit-content;
 }
+
+.select {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  padding: var(--h-size) var(--h-size);
+  border-color: white;
+  border-width: 2px;
+  border-style: solid;
+  font: inherit;
+  background: var(--background-color);
+}

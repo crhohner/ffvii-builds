@@ -141,10 +141,9 @@ label {
 }
 
 .popup {
-  width: 12rem;
+  width: 12em;
   display: flex;
   flex-direction: column;
-  align-items: center;
   border-radius: 16px;
   padding: var(--h-size) var(--h-size);
   border-color: white;
@@ -152,10 +151,11 @@ label {
   border-style: solid;
   font: inherit;
   z-index: 10;
-  position: fixed;
+  position: absolute;
 
   left: 50%;
-  margin-left: -7.5rem; /* Negative half of width. */
+  top: 20%;
+  margin-left: -7.45em; /* idk why this works */
 
   background: var(--background-color);
 }

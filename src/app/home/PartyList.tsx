@@ -4,40 +4,182 @@ import { Database } from "@/utils/supabase/types";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { gameToString } from "@/utils/util";
+import {
+  allChars,
+  allGames,
+  characterDisplayString,
+  gameDisplayString,
+} from "@/utils/util";
 import { useState } from "react";
 import Image from "next/image";
+import { Character, Party } from "./page";
 
-type Party = Database["public"]["Tables"]["party"]["Row"];
 type TagProps = { field: string; value: string };
 
 export default function PartyList(props: { parties: Party[] }) {
   const { parties } = props;
   const router = useRouter();
   const path = usePathname();
+
   const [selected, setSelected] = useState<Party[]>([]);
-  const [tags, setTags] = useState<TagProps[]>([
-    { field: "hi", value: "aerith" },
-  ]);
+  const [tags, setTags] = useState<TagProps[]>([]);
+  const [filterMenu, setFilterMenu] = useState(false);
+  const [displayedParties, setDisplayedParties] = useState(parties);
+
+  function updateDisplayedParties(tags: TagProps[]) {
+    var displayed = [...parties];
+
+    tags.forEach(({ field, value }) => {
+      if (field == "game") {
+        displayed = displayed.filter((party) => party.game == value);
+      } else if (field == "character") {
+        displayed = displayed.filter((party) => {
+          console.log(JSON.stringify(party.characters));
+          return party.characters.includes(value as Character);
+        });
+      }
+    });
+    setDisplayedParties(displayed);
+  }
+
+  function removeTag(tag: TagProps): void {
+    setTags((tags) => {
+      const updated = tags.filter(({ value }) => value !== tag.value);
+      updateDisplayedParties(updated);
+      return updated;
+    });
+  }
+
+  function containsTag(tag: TagProps): boolean {
+    return tags.some((f) => f.field == tag.field && f.value == tag.value);
+  }
+
+  function addTag(tag: TagProps): void {
+    if (!containsTag(tag)) {
+      if (tag.field == "game") {
+        setTags((tags) =>
+          tags.filter(({ field: f, value: v }) => f !== "game")
+        );
+      } else if (tag.field == "character") {
+        const chars = tags.filter(({ field }) => field == "character");
+        while (chars.length > 2) {
+          const char = chars.shift()!;
+          removeTag(char);
+        }
+      }
+      setTags((tags) => {
+        const updated = [...tags, tag];
+        updateDisplayedParties(updated);
+        return updated;
+      });
+    }
+  }
 
   function Tag(props: TagProps) {
-    const { field, value } = props;
+    const { value } = props;
     return (
       <div className={styles["tag"]}>
-        <div
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            setTags((tags) =>
-              tags.filter(
-                ({ field: f, value: v }) => v !== value && f !== field
-              )
-            );
-          }}
-        >
+        <div style={{ cursor: "pointer" }} onClick={() => removeTag(props)}>
           x
         </div>
         <div>{value}</div>
       </div>
+    );
+  }
+
+  function FilterRadio(props: {
+    field: string;
+    value: string;
+    display: string;
+  }) {
+    const { display } = props;
+    const tag = { field: props.field, value: props.value };
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: ".6rem" }}>
+        {display}
+        {containsTag(tag) ? (
+          <Image
+            src="radio.svg"
+            height={20}
+            width={20}
+            alt=""
+            onClick={() => removeTag(tag)}
+          />
+        ) : (
+          <Image
+            src="circle.svg"
+            height={20}
+            width={20}
+            alt=""
+            onClick={() => addTag(tag)}
+          />
+        )}
+      </div>
+    );
+  }
+
+  function FilterMenu() {
+    return (
+      <>
+        <div className="shade"></div>
+        <div className="popup">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <h2>Filters</h2>
+            <Image
+              onClick={() => setFilterMenu(false)}
+              src="esc.svg"
+              height={20}
+              width={20}
+              alt=""
+            />
+          </div>
+
+          <br />
+          <h3>Games</h3>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "1rem",
+              padding: "1rem 0 0 0",
+            }}
+          >
+            {allGames.map((game) => (
+              <FilterRadio
+                field={"game"}
+                value={game}
+                display={gameDisplayString(game)}
+              />
+            ))}
+          </div>
+          <br />
+          <h3>Characters</h3>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "1rem",
+              padding: "1rem 0 0 0",
+            }}
+          >
+            {allChars.map((character) => (
+              <FilterRadio
+                field={"character"}
+                value={character}
+                display={characterDisplayString(character)}
+              />
+            ))}
+          </div>
+          <br />
+          <button onClick={() => setTags([])}>clear</button>
+        </div>
+      </>
     );
   }
 
@@ -72,7 +214,7 @@ export default function PartyList(props: { parties: Party[] }) {
         </div>
         <div style={{ display: "flex", gap: "0.2rem" }}>
           <h3>GAME</h3>
-          {gameToString(party.game)}
+          {gameDisplayString(party.game)}
         </div>
         <div className={styles["desc"]}>{party.description}</div>
       </div>
@@ -80,7 +222,6 @@ export default function PartyList(props: { parties: Party[] }) {
   }
 
   //TODO:
-  //add filter menu
   //filter actually working
   //search
   //then after other pages are complete: add + delete
@@ -91,17 +232,18 @@ export default function PartyList(props: { parties: Party[] }) {
         <h1>Parties</h1>
         <button>new</button>
         <button>delete</button>
-        <button>filter</button>
+        <button onClick={() => setFilterMenu(true)}>filter</button>
         {tags.map(({ field, value }) => (
           <Tag field={field} value={value} />
         ))}
       </div>
 
       <div className={styles["parties"]}>
-        {parties.map((party) => (
+        {displayedParties.map((party) => (
           <Card party={party} />
         ))}
       </div>
+      {filterMenu && <FilterMenu />}
     </>
   );
 }
