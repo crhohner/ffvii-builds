@@ -12,7 +12,7 @@ import {
 } from "@/utils/util";
 import { useState } from "react";
 import Image from "next/image";
-import { Character, Party } from "./page";
+import { Character, Party, Game } from "./page";
 
 type TagProps = { field: string; value: string };
 
@@ -34,7 +34,6 @@ export default function PartyList(props: { parties: Party[] }) {
         displayed = displayed.filter((party) => party.game == value);
       } else if (field == "character") {
         displayed = displayed.filter((party) => {
-          console.log(JSON.stringify(party.characters));
           return party.characters.includes(value as Character);
         });
       }
@@ -76,13 +75,17 @@ export default function PartyList(props: { parties: Party[] }) {
   }
 
   function Tag(props: TagProps) {
-    const { value } = props;
+    const { field, value } = props;
     return (
       <div className={styles["tag"]}>
         <div style={{ cursor: "pointer" }} onClick={() => removeTag(props)}>
           x
         </div>
-        <div>{value}</div>
+        <div>
+          {field == "character"
+            ? characterDisplayString(value as Character)
+            : gameDisplayString(value as Game)}
+        </div>
       </div>
     );
   }
@@ -177,7 +180,16 @@ export default function PartyList(props: { parties: Party[] }) {
             ))}
           </div>
           <br />
-          <button onClick={() => setTags([])}>clear</button>
+          <button
+            onClick={() =>
+              setTags(() => {
+                updateDisplayedParties([]);
+                return [];
+              })
+            }
+          >
+            clear
+          </button>
         </div>
       </>
     );
@@ -222,8 +234,7 @@ export default function PartyList(props: { parties: Party[] }) {
   }
 
   //TODO:
-  //filter actually working
-  //search
+  //search?
   //then after other pages are complete: add + delete
   //validation (are you sure??) for delete
   return (
@@ -247,6 +258,3 @@ export default function PartyList(props: { parties: Party[] }) {
     </>
   );
 }
-
-/*<div className="shade"></div>
-      <div className="popup">testing popups testing hi</div>*/

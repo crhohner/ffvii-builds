@@ -6,6 +6,7 @@ import { cache } from "react";
 import PartyList from "./PartyList";
 
 export type Character = Database["public"]["Enums"]["character"];
+export type Game = Database["public"]["Enums"]["game"];
 export type Party = Database["public"]["Tables"]["party"]["Row"] & {
   characters: Character[];
 };

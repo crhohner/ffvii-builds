@@ -22,7 +22,6 @@ export default async function Page({ params }: Params) {
   });
   const builds = await getAllBuilds();
   const build: Database["public"]["Tables"]["build"]["Row"] = builds.data![0];
-  console.log(id);
 
   return <>{JSON.stringify(build)}</>;
 }
