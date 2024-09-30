@@ -1,6 +1,5 @@
 "use client";
 
-import { Database } from "@/utils/supabase/types";
 import styles from "./page.module.css";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -13,18 +12,24 @@ import {
 import { useState } from "react";
 import Image from "next/image";
 import { Character, Party, Game } from "./page";
+import { createClient } from "@/utils/supabase/client";
+import { revalidatePath } from "next/cache";
 
 type TagProps = { field: string; value: string };
 
-export default function PartyList(props: { parties: Party[] }) {
+export default function PartyList(props: {
+  parties: Party[];
+  delete: (parties: Party[]) => Promise<void>;
+}) {
   const { parties } = props;
   const router = useRouter();
   const path = usePathname();
+  const supabase = createClient();
 
   const [selected, setSelected] = useState<Party[]>([]);
   const [tags, setTags] = useState<TagProps[]>([]);
   const [filterMenu, setFilterMenu] = useState(false);
-  const [displayedParties, setDisplayedParties] = useState(parties);
+  const [displayedParties, setDisplayedParties] = useState<Party[]>(parties);
 
   function updateDisplayedParties(tags: TagProps[]) {
     var displayed = [...parties];
@@ -242,16 +247,16 @@ export default function PartyList(props: { parties: Party[] }) {
       <div className={styles["toolbar"]}>
         <h1>Parties</h1>
         <button>new</button>
-        <button>delete</button>
+        <button onClick={() => props.delete(selected)}>delete</button>
         <button onClick={() => setFilterMenu(true)}>filter</button>
         {tags.map(({ field, value }) => (
-          <Tag field={field} value={value} />
+          <Tag field={field} value={value} key={value} />
         ))}
       </div>
 
       <div className={styles["parties"]}>
         {displayedParties.map((party) => (
-          <Card party={party} />
+          <Card party={party} key={party.id} />
         ))}
       </div>
       {filterMenu && <FilterMenu />}

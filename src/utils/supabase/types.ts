@@ -7,31 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
       accessory: {
@@ -59,40 +34,40 @@ export type Database = {
         Row: {
           accessory: string | null
           armor_materia: string[]
-          armor_name: string
+          armor_name: string | null
           armor_schema: Database["public"]["Enums"]["slot_type"][]
           character: Database["public"]["Enums"]["character"]
           id: string
           summon_materia: string | null
           user_id: string
           weapon_materia: string[]
-          weapon_name: string
+          weapon_name: string | null
           weapon_schema: Database["public"]["Enums"]["slot_type"][]
         }
         Insert: {
           accessory?: string | null
           armor_materia: string[]
-          armor_name: string
+          armor_name?: string | null
           armor_schema: Database["public"]["Enums"]["slot_type"][]
           character: Database["public"]["Enums"]["character"]
           id?: string
           summon_materia?: string | null
           user_id: string
           weapon_materia: string[]
-          weapon_name: string
+          weapon_name?: string | null
           weapon_schema: Database["public"]["Enums"]["slot_type"][]
         }
         Update: {
           accessory?: string | null
           armor_materia?: string[]
-          armor_name?: string
+          armor_name?: string | null
           armor_schema?: Database["public"]["Enums"]["slot_type"][]
           character?: Database["public"]["Enums"]["character"]
           id?: string
           summon_materia?: string | null
           user_id?: string
           weapon_materia?: string[]
-          weapon_name?: string
+          weapon_name?: string | null
           weapon_schema?: Database["public"]["Enums"]["slot_type"][]
         }
         Relationships: [
@@ -171,7 +146,7 @@ export type Database = {
           description: string | null
           game: Database["public"]["Enums"]["game"]
           id: string
-          leader: string | null
+          leader: string
           name: string
           second: string | null
           third: string | null
@@ -181,7 +156,7 @@ export type Database = {
           description?: string | null
           game: Database["public"]["Enums"]["game"]
           id?: string
-          leader?: string | null
+          leader: string
           name: string
           second?: string | null
           third?: string | null
@@ -191,7 +166,7 @@ export type Database = {
           description?: string | null
           game?: Database["public"]["Enums"]["game"]
           id?: string
-          leader?: string | null
+          leader?: string
           name?: string
           second?: string | null
           third?: string | null

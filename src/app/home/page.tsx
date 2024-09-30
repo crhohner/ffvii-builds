@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Database } from "@/utils/supabase/types";
 import { cache } from "react";
 import PartyList from "./PartyList";
+import { deleteParties } from "./action";
 
 export type Character = Database["public"]["Enums"]["character"];
 export type Game = Database["public"]["Enums"]["game"];
@@ -60,5 +61,5 @@ export default async function Page() {
     const characters = await getCharacters(party);
     partiesWithCharacters.push({ ...party, characters });
   }
-  return <PartyList parties={partiesWithCharacters} />;
+  return <PartyList parties={partiesWithCharacters} delete={deleteParties} />;
 }

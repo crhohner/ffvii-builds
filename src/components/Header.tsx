@@ -9,14 +9,28 @@ type HeaderProps = {
   mobile: boolean;
 };
 export default function Header(props: HeaderProps) {
-  const [burger, setBurger] = useState(false);
-
-  const links = [<Link href="/about">About</Link>];
+  const links = [
+    <Link href="/about" key="about">
+      About
+    </Link>,
+  ];
   if (props.user) {
-    links.push(<Link href="/home">Home</Link>);
-    links.push(<Link href="/logout">Logout</Link>);
+    links.push(
+      <Link href="/home" key="home">
+        Home
+      </Link>
+    );
+    links.push(
+      <Link href="/logout" key="logout">
+        Logout
+      </Link>
+    );
   } else {
-    links.push(<Link href="/login">Login</Link>);
+    links.push(
+      <Link href="/login" key="login">
+        Login
+      </Link>
+    );
   }
 
   return (
