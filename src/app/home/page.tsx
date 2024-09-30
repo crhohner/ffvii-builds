@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { Database } from "@/utils/supabase/types";
 import { cache } from "react";
 import PartyList from "./PartyList";
-import { deleteParties } from "./action";
+import { addParty, deleteParties } from "./action";
 
 export type Character = Database["public"]["Enums"]["character"];
 export type Game = Database["public"]["Enums"]["game"];
@@ -24,12 +24,14 @@ export default async function Page() {
     async (party: Database["public"]["Tables"]["party"]["Row"]) => {
       const chars: Character[] = [];
 
-      const leader = await supabase
-        .from("build")
-        .select("*")
-        .eq("id", party.leader);
-      const l: Database["public"]["Tables"]["build"]["Row"] = leader.data![0];
-      chars.push(l.character);
+      if (party.leader) {
+        const leader = await supabase
+          .from("build")
+          .select("*")
+          .eq("id", party.leader);
+        const l: Database["public"]["Tables"]["build"]["Row"] = leader.data![0];
+        chars.push(l.character);
+      }
 
       if (party.second) {
         const second = await supabase
@@ -61,5 +63,11 @@ export default async function Page() {
     const characters = await getCharacters(party);
     partiesWithCharacters.push({ ...party, characters });
   }
-  return <PartyList parties={partiesWithCharacters} delete={deleteParties} />;
+  return (
+    <PartyList
+      parties={partiesWithCharacters}
+      delete={deleteParties}
+      add={addParty}
+    />
+  );
 }

@@ -78,8 +78,7 @@ export const Party = pgTable("party", {
   name: text("name").notNull(),
   description: text("description"),
   leader: uuid("leader")
-    .references(() => Build.id)
-    .notNull(),
+    .references(() => Build.id),
   second: uuid("second").references(() => Build.id),
   third: uuid("third").references(() => Build.id),
 });

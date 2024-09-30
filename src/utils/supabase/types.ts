@@ -146,7 +146,7 @@ export type Database = {
           description: string | null
           game: Database["public"]["Enums"]["game"]
           id: string
-          leader: string
+          leader: string | null
           name: string
           second: string | null
           third: string | null
@@ -156,7 +156,7 @@ export type Database = {
           description?: string | null
           game: Database["public"]["Enums"]["game"]
           id?: string
-          leader: string
+          leader?: string | null
           name: string
           second?: string | null
           third?: string | null
@@ -166,13 +166,34 @@ export type Database = {
           description?: string | null
           game?: Database["public"]["Enums"]["game"]
           id?: string
-          leader?: string
+          leader?: string | null
           name?: string
           second?: string | null
           third?: string | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_leader"
+            columns: ["leader"]
+            isOneToOne: false
+            referencedRelation: "build"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_second"
+            columns: ["second"]
+            isOneToOne: false
+            referencedRelation: "build"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_third"
+            columns: ["third"]
+            isOneToOne: false
+            referencedRelation: "build"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "party_leader_build_id_fk"
             columns: ["leader"]

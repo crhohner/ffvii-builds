@@ -1,4 +1,4 @@
-import { Database } from "./supabase/types";
+import { Database } from "./supabase/types"; 
 
 export function gameDisplayString(
   game: Database["public"]["Enums"]["game"]
@@ -72,3 +72,5 @@ export const allGames: Database["public"]["Enums"]["game"][] = [
   "rebirth",
   "og",
 ];
+
+//whats the game plan for making new parties?
