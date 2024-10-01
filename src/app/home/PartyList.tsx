@@ -13,6 +13,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Character, Party, Game } from "./page";
 import NewMenu from "./NewMenu";
+import DeleteMenu from "./DeleteMenu";
 
 type TagProps = { field: string; value: string };
 
@@ -52,39 +53,8 @@ export default function PartyList(props: {
     setNewMenu(false);
   };
 
-  function DeleteMenu() {
-    return (
-      <>
-        <div className="shade"></div>
-        <div className="popup">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-            }}
-          >
-            <h2>
-              {selected.length > 1
-                ? "Delete " + selected.length + " parties?"
-                : "Delete " + selected[0].name + "?"}
-            </h2>
-            <Image
-              onClick={() => setDeleteMenu(false)}
-              src="esc.svg"
-              height={20}
-              width={20}
-              alt=""
-            />
-          </div>
-          <br />
-          <div className="center" style={{ gap: "1rem" }}>
-            <button onClick={() => setDeleteMenu(false)}>cancel</button>
-            <button onClick={handleDelete}>delete</button>
-          </div>
-        </div>
-      </>
-    );
+  function getSelected(): Party[] {
+    return selected;
   }
 
   function updateDisplayedParties(tags: TagProps[]) {
@@ -303,7 +273,13 @@ export default function PartyList(props: {
       <div className={styles["toolbar"]}>
         <h1>Parties</h1>
         <button onClick={() => setNewMenu(true)}>new</button>
-        <button onClick={() => setDeleteMenu(true)}>delete</button>
+        <button
+          onClick={() => {
+            if (selected.length > 0) setDeleteMenu(true);
+          }}
+        >
+          delete
+        </button>
         <button onClick={() => setFilterMenu(true)}>filter</button>
         {tags.map(({ field, value }) => (
           <Tag field={field} value={value} key={value} />
@@ -316,7 +292,13 @@ export default function PartyList(props: {
         ))}
       </div>
       {filterMenu && <FilterMenu />}
-      {deleteMenu && <DeleteMenu />}
+      {deleteMenu && (
+        <DeleteMenu
+          setDeleteMenu={setDeleteMenu}
+          getSelected={getSelected}
+          handleDelete={handleDelete}
+        />
+      )}
       {newMenu && <NewMenu handleAdd={handleAdd} setNewMenu={setNewMenu} />}
     </>
   );

@@ -44,7 +44,9 @@ export default function NewMenu(props: {
             onChange={(e) => setNewPartyGame(e.target.value)}
           >
             {allGames.map((game) => (
-              <option key={game}>{gameDisplayString(game)}</option>
+              <option key={game} value={game}>
+                {gameDisplayString(game)}
+              </option>
             ))}
           </select>
           <br />
