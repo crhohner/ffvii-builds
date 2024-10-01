@@ -12,6 +12,7 @@ import {
 import { useState } from "react";
 import Image from "next/image";
 import { Character, Party, Game } from "./page";
+import NewMenu from "./NewMenu";
 
 type TagProps = { field: string; value: string };
 
@@ -32,8 +33,6 @@ export default function PartyList(props: {
   const [deleteMenu, setDeleteMenu] = useState(false);
 
   const [newMenu, setNewMenu] = useState(false);
-  const [newPartyName, setNewPartyName] = useState<string>("");
-  const [newPartyGame, setNewPartyGame] = useState<string>("og");
 
   const handleDelete = async () => {
     try {
@@ -52,62 +51,6 @@ export default function PartyList(props: {
     }
     setNewMenu(false);
   };
-
-  function NewMenu() {
-    return (
-      <>
-        <div className="shade"></div>
-        <div className="popup">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              width: "100%",
-            }}
-          >
-            <h2>New Party</h2>
-            <Image
-              onClick={() => setNewMenu(false)}
-              src="esc.svg"
-              height={20}
-              width={20}
-              alt=""
-            />
-          </div>
-          <br />
-          <form className="form">
-            <label>name:</label>
-            <input
-              type="text" //whyyyyyy
-              value={newPartyName}
-              onChange={(e) => setNewPartyName(e.target.value)}
-            />
-            <br />
-            <label>game:</label>
-            <select
-              value={newPartyGame}
-              onChange={(e) => setNewPartyGame(e.target.value)}
-            >
-              {allGames.map((game) => (
-                <option key={game}>{gameDisplayString(game)}</option>
-              ))}
-            </select>
-            <br />
-            <div className="center" style={{ gap: "1rem" }}>
-              <button onClick={() => setNewMenu(false)}>cancel</button>
-              <button
-                onClick={
-                  () => handleAdd({ name: newPartyName, game: newPartyGame }) //need validation of non-null name
-                }
-              >
-                create
-              </button>
-            </div>
-          </form>
-        </div>
-      </>
-    );
-  }
 
   function DeleteMenu() {
     return (
@@ -374,7 +317,7 @@ export default function PartyList(props: {
       </div>
       {filterMenu && <FilterMenu />}
       {deleteMenu && <DeleteMenu />}
-      {newMenu && <NewMenu />}
+      {newMenu && <NewMenu handleAdd={handleAdd} setNewMenu={setNewMenu} />}
     </>
   );
 }
