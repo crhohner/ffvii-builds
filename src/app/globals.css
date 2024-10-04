@@ -182,3 +182,8 @@ label {
   top: 0;
   left: 0;
 }
+
+::placeholder {
+  color: var(--secondary-text-color);
+  opacity: 1; /* Firefox */
+}

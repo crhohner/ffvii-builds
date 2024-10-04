@@ -34,12 +34,13 @@ export default function PartyList(props: {
 
   const [deleteMenu, setDeleteMenu] = useState(false);
   const [newMenu, setNewMenu] = useState(false);
+  const [searchInput, setSearchInput] = useState<string>("");
 
   function getSelected(): Party[] {
     return selected;
   }
 
-  function updateDisplayedParties(tags: TagProps[]) {
+  function updateDisplayedParties(tags: TagProps[], searchInput: string) {
     var displayed = [...parties];
 
     tags.forEach(({ field, value }) => {
@@ -52,6 +53,10 @@ export default function PartyList(props: {
       }
     });
 
+    if (searchInput != "") {
+      displayed = displayed.filter((party) => party.name.includes(searchInput));
+    }
+
     setSelected((selected) => selected.filter((s) => displayed.includes(s)));
 
     setDisplayedParties(displayed);
@@ -60,7 +65,7 @@ export default function PartyList(props: {
   function removeTag(tag: TagProps): void {
     setTags((tags) => {
       const updated = tags.filter(({ value }) => value !== tag.value);
-      updateDisplayedParties(updated);
+      updateDisplayedParties(updated, searchInput);
       return updated;
     });
   }
@@ -84,7 +89,7 @@ export default function PartyList(props: {
       }
       setTags((tags) => {
         const updated = [...tags, tag];
-        updateDisplayedParties(updated);
+        updateDisplayedParties(updated, searchInput);
         return updated;
       });
     }
@@ -199,7 +204,7 @@ export default function PartyList(props: {
           <button
             onClick={() =>
               setTags(() => {
-                updateDisplayedParties([]);
+                updateDisplayedParties([], searchInput);
                 return [];
               })
             }
@@ -246,10 +251,6 @@ export default function PartyList(props: {
     );
   }
 
-  //TODO:
-  //search?
-  //then after other pages are complete: add + delete
-  //validation (are you sure??) for delete
   return (
     <>
       <div className={styles["toolbar"]}>
@@ -262,6 +263,14 @@ export default function PartyList(props: {
         >
           delete
         </button>
+        <input
+          onChange={(e) => {
+            setSearchInput(e.target.value);
+            updateDisplayedParties(tags, e.target.value);
+          }}
+          placeholder="search"
+        ></input>
+
         <button onClick={() => setFilterMenu(true)}>filter</button>
         {tags.map(({ field, value }) => (
           <Tag field={field} value={value} key={value} />
