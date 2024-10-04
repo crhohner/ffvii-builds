@@ -15,59 +15,55 @@ export type Party = Database["public"]["Tables"]["party"]["Row"] & {
 //will need to redo SQL queries when filters are added.. or filter some custom way
 //probably will have to just use filter functions   + prefix tree
 export default async function Page() {
-  const supabase = createClient();
-  const getAllParties = cache(async () => {
-    const item = await supabase.from("party").select("*");
-    return item;
-  });
-  const getCharacters = cache(
-    async (party: Database["public"]["Tables"]["party"]["Row"]) => {
-      const chars: Character[] = [];
-
-      if (party.leader) {
-        const leader = await supabase
-          .from("build")
-          .select("*")
-          .eq("id", party.leader);
-        const l: Database["public"]["Tables"]["build"]["Row"] = leader.data![0];
-        chars.push(l.character);
-      }
-
-      if (party.second) {
-        const second = await supabase
-          .from("build")
-          .select("*")
-          .eq("id", party.second);
-        const s: Database["public"]["Tables"]["build"]["Row"] = second.data![0];
-        chars.push(s.character);
-      }
-
-      if (party.third) {
-        const third = await supabase
-          .from("build")
-          .select("*")
-          .eq("id", party.third);
-        const t: Database["public"]["Tables"]["build"]["Row"] = third.data![0];
-        chars.push(t.character);
-      }
-
-      return chars;
-    }
-  );
-  const parties: Database["public"]["Tables"]["party"]["Row"][] = (
-    await getAllParties()
-  ).data!;
-  const partiesWithCharacters: Party[] = [];
-
-  for (const party of parties) {
-    const characters = await getCharacters(party);
-    partiesWithCharacters.push({ ...party, characters });
-  }
+  const parties = await getParties();
   return (
     <PartyList
-      parties={partiesWithCharacters}
-      delete={deleteParties}
-      add={addParty}
+      parties={parties}
+      deleteAction={deleteParties}
+      addAction={addParty}
     />
   );
+}
+async function getParties(): Promise<Party[]> {
+  // Fetch data from external API
+  const supabase = createClient();
+  const { data: parties } = await supabase.from("party").select("*");
+
+  if (!parties) {
+    return [];
+  }
+
+  const buildIds = parties
+    .flatMap((party) => [party.leader, party.second, party.third])
+    .filter(Boolean);
+
+  const { data: builds } = await supabase
+    .from("build")
+    .select("*")
+    .in("id", buildIds);
+
+  if (!builds) {
+    const partiesWithCharacters = parties.map((party) => ({
+      ...party,
+      characters: [],
+    }));
+
+    return partiesWithCharacters;
+  }
+
+  const buildMap = new Map(builds.map((build) => [build.id, build.character]));
+
+  const partiesWithCharacters = parties.map(
+    (party) =>
+      ({
+        ...party,
+        characters: [
+          buildMap.get(party.leader),
+          buildMap.get(party.second),
+          buildMap.get(party.third),
+        ].filter(Boolean),
+      } as Party)
+  );
+
+  return partiesWithCharacters;
 }

@@ -1,14 +1,29 @@
 import { allGames, gameDisplayString } from "@/utils/util";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
+import { Party } from "./page";
+import { PostgresError } from "postgres";
+import Error from "@/components/Error";
 
 export default function NewMenu(props: {
   setNewMenu: Dispatch<SetStateAction<boolean>>;
-  handleAdd: (args: { name: string; game: string }) => Promise<void>;
+  addAction: (args: { name: string; game: string }) => Promise<Party>;
 }) {
   const [newPartyName, setNewPartyName] = useState("");
   const [newPartyGame, setNewPartyGame] = useState("og");
-  const { setNewMenu, handleAdd } = props;
+  const [error, setError] = useState<string | null>(null);
+  const { setNewMenu, addAction } = props;
+
+  const handleNew = async (args: { name: string; game: string }) => {
+    try {
+      const party = await addAction(args); //not returning value
+    } catch (error) {
+      setError((error as PostgresError).message);
+      return;
+    }
+    setNewMenu(false);
+  };
+
   return (
     <>
       <div className="shade"></div>
@@ -33,7 +48,7 @@ export default function NewMenu(props: {
         <form className="form">
           <label>name:</label>
           <input
-            type="text" //whyyyyyy
+            type="text"
             value={newPartyName}
             onChange={(e) => setNewPartyName(e.target.value)}
           />
@@ -50,15 +65,19 @@ export default function NewMenu(props: {
             ))}
           </select>
           <br />
+          <br />
           <div className="center" style={{ gap: "1rem" }}>
             <button onClick={() => setNewMenu(false)}>cancel</button>
             <button
-              onClick={
-                () => handleAdd({ name: newPartyName, game: newPartyGame }) //need validation of non-null name
+              onClick={() =>
+                handleNew({ name: newPartyName, game: newPartyGame })
               }
             >
               create
             </button>
+          </div>
+          <div className="center">
+            <Error error={error} />
           </div>
         </form>
       </div>

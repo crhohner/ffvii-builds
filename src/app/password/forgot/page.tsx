@@ -1,4 +1,5 @@
 "use client";
+import Error from "@/components/Error";
 import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 
@@ -42,8 +43,7 @@ export default function ForgotPassword() {
           <>
             <br />
             <h1>Forgot your password?</h1>
-            <h3>No worries!</h3>
-            <br />
+
             <form onSubmit={handleSubmit} className="form">
               <label htmlFor="email">email:</label>
               <input
@@ -57,8 +57,9 @@ export default function ForgotPassword() {
                 <button type="submit">send reset link</button>
               </div>
             </form>
-            <br />
-            <div className="err">{error}</div>
+            <div className="center">
+              <Error error={error} />
+            </div>
           </>
         )}
       </div>

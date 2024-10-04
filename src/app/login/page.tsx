@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
+import Error from "@/components/Error";
 
 export default function Login() {
   const supabase = createClient();
@@ -74,8 +75,9 @@ export default function Login() {
             <button type="submit">log in</button>
           </div>
         </form>
-        <br />
-        <div className="err">{error}</div>
+        <div className="center">
+          <Error error={error} />
+        </div>
         <br />
         <Link href="/signup">New user?</Link>
         <Link href="/password/forgot">Forgot password?</Link>

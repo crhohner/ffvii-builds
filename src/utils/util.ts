@@ -74,3 +74,5 @@ export const allGames: Database["public"]["Enums"]["game"][] = [
 ];
 
 //whats the game plan for making new parties?
+
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

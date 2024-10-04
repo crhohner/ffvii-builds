@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import Error from "@/components/Error";
 
 export default function Signup() {
   const supabase = createClient();
@@ -78,8 +79,9 @@ export default function Signup() {
                 <button type="submit">sign up</button>
               </div>
             </form>
-            <br />
-            <div className="err">{error}</div>
+            <div className="center">
+              <Error error={error} />
+            </div>
             <br />
             <Link href="/login">Already have an account?</Link>
           </>

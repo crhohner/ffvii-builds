@@ -15,12 +15,12 @@ import { Character, Party, Game } from "./page";
 import NewMenu from "./NewMenu";
 import DeleteMenu from "./DeleteMenu";
 
-type TagProps = { field: string; value: string };
+export type TagProps = { field: string; value: string };
 
 export default function PartyList(props: {
   parties: Party[];
-  delete: (parties: Party[]) => Promise<void>;
-  add: (args: { name: string; game: string }) => Promise<void>;
+  deleteAction: (parties: Party[]) => Promise<void>;
+  addAction: (args: { name: string; game: string }) => Promise<Party>;
 }) {
   const { parties } = props;
   const router = useRouter();
@@ -35,40 +35,27 @@ export default function PartyList(props: {
 
   const [newMenu, setNewMenu] = useState(false);
 
-  const handleDelete = async () => {
-    try {
-      await props.delete(selected);
-    } catch (error) {
-      console.error("Failed to delete parties: ", error);
-    }
-    setDeleteMenu(false);
-  };
-
-  const handleAdd = async (args: { name: string; game: string }) => {
-    try {
-      await props.add(args);
-    } catch (error) {
-      console.error("Failed to insert new party: ", error);
-    }
-    setNewMenu(false);
-  };
+  //define errs here, pass to pop-up componenents
 
   function getSelected(): Party[] {
     return selected;
   }
 
-  function updateDisplayedParties(tags: TagProps[]) {
+  function updateDisplayedParties(tags?: TagProps[]) {
     var displayed = [...parties];
 
-    tags.forEach(({ field, value }) => {
-      if (field == "game") {
-        displayed = displayed.filter((party) => party.game == value);
-      } else if (field == "character") {
-        displayed = displayed.filter((party) => {
-          return party.characters.includes(value as Character);
-        });
-      }
-    });
+    if (tags) {
+      tags.forEach(({ field, value }) => {
+        if (field == "game") {
+          displayed = displayed.filter((party) => party.game == value);
+        } else if (field == "character") {
+          displayed = displayed.filter((party) => {
+            party.characters.includes(value as Character);
+          });
+        }
+      });
+    }
+
     setDisplayedParties(displayed);
   }
 
@@ -296,10 +283,13 @@ export default function PartyList(props: {
         <DeleteMenu
           setDeleteMenu={setDeleteMenu}
           getSelected={getSelected}
-          handleDelete={handleDelete}
+          deleteAction={props.deleteAction}
+          setSelected={setSelected}
         />
       )}
-      {newMenu && <NewMenu handleAdd={handleAdd} setNewMenu={setNewMenu} />}
+      {newMenu && (
+        <NewMenu addAction={props.addAction} setNewMenu={setNewMenu} />
+      )}
     </>
   );
 }

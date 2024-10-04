@@ -1,14 +1,33 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Party } from "./page";
 import Image from "next/image";
+import { PostgresError } from "postgres";
+import Error from "@/components/Error";
+import { TagProps } from "./PartyList";
+import { revalidatePath } from "next/cache";
 
 export default function DeleteMenu(props: {
   setDeleteMenu: Dispatch<SetStateAction<boolean>>;
-  handleDelete: () => Promise<void>;
+  deleteAction: (parties: Party[]) => Promise<void>;
   getSelected: () => Party[];
+  setSelected: Dispatch<SetStateAction<Party[]>>;
 }) {
   const selected = props.getSelected();
-  const { setDeleteMenu, handleDelete } = props;
+  const { setDeleteMenu, setSelected } = props;
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDelete = async () => {
+    try {
+      await props.deleteAction(selected);
+    } catch (error) {
+      setError((error as PostgresError).message);
+      return;
+    }
+
+    setSelected([]);
+    setDeleteMenu(false);
+  };
+
   return (
     <>
       <div className="shade"></div>
@@ -37,6 +56,9 @@ export default function DeleteMenu(props: {
         <div className="center" style={{ gap: "1rem" }}>
           <button onClick={() => setDeleteMenu(false)}>cancel</button>
           <button onClick={handleDelete}>delete</button>
+        </div>
+        <div className="center">
+          <Error error={error} />
         </div>
       </div>
     </>
