@@ -14,6 +14,7 @@ import Image from "next/image";
 import { Character, Party, Game } from "./page";
 import NewMenu from "./NewMenu";
 import DeleteMenu from "./DeleteMenu";
+import Link from "next/link";
 
 export type TagProps = { field: string; value: string };
 
@@ -32,29 +33,26 @@ export default function PartyList(props: {
   const [displayedParties, setDisplayedParties] = useState<Party[]>(parties);
 
   const [deleteMenu, setDeleteMenu] = useState(false);
-
   const [newMenu, setNewMenu] = useState(false);
-
-  //define errs here, pass to pop-up componenents
 
   function getSelected(): Party[] {
     return selected;
   }
 
-  function updateDisplayedParties(tags?: TagProps[]) {
+  function updateDisplayedParties(tags: TagProps[]) {
     var displayed = [...parties];
 
-    if (tags) {
-      tags.forEach(({ field, value }) => {
-        if (field == "game") {
-          displayed = displayed.filter((party) => party.game == value);
-        } else if (field == "character") {
-          displayed = displayed.filter((party) => {
-            party.characters.includes(value as Character);
-          });
-        }
-      });
-    }
+    tags.forEach(({ field, value }) => {
+      if (field == "game") {
+        displayed = displayed.filter((party) => party.game == value);
+      } else if (field == "character") {
+        displayed = displayed.filter((party) => {
+          return party.characters.includes(value as Character);
+        });
+      }
+    });
+
+    setSelected((selected) => selected.filter((s) => displayed.includes(s)));
 
     setDisplayedParties(displayed);
   }
@@ -219,10 +217,7 @@ export default function PartyList(props: {
     return (
       <div className={styles["card"]}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <div onClick={() => router.push(path + "/" + party.id)}>
-            {" "}
-            {party.name}
-          </div>
+          <Link href={path + "/" + party.id}>{party.name}</Link>
           {selected.includes(party) ? (
             <Image
               src="check.svg"

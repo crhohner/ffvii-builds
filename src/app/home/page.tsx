@@ -56,7 +56,7 @@ async function getParties(): Promise<Party[]> {
   const partiesWithCharacters = parties.map(
     (party) =>
       ({
-        ...party,
+        ...party, //this isnt working probably
         characters: [
           buildMap.get(party.leader),
           buildMap.get(party.second),
