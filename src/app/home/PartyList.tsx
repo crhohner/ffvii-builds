@@ -24,7 +24,6 @@ export default function PartyList(props: {
   addAction: (args: { name: string; game: string }) => Promise<Party>;
 }) {
   const { parties } = props;
-  const router = useRouter();
   const path = usePathname();
 
   const [selected, setSelected] = useState<Party[]>([]);
