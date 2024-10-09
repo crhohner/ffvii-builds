@@ -2,18 +2,16 @@
 "use server";
 import { createClient } from "@/utils/supabase/server";
 import { Database } from "@/utils/supabase/types";
-import { cache } from "react";
 import PartyList from "./PartyList";
 import { addParty, deleteParties } from "./action";
 
 export type Character = Database["public"]["Enums"]["character"];
 export type Game = Database["public"]["Enums"]["game"];
-export type Party = Database["public"]["Tables"]["party"]["Row"] & {
+export type DisplayParty = Database["public"]["Tables"]["party"]["Row"] & {
   characters: Character[];
 };
+//define build type...
 
-//will need to redo SQL queries when filters are added.. or filter some custom way
-//probably will have to just use filter functions   + prefix tree
 export default async function Page() {
   const parties = await getParties();
   return (
@@ -24,7 +22,7 @@ export default async function Page() {
     />
   );
 }
-async function getParties(): Promise<Party[]> {
+async function getParties(): Promise<DisplayParty[]> {
   // Fetch data from external API
   const supabase = createClient();
   const { data: parties } = await supabase.from("party").select("*");
@@ -33,9 +31,7 @@ async function getParties(): Promise<Party[]> {
     return [];
   }
 
-  const buildIds = parties
-    .flatMap((party) => [party.leader, party.second, party.third])
-    .filter(Boolean);
+  const buildIds = parties.flatMap((party) => party.builds).filter(Boolean);
 
   const { data: builds } = await supabase
     .from("build")
@@ -51,18 +47,16 @@ async function getParties(): Promise<Party[]> {
     return partiesWithCharacters;
   }
 
-  const buildMap = new Map(builds.map((build) => [build.id, build.character]));
+  const buildMap = new Map<string, string>(
+    builds.map((build) => [build.id, build.character])
+  );
 
   const partiesWithCharacters = parties.map(
     (party) =>
       ({
         ...party,
-        characters: [
-          buildMap.get(party.leader),
-          buildMap.get(party.second),
-          buildMap.get(party.third),
-        ].filter(Boolean),
-      } as Party)
+        characters: party.builds.map((id: string) => buildMap.get(id)),
+      } as DisplayParty)
   );
 
   return partiesWithCharacters;

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { Party } from "./page";
+import { DisplayParty } from "./page";
 import Image from "next/image";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
@@ -8,9 +8,9 @@ import { revalidatePath } from "next/cache";
 
 export default function DeleteMenu(props: {
   setDeleteMenu: Dispatch<SetStateAction<boolean>>;
-  deleteAction: (parties: Party[]) => Promise<void>;
-  getSelected: () => Party[];
-  setSelected: Dispatch<SetStateAction<Party[]>>;
+  deleteAction: (parties: DisplayParty[]) => Promise<void>;
+  getSelected: () => DisplayParty[];
+  setSelected: Dispatch<SetStateAction<DisplayParty[]>>;
 }) {
   const selected = props.getSelected();
   const { setDeleteMenu, setSelected } = props;

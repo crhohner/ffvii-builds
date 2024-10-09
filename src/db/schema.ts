@@ -77,8 +77,5 @@ export const Party = pgTable("party", {
   game: Game("game").notNull(),
   name: text("name").notNull(),
   description: text("description"),
-  leader: uuid("leader")
-    .references(() => Build.id),
-  second: uuid("second").references(() => Build.id),
-  third: uuid("third").references(() => Build.id),
+  builds: uuid("builds").array().notNull(),
 });

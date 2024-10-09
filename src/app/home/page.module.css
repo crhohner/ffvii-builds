@@ -31,7 +31,6 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--secondary-text-color);
 }
 
 .toolbar {

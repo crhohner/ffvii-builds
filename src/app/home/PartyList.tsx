@@ -11,7 +11,7 @@ import {
 } from "@/utils/util";
 import { useState } from "react";
 import Image from "next/image";
-import { Character, Party, Game } from "./page";
+import { Character, DisplayParty, Game } from "./page";
 import NewMenu from "./NewMenu";
 import DeleteMenu from "./DeleteMenu";
 import Link from "next/link";
@@ -19,23 +19,24 @@ import Link from "next/link";
 export type TagProps = { field: string; value: string };
 
 export default function PartyList(props: {
-  parties: Party[];
-  deleteAction: (parties: Party[]) => Promise<void>;
-  addAction: (args: { name: string; game: string }) => Promise<Party>;
+  parties: DisplayParty[];
+  deleteAction: (parties: DisplayParty[]) => Promise<void>;
+  addAction: (args: { name: string; game: string }) => Promise<DisplayParty>;
 }) {
   const { parties } = props;
   const path = usePathname();
 
-  const [selected, setSelected] = useState<Party[]>([]);
+  const [selected, setSelected] = useState<DisplayParty[]>([]);
   const [tags, setTags] = useState<TagProps[]>([]);
   const [filterMenu, setFilterMenu] = useState(false);
-  const [displayedParties, setDisplayedParties] = useState<Party[]>(parties);
+  const [displayedParties, setDisplayedParties] =
+    useState<DisplayParty[]>(parties);
 
   const [deleteMenu, setDeleteMenu] = useState(false);
   const [newMenu, setNewMenu] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
 
-  function getSelected(): Party[] {
+  function getSelected(): DisplayParty[] {
     return selected;
   }
 
@@ -215,7 +216,7 @@ export default function PartyList(props: {
     );
   }
 
-  function Card(props: { party: Party }) {
+  function Card(props: { party: DisplayParty }) {
     const { party } = props;
 
     return (

@@ -1,10 +1,4 @@
-export type Json =
-  | string
-  | number
-  | boolean
-  | null
-  | { [key: string]: Json | undefined }
-  | Json[]
+
 
 export type Database = {
   public: {
@@ -143,78 +137,30 @@ export type Database = {
       }
       party: {
         Row: {
+          builds: string[]
           description: string | null
           game: Database["public"]["Enums"]["game"]
           id: string
-          leader: string | null
           name: string
-          second: string | null
-          third: string | null
           user_id: string
         }
         Insert: {
+          builds: string[]
           description?: string | null
           game: Database["public"]["Enums"]["game"]
           id?: string
-          leader?: string | null
           name: string
-          second?: string | null
-          third?: string | null
           user_id: string
         }
         Update: {
+          builds?: string[]
           description?: string | null
           game?: Database["public"]["Enums"]["game"]
           id?: string
-          leader?: string | null
           name?: string
-          second?: string | null
-          third?: string | null
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "fk_leader"
-            columns: ["leader"]
-            isOneToOne: false
-            referencedRelation: "build"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_second"
-            columns: ["second"]
-            isOneToOne: false
-            referencedRelation: "build"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_third"
-            columns: ["third"]
-            isOneToOne: false
-            referencedRelation: "build"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "party_leader_build_id_fk"
-            columns: ["leader"]
-            isOneToOne: false
-            referencedRelation: "build"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "party_second_build_id_fk"
-            columns: ["second"]
-            isOneToOne: false
-            referencedRelation: "build"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "party_third_build_id_fk"
-            columns: ["third"]
-            isOneToOne: false
-            referencedRelation: "build"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "party_user_fkey"
             columns: ["user_id"]

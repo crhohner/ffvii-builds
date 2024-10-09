@@ -1,13 +1,13 @@
 import { allGames, gameDisplayString } from "@/utils/util";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
-import { Party } from "./page";
+import { DisplayParty } from "./page";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
 
 export default function NewMenu(props: {
   setNewMenu: Dispatch<SetStateAction<boolean>>;
-  addAction: (args: { name: string; game: string }) => Promise<Party>;
+  addAction: (args: { name: string; game: string }) => Promise<DisplayParty>;
 }) {
   const [newPartyName, setNewPartyName] = useState("");
   const [newPartyGame, setNewPartyGame] = useState("og");

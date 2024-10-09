@@ -1,9 +1,9 @@
 
 import { createClient } from "@/utils/supabase/server";
-import { Party } from "./page";
+import { DisplayParty } from "./page";
 import { revalidatePath } from "next/cache";
 
-export async function deleteParties(parties: Party[]): Promise<void> {
+export async function deleteParties(parties: DisplayParty[]): Promise<void> {
   "use server"
   const supabase = await createClient();
 
@@ -14,20 +14,20 @@ export async function deleteParties(parties: Party[]): Promise<void> {
   }
 
   const buildIds = parties
-    .flatMap((party) => [party.leader, party.second, party.third])
-    .filter(Boolean);
+    .flatMap((party) => party.builds);
 
+  var err = false;
   for(const id of buildIds) {
     const {error} = await supabase.from("build").delete().eq("id", id);
-    if(error) throw error;
+    if(error) {throw error; err = true;}
   }
-  revalidatePath("/home");
+  if(!err)revalidatePath("/home"); //too fast..
 
 }
 
 
 export async function addParty(args: {name:string, game: string}): 
-  Promise<Party> {
+  Promise<DisplayParty> {
   "use server"
   const {name, game} = args;
   const supabase = await createClient();
@@ -38,13 +38,14 @@ export async function addParty(args: {name:string, game: string}):
     description: "",
     name,
     game,
-    user_id
+    user_id,
+    builds: [],
   }).select();
-  if(error) throw error;
-
-  const party = {...data[0], characters: []} as Party;
-  revalidatePath("/home");
-  return party;
+  if(error) {throw error} else {
+    const party = {...data[0], characters: []} as DisplayParty;
+    revalidatePath("/home"); //too fast
+    return party;
+  }
 
 }
 

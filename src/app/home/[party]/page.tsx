@@ -11,7 +11,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
 import { Database } from "@/utils/supabase/types";
-import PartyView from "./PartyView";
 
 interface Params {
   params: {
