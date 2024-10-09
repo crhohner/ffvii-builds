@@ -11,6 +11,8 @@
 import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
 import { Database } from "@/utils/supabase/types";
+import { Game } from "../page";
+import { EventEmitterReferencingAsyncResource } from "events";
 
 interface Params {
   params: {
@@ -20,7 +22,8 @@ interface Params {
 export type Materia = Database["public"]["Tables"]["materia"];
 export type Accessory = Database["public"]["Tables"]["accessory"]["Row"];
 
-export type Build = {
+export type DisplayBuild = {
+  game: Game;
   accessory: Accessory | null;
   armor_materia: Materia[];
   armor_name: string | null;
@@ -31,44 +34,85 @@ export type Build = {
   weapon_materia: Materia[];
   weapon_name: string | null;
   weapon_schema: Database["public"]["Enums"]["slot_type"][];
-}; //nope needs a better definition
+};
 
 export default async function Page({ params }: Params) {
   const { party: id } = params;
   const supabase = createClient();
-  const getAllParties = cache(async () => {
+  const getParty = cache(async () => {
     const item = await supabase.from("party").select("*").eq("id", id);
     return item;
   });
-
-  const parties = await getAllParties();
-  const party: Database["public"]["Tables"]["party"]["Row"] = parties.data![0];
-
-  const getGameMateria = cache(async () => {
-    const item = await supabase
-      .from("materia")
-      .select("*")
-      .eq("game", party.game);
-    return item;
-  });
-
-  const materia: Materia[] = (await getGameMateria()).data as Materia[];
 
   const getGameAccessories = cache(async () => {
     const item = await supabase
       .from("accessory")
       .select("*")
-      .eq("game", party.game);
+      .contains("games", [party.game]);
     return item;
   });
 
-  const accesories: Accessory[] = (await getGameAccessories())
-    .data as Accessory[];
+  const getGameMateria = cache(async () => {
+    const item = await supabase
+      .from("materia")
+      .select("*")
+      .contains("games", [party.game]);
+    return item;
+  });
 
-  //TODO
-  //refactor builds to be listed, not 1,2,3
-  //construct builds by mapping
-  //pass all in to client component
+  const getBuilds = cache(async () => {
+    const builds = await supabase
+      .from("build")
+      .select("*")
+      .in("id", party.builds);
+    return builds;
+  });
 
-  return <></>;
+  const response = await getParty();
+  const party: Database["public"]["Tables"]["party"]["Row"] = response.data![0];
+
+  const { error, data: accs } = await getGameAccessories();
+  const allAccessories = new Map<string, Accessory>(
+    accs!.map((a) => [a.id, a])
+  );
+  if (error) console.log(error);
+
+  const { data: mats } = await getGameMateria();
+  const allMateria = new Map<string, Materia>(mats!.map((m) => [m.id, m]));
+
+  const { data: blds } = await getBuilds();
+
+  function displayBuild(
+    build: Database["public"]["Tables"]["build"]["Row"]
+  ): DisplayBuild {
+    const accessory = build.accessory
+      ? (allAccessories.get(build.accessory) as Accessory)
+      : null;
+    const armor_materia = build.armor_materia.map((id) =>
+      allMateria.get(id)
+    ) as Materia[];
+    const weapon_materia = build.weapon_materia.map((id) =>
+      allMateria.get(id)
+    ) as Materia[];
+    const summon_materia = build.summon_materia
+      ? (allMateria.get(build.summon_materia) as Materia)
+      : null;
+    return {
+      game: build.game,
+      armor_materia,
+      weapon_materia,
+      accessory,
+      character: build.character,
+      id: build.id,
+      weapon_schema: build.weapon_schema,
+      armor_schema: build.armor_schema,
+      weapon_name: build.weapon_name,
+      armor_name: build.armor_name,
+      summon_materia,
+    };
+  }
+
+  const builds = blds?.map(displayBuild);
+
+  return <>{JSON.stringify(builds)}</>;
 }

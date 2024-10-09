@@ -37,6 +37,7 @@ export type Database = {
           weapon_materia: string[]
           weapon_name: string | null
           weapon_schema: Database["public"]["Enums"]["slot_type"][]
+          game: Database["public"]["Enums"]["game"]
         }
         Insert: {
           accessory?: string | null
@@ -50,6 +51,7 @@ export type Database = {
           weapon_materia: string[]
           weapon_name?: string | null
           weapon_schema: Database["public"]["Enums"]["slot_type"][]
+          game: Database["public"]["Enums"]["game"]
         }
         Update: {
           accessory?: string | null
@@ -63,6 +65,7 @@ export type Database = {
           weapon_materia?: string[]
           weapon_name?: string | null
           weapon_schema?: Database["public"]["Enums"]["slot_type"][]
+          game: Database["public"]["Enums"]["game"]
         }
         Relationships: [
           {

@@ -120,6 +120,13 @@
       "when": 1728443461258,
       "tag": "20241009031101_steep_giant_man",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1728446013379,
+      "tag": "20241009035333_clammy_squirrel_girl",
+      "breakpoints": true
     }
   ]
 }

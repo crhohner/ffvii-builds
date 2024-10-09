@@ -66,6 +66,7 @@ export const Build = pgTable("build", {
   summonMateria: text("summon_materia"),
   weaponSchema: SlotType("weapon_schema").array().notNull(),
   armorSchema: SlotType("armor_schema").array().notNull(),
+  game: Game("game").notNull(),
 });
 
 export const Party = pgTable("party", {
