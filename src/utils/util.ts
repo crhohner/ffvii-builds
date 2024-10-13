@@ -20,9 +20,9 @@ export function gameDisplayString(
 }
 
 export function characterDisplayString(
-  game: Database["public"]["Enums"]["character"]
+  character: Database["public"]["Enums"]["character"]
 ): string {
-  switch (game) {
+  switch (character) {
     case "cloud": {
       return "Cloud";
     }

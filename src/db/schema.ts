@@ -6,6 +6,7 @@ export const MateriaType = pgEnum("materia_type", [
   "green",
   "blue",
   "purple",
+  "empty"
 ]);
 export const Game = pgEnum("game", ["og", "remake", "rebirth"]);
 export const Character = pgEnum("character", [

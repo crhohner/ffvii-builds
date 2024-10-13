@@ -192,7 +192,7 @@ export type Database = {
         | "cid"
         | "vincent"
       game: "og" | "remake" | "rebirth"
-      materia_type: "red" | "yellow" | "green" | "blue" | "purple"
+      materia_type: "red" | "yellow" | "green" | "blue" | "purple" | "empty"
       slot_type: "single" | "double"
     }
     CompositeTypes: {

@@ -19,6 +19,14 @@ body {
   background: var(--background-color);
   font-family: var(--body-font);
   font-size: var(--body-size);
+
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
 }
 
 a {
@@ -93,6 +101,17 @@ input {
   border-style: solid;
   font: inherit;
   max-width: fit-content;
+}
+
+textarea {
+  color: var(--body-text-color);
+  border-radius: 10px;
+  padding: 4px var(--body-size);
+  background: none;
+  border-color: white;
+  border-width: 2px;
+  border-style: solid;
+  font: inherit;
 }
 
 select {

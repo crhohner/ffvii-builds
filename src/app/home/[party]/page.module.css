@@ -1,0 +1,46 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  padding: var(--h-size) var(--h-size);
+  border-color: white;
+  border-width: 2px;
+  border-style: solid;
+  font: inherit;
+  background: var(--background-color);
+  width: 100;
+  gap: 0.5rem;
+  height: 10rem;
+}
+
+.property {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.orb {
+  position: absolute;
+  z-index: 10;
+}
+
+.context {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  padding: 1rem;
+  border-color: white;
+  border-width: 2px;
+  border-style: solid;
+  font: inherit;
+  background: var(--background-color);
+  width: 100;
+  gap: 0.5rem;
+}
+
+.dragged {
+  left: 0;
+  position: "absolute";
+  z-index: 10;
+}

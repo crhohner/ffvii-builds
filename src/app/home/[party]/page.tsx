@@ -13,13 +13,14 @@ import { cache } from "react";
 import { Database } from "@/utils/supabase/types";
 import { Game } from "../page";
 import { EventEmitterReferencingAsyncResource } from "events";
+import PartyDisplay from "./PartyDisplay";
 
 interface Params {
   params: {
     party: string;
   };
 }
-export type Materia = Database["public"]["Tables"]["materia"];
+export type Materia = Database["public"]["Tables"]["materia"]["Row"];
 export type Accessory = Database["public"]["Tables"]["accessory"]["Row"];
 
 export type DisplayBuild = {
@@ -80,6 +81,20 @@ export default async function Page({ params }: Params) {
   const { data: mats } = await getGameMateria();
   const allMateria = new Map<string, Materia>(mats!.map((m) => [m.id, m]));
 
+  const blues: string[] | undefined = mats
+    ?.filter((m: Materia) => m.materia_type == "blue")
+    .map((m) => m.id);
+
+  const getLinks = cache(async () => {
+    const links = await supabase
+      .from("materia_link")
+      .select("*")
+      .in("blue_id", blues!);
+    return links;
+  });
+
+  const { data: links } = await getLinks();
+
   const { data: blds } = await getBuilds();
 
   function displayBuild(
@@ -114,5 +129,13 @@ export default async function Page({ params }: Params) {
 
   const builds = blds?.map(displayBuild);
 
-  return <>{JSON.stringify(builds)}</>;
+  return (
+    <PartyDisplay
+      builds={builds || null}
+      allAccessories={allAccessories}
+      allMateria={allMateria}
+      party={party}
+      links={links!}
+    />
+  );
 }

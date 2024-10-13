@@ -10,13 +10,15 @@ export default function Home() {
   return (
     <div className="center">
       <div
+        className="container"
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          padding: "3rem",
         }}
       >
-        <h1 style={{ fontSize: "42px" }}>Savepoint</h1>
+        <h1 style={{ fontSize: "38px" }}>Savepoint</h1>
         <h3>{"A build management system for"}</h3>
         <h3>{"Final Fantasy VII"}</h3>
         <br />
