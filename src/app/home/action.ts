@@ -16,7 +16,7 @@ export async function deleteParties(parties: DisplayParty[]): Promise<void> {
   const buildIds = parties
     .flatMap((party) => party.builds);
 
-  var err = false;
+  let err = false;
   for(const id of buildIds) {
     const {error} = await supabase.from("build").delete().eq("id", id);
     if(error) {throw error; err = true;}

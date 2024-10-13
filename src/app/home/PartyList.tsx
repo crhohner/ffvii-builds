@@ -40,7 +40,7 @@ export default function PartyList(props: {
   }
 
   function updateDisplayedParties(tags: TagProps[], searchInput: string) {
-    var displayed = [...parties];
+    let displayed = [...parties];
 
     tags.forEach(({ field, value }) => {
       if (field == "game") {
@@ -110,13 +110,16 @@ export default function PartyList(props: {
     );
   }
 
-  function FilterRadio(props: {
+  function FilterRadio({
+    display,
+    field,
+    value,
+  }: {
     field: string;
     value: string;
     display: string;
   }) {
-    const { display } = props;
-    const tag = { field: props.field, value: props.value };
+    const tag = { field: field, value: value };
     return (
       <div style={{ display: "flex", alignItems: "center", gap: ".6rem" }}>
         {display}
@@ -215,9 +218,7 @@ export default function PartyList(props: {
     );
   }
 
-  function Card(props: { party: DisplayParty }) {
-    const { party } = props;
-
+  function Card({ party }: { party: DisplayParty }) {
     return (
       <div className={styles["card"]}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>

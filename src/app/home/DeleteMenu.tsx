@@ -6,19 +6,24 @@ import Error from "@/components/Error";
 import { TagProps } from "./PartyList";
 import { revalidatePath } from "next/cache";
 
-export default function DeleteMenu(props: {
+export default function DeleteMenu({
+  setDeleteMenu,
+  setSelected,
+  getSelected,
+  deleteAction,
+}: {
   setDeleteMenu: Dispatch<SetStateAction<boolean>>;
   deleteAction: (parties: DisplayParty[]) => Promise<void>;
   getSelected: () => DisplayParty[];
   setSelected: Dispatch<SetStateAction<DisplayParty[]>>;
 }) {
-  const selected = props.getSelected();
-  const { setDeleteMenu, setSelected } = props;
+  const selected = getSelected();
+
   const [error, setError] = useState<string | null>(null);
 
   const handleDelete = async () => {
     try {
-      await props.deleteAction(selected);
+      await deleteAction(selected);
     } catch (error) {
       setError((error as PostgresError).message);
       return;

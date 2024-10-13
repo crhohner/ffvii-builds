@@ -5,14 +5,16 @@ import { DisplayParty } from "./page";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
 
-export default function NewMenu(props: {
+export default function NewMenu({
+  setNewMenu,
+  addAction,
+}: {
   setNewMenu: Dispatch<SetStateAction<boolean>>;
   addAction: (args: { name: string; game: string }) => Promise<DisplayParty>;
 }) {
   const [newPartyName, setNewPartyName] = useState("");
   const [newPartyGame, setNewPartyGame] = useState("og");
   const [error, setError] = useState<string | null>(null);
-  const { setNewMenu, addAction } = props;
 
   const handleNew = async (args: { name: string; game: string }) => {
     try {
