@@ -11,10 +11,9 @@ export default function ViewParty(props: {
   party: Database["public"]["Tables"]["party"]["Row"];
   builds: DisplayBuild[] | null;
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
-  updateAction: (
-    oldParty: Database["public"]["Tables"]["party"]["Row"],
-    newParty: Database["public"]["Tables"]["party"]["Row"]
-  ) => Promise<void>;
+  updateAction: (args: {
+    newParty: Database["public"]["Tables"]["party"]["Row"];
+  }) => Promise<void>;
 }) {
   const { party, builds, links, updateAction: insertAction } = props;
 
@@ -60,7 +59,7 @@ export default function ViewParty(props: {
           setEdit={setEdit}
           builds={builds!}
           links={links}
-          insertAction={insertAction}
+          updateAction={props.updateAction}
         />
       ) : (
         <View />

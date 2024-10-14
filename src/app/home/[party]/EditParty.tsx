@@ -8,22 +8,21 @@ export default function EditParty({
   setEdit,
   builds,
   links,
-  insertAction,
+  updateAction,
 }: {
   party: Database["public"]["Tables"]["party"]["Row"];
   setEdit: Dispatch<SetStateAction<boolean>>;
   builds: DisplayBuild[];
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
-  insertAction: (
-    oldParty: Database["public"]["Tables"]["party"]["Row"],
-    newParty: Database["public"]["Tables"]["party"]["Row"]
-  ) => Promise<void>;
+  updateAction: (args: {
+    newParty: Database["public"]["Tables"]["party"]["Row"];
+  }) => Promise<void>;
 }) {
   const [editedName, setEditedName] = useState(party.name);
   const [editedDescription, setEditedDescription] = useState(party.description);
   const [editedBuilds, setEditedBuilds] = useState(party.builds);
 
-  function handleArrow(up: boolean, index: number) {
+  function handleArrow(index: number) {
     setEditedBuilds((editedBuilds) => {
       let builds = [...editedBuilds];
 
@@ -36,12 +35,16 @@ export default function EditParty({
   }
 
   function handleSave() {
-    //hmm what am i doing here
+    const newParty: Database["public"]["Tables"]["party"]["Row"] = {
+      name: editedName,
+      builds: editedBuilds,
+      description: editedDescription,
+      id: party.id,
+      user_id: party.user_id,
+      game: party.game,
+    };
+    updateAction({ newParty });
     setEdit(false);
-  }
-
-  function deleteBuild(id: string) {
-    setEditedBuilds((builds) => builds.filter((buildId) => buildId != id));
   }
 
   return (
@@ -76,14 +79,13 @@ export default function EditParty({
                 leader={index === 0}
                 links={links}
                 edit={true}
-                deleteHandler={deleteBuild}
               />
               {index !== editedBuilds.length - 1 && (
                 <div
                   className="center"
                   style={{ gap: "1rem", paddingTop: "1rem" }}
                 >
-                  <button onClick={() => handleArrow(false, index)}>↓ ↑</button>
+                  <button onClick={() => handleArrow(index)}>↓ ↑</button>
                 </div>
               )}
             </div>

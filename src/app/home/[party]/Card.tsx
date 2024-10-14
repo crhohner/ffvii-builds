@@ -11,13 +11,11 @@ export default function Card({
   leader,
   edit,
   links,
-  deleteHandler,
 }: {
   build: DisplayBuild;
   leader: boolean;
   edit: boolean;
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
-  deleteHandler?: (id: string) => void;
 }) {
   return (
     <div className={styles.card}>
@@ -60,14 +58,6 @@ export default function Card({
           slots={build.armor_schema}
           links={links}
         />
-        {edit && (
-          <button
-            style={{ color: "var(--error-color)" }}
-            onClick={() => deleteHandler!(build.id)}
-          >
-            delete
-          </button>
-        )}
       </div>
     </div>
   );
