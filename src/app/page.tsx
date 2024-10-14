@@ -3,9 +3,11 @@
 import { Canvas } from "@react-three/fiber";
 import { Model } from "@/components/Model";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Home() {
   const router = useRouter();
+  const supabase = createClient();
 
   return (
     <div className="center">

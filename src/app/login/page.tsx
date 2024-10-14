@@ -24,7 +24,7 @@ export default function Login() {
     if (error) {
       setError(error.message || "An unexpected error occured.");
     } else {
-      router.push("/");
+      router.push("/home");
       router.refresh();
     }
   }

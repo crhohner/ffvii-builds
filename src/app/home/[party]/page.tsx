@@ -12,8 +12,8 @@ import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
 import { Database } from "@/utils/supabase/types";
 import { Game } from "../page";
-import { EventEmitterReferencingAsyncResource } from "events";
-import PartyDisplay from "./PartyDisplay";
+import ViewParty from "./ViewParty";
+import { updateParty } from "./action";
 
 interface Params {
   params: {
@@ -130,12 +130,11 @@ export default async function Page({ params }: Params) {
   const builds = blds?.map(displayBuild);
 
   return (
-    <PartyDisplay
+    <ViewParty
       builds={builds || null}
-      allAccessories={allAccessories}
-      allMateria={allMateria}
       party={party}
       links={links!}
+      updateAction={updateParty}
     />
   );
 }
