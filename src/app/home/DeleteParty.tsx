@@ -6,7 +6,7 @@ import Error from "@/components/Error";
 import { TagProps } from "./PartyList";
 import { revalidatePath } from "next/cache";
 
-export default function DeleteMenu({
+export default function DeleteParty({
   setDeleteMenu,
   setSelected,
   getSelected,
@@ -51,7 +51,7 @@ export default function DeleteMenu({
           </h2>
           <Image
             onClick={() => setDeleteMenu(false)}
-            src="esc.svg"
+            src="/esc.svg"
             height={20}
             width={20}
             alt=""

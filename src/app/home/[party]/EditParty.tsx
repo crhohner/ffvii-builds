@@ -2,6 +2,8 @@ import { Database } from "@/utils/supabase/types";
 import { Dispatch, SetStateAction, useState } from "react";
 import { DisplayBuild } from "./page";
 import Card from "./Card";
+import { PostgresError } from "postgres";
+import Error from "@/components/Error";
 
 export default function EditParty({
   party,
@@ -21,6 +23,7 @@ export default function EditParty({
   const [editedName, setEditedName] = useState(party.name);
   const [editedDescription, setEditedDescription] = useState(party.description);
   const [editedBuilds, setEditedBuilds] = useState(party.builds);
+  const [error, setError] = useState<string | null>(null);
 
   function handleArrow(index: number) {
     setEditedBuilds((editedBuilds) => {
@@ -34,7 +37,7 @@ export default function EditParty({
     });
   }
 
-  function handleSave() {
+  const handleSave = async () => {
     const newParty: Database["public"]["Tables"]["party"]["Row"] = {
       name: editedName,
       builds: editedBuilds,
@@ -43,13 +46,19 @@ export default function EditParty({
       user_id: party.user_id,
       game: party.game,
     };
-    updateAction({ newParty });
+    try {
+      await updateAction({ newParty });
+    } catch (error) {
+      setError((error as PostgresError).message);
+      setEdit(true);
+      return;
+    }
     setEdit(false);
-  }
+  };
 
   return (
     <div>
-      <form style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
         <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
           <input
             placeholder="name"
@@ -57,7 +66,10 @@ export default function EditParty({
             onChange={(e) => setEditedName(e.target.value)}
           />
           <button onClick={handleSave}>save</button>
+          <button onClick={() => setEdit(false)}>cancel</button>
         </div>
+        <Error error={error} />
+
         <div className="center" style={{ padding: "0 1.2rem" }}>
           <textarea
             placeholder="description"
@@ -66,7 +78,7 @@ export default function EditParty({
             onChange={(e) => setEditedDescription(e.target.value)}
           />
         </div>
-      </form>
+      </div>
       <br />
 
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -74,12 +86,7 @@ export default function EditParty({
           const build = builds?.filter((b) => b.id == id)[0]!; //ew
           return (
             <div key={index}>
-              <Card
-                build={build}
-                leader={index === 0}
-                links={links}
-                edit={true}
-              />
+              <Card build={build} leader={index === 0} links={links} />
               {index !== editedBuilds.length - 1 && (
                 <div
                   className="center"

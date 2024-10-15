@@ -6,6 +6,8 @@ import { gameDisplayString } from "@/utils/util";
 import { useState } from "react";
 import EditParty from "./EditParty";
 import Card from "./Card";
+import NewBuild from "./NewBuild";
+import { addBuild } from "./action";
 
 export default function ViewParty(props: {
   party: Database["public"]["Tables"]["party"]["Row"];
@@ -14,10 +16,15 @@ export default function ViewParty(props: {
   updateAction: (args: {
     newParty: Database["public"]["Tables"]["party"]["Row"];
   }) => Promise<void>;
+  addBuildAction: (args: {
+    character: string;
+    party: Database["public"]["Tables"]["party"]["Row"];
+  }) => Promise<void>;
 }) {
-  const { party, builds, links, updateAction: insertAction } = props;
+  const { party, builds, links, updateAction, addBuildAction } = props;
 
   const [edit, setEdit] = useState(false);
+  const [newBuildMenu, setNewBuildMenu] = useState(false);
 
   function View() {
     return (
@@ -38,14 +45,14 @@ export default function ViewParty(props: {
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {builds?.map((build, index) => (
             <div key={index}>
-              <Card
-                build={build}
-                leader={index === 0}
-                edit={false}
-                links={links}
-              />
+              <Card build={build} leader={index === 0} links={links} />
             </div>
           ))}
+          {builds!.length < 3 && (
+            <div className="center">
+              <button onClick={() => setNewBuildMenu(true)}>new build</button>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -59,10 +66,18 @@ export default function ViewParty(props: {
           setEdit={setEdit}
           builds={builds!}
           links={links}
-          updateAction={props.updateAction}
+          updateAction={updateAction}
         />
       ) : (
         <View />
+      )}
+      {newBuildMenu && (
+        <NewBuild
+          setNewMenu={setNewBuildMenu}
+          party={party}
+          addAction={addBuildAction}
+          characters={builds?.map((b) => b.character)!}
+        />
       )}
     </>
   );

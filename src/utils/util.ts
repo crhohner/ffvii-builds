@@ -73,6 +73,18 @@ export const allGames: Database["public"]["Enums"]["game"][] = [
   "og",
 ];
 
+export const nullId = "00000000-0000-0000-0000-000000000000";
+
 //whats the game plan for making new parties?
 
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms)); //LMAO
+
+export function validCharacters(game: Database["public"]["Enums"]["game"]) : Database["public"]["Enums"]["character"][]{
+  if(game === "og") {
+    return allChars;
+  }
+ else if (game === "remake") {
+  return allChars.slice(0,4);
+ }
+ else return allChars.slice(0,7);
+}

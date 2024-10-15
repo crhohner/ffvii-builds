@@ -1,27 +1,30 @@
 import { allGames, gameDisplayString } from "@/utils/util";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
-import { DisplayParty } from "./page";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
 
-export default function NewMenu({
+export default function NewParty({
   setNewMenu,
   addAction,
 }: {
   setNewMenu: Dispatch<SetStateAction<boolean>>;
-  addAction: (args: { name: string; game: string }) => Promise<DisplayParty>;
+  addAction: (args: { name: string; game: string }) => Promise<void>;
 }) {
   const [newPartyName, setNewPartyName] = useState("");
   const [newPartyGame, setNewPartyGame] = useState("og");
   const [error, setError] = useState<string | null>(null);
 
   const handleNew = async (args: { name: string; game: string }) => {
+    if (args.name === "") {
+      setError("Party name cannot be empty!");
+      return;
+    }
     try {
-      const party = await addAction(args); //not returning value
+      await addAction(args);
     } catch (error) {
       setError((error as PostgresError).message);
-      return;
+      return; //ask ibi how to handle page props in a refreshy way.. or anirudh?
     }
     setNewMenu(false);
   };
@@ -40,14 +43,14 @@ export default function NewMenu({
           <h2>New Party</h2>
           <Image
             onClick={() => setNewMenu(false)}
-            src="esc.svg"
+            src="/esc.svg"
             height={20}
             width={20}
             alt=""
           />
         </div>
         <br />
-        <form className="form">
+        <div className="form">
           <label>name:</label>
           <input
             type="text"
@@ -81,7 +84,7 @@ export default function NewMenu({
           <div className="center">
             <Error error={error} />
           </div>
-        </form>
+        </div>
       </div>
     </>
   );

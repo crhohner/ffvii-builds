@@ -13,7 +13,7 @@ import { cache } from "react";
 import { Database } from "@/utils/supabase/types";
 import { Game } from "../page";
 import ViewParty from "./ViewParty";
-import { updateParty } from "./action";
+import { addBuild, updateParty } from "./action";
 
 interface Params {
   params: {
@@ -95,7 +95,10 @@ export default async function Page({ params }: Params) {
 
   const { data: links } = await getLinks();
 
-  const { data: blds } = await getBuilds();
+  const { data: blds } = await getBuilds(); //will sort the party order by table order
+  const bldMap = new Map<string, Database["public"]["Tables"]["build"]["Row"]>(
+    blds!.map((b) => [b.id, b])
+  );
 
   function displayBuild(
     build: Database["public"]["Tables"]["build"]["Row"]
@@ -127,7 +130,7 @@ export default async function Page({ params }: Params) {
     };
   }
 
-  const builds = blds?.map(displayBuild);
+  const builds = party.builds.map((id) => displayBuild(bldMap.get(id)!)); //fixes party order
 
   return (
     <ViewParty
@@ -135,6 +138,7 @@ export default async function Page({ params }: Params) {
       party={party}
       links={links!}
       updateAction={updateParty}
+      addBuildAction={addBuild}
     />
   );
 }

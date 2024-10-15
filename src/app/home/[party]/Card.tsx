@@ -9,23 +9,33 @@ import { Database } from "@/utils/supabase/types";
 export default function Card({
   build,
   leader,
-  edit,
-  links,
+  links, //maybe we bring back edit parameter..
 }: {
   build: DisplayBuild;
   leader: boolean;
-  edit: boolean;
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
 }) {
   return (
     <div className={styles.card}>
-      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-        <h1>{characterDisplayString(build.character as Character)}</h1>
-        {leader && (
-          <div style={{ paddingBottom: "4px" }}>
-            <Image src="/crown.svg" height={18} width={18} alt="crown" />
-          </div>
-        )}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
+      >
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          <h1>{characterDisplayString(build.character as Character)}</h1>
+          {leader && (
+            <div style={{ paddingBottom: "4px" }}>
+              <Image src="/crown.svg" height={18} width={18} alt="crown" />
+            </div>
+          )}
+        </div>
+        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+          {"view icon "}
+          {"trash icon"}
+        </div>
       </div>
 
       <div className={styles.property}>

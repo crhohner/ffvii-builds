@@ -11,8 +11,8 @@ import {
 import { useState } from "react";
 import Image from "next/image";
 import { Character, DisplayParty, Game } from "./page";
-import NewMenu from "./NewMenu";
-import DeleteMenu from "./DeleteMenu";
+import NewParty from "./NewParty";
+import DeleteParty from "./DeleteParty";
 import Link from "next/link";
 
 export type TagProps = { field: string; value: string };
@@ -20,7 +20,7 @@ export type TagProps = { field: string; value: string };
 export default function PartyList(props: {
   parties: DisplayParty[];
   deleteAction: (parties: DisplayParty[]) => Promise<void>;
-  addAction: (args: { name: string; game: string }) => Promise<DisplayParty>;
+  addAction: (args: { name: string; game: string }) => Promise<void>;
 }) {
   const { parties } = props;
   const path = usePathname();
@@ -180,6 +180,7 @@ export default function PartyList(props: {
               <FilterRadio
                 field={"game"}
                 value={game}
+                key={game}
                 display={gameDisplayString(game)}
               />
             ))}
@@ -198,6 +199,7 @@ export default function PartyList(props: {
               <FilterRadio
                 field={"character"}
                 value={character}
+                key={character}
                 display={characterDisplayString(character)}
               />
             ))}
@@ -284,7 +286,7 @@ export default function PartyList(props: {
       </div>
       {filterMenu && <FilterMenu />}
       {deleteMenu && (
-        <DeleteMenu
+        <DeleteParty
           setDeleteMenu={setDeleteMenu}
           getSelected={getSelected}
           deleteAction={props.deleteAction}
@@ -292,7 +294,7 @@ export default function PartyList(props: {
         />
       )}
       {newMenu && (
-        <NewMenu addAction={props.addAction} setNewMenu={setNewMenu} />
+        <NewParty addAction={props.addAction} setNewMenu={setNewMenu} />
       )}
     </>
   );
