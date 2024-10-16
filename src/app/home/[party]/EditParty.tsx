@@ -1,21 +1,24 @@
 import { Database } from "@/utils/supabase/types";
 import { Dispatch, SetStateAction, useState } from "react";
-import { DisplayBuild } from "./page";
+
 import Card from "./Card";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
 import { updateParty } from "./action";
+import { DisplayBuild, Party } from "@/utils/frontend-types";
 
 export default function EditParty({
   party,
   setEdit,
   builds,
   links,
+  fetch,
 }: {
-  party: Database["public"]["Tables"]["party"]["Row"];
+  party: Party;
   setEdit: Dispatch<SetStateAction<boolean>>;
   builds: DisplayBuild[];
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
+  fetch: () => Promise<void>;
 }) {
   const [editedName, setEditedName] = useState(party.name);
   const [editedDescription, setEditedDescription] = useState(party.description);
@@ -35,7 +38,7 @@ export default function EditParty({
   }
 
   const handleSave = async () => {
-    const newParty: Database["public"]["Tables"]["party"]["Row"] = {
+    const newParty: Party = {
       name: editedName,
       builds: editedBuilds,
       description: editedDescription,
@@ -51,6 +54,7 @@ export default function EditParty({
       return;
     }
     setEdit(false);
+    fetch();
   };
 
   return (
@@ -102,6 +106,7 @@ export default function EditParty({
                 links={links}
                 icons={false}
                 party={party}
+                fetch={fetch}
               />
               {index !== editedBuilds.length - 1 && (
                 <div

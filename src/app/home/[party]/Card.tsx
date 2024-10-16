@@ -1,14 +1,13 @@
 import { characterDisplayString } from "@/utils/util";
-import { DisplayBuild } from "./page";
+
 import styles from "./page.module.css";
 import Image from "next/image";
 import MateriaMap from "./MateriaMap";
-import { Database } from "@/utils/supabase/types";
-import { useState } from "react";
-import { PostgresError } from "postgres";
 import Error from "@/components/Error";
-import { deleteBuild } from "./action";
-import { Character } from "../page";
+
+import { Character, DisplayBuild, Link, Party } from "@/utils/frontend-types";
+import { useState } from "react";
+import DeleteBuild from "./DeleteBuild";
 
 export default function Card({
   build,
@@ -16,23 +15,16 @@ export default function Card({
   links,
   icons,
   party,
+  fetch,
 }: {
   build: DisplayBuild;
   leader: boolean;
-  links: Database["public"]["Tables"]["materia_link"]["Row"][];
+  links: Link[];
   icons: boolean;
-  party: Database["public"]["Tables"]["party"]["Row"];
+  party: Party;
+  fetch: () => Promise<void>;
 }) {
-  const [error, setError] = useState<string | null>(null);
-
-  const handleDelete = async () => {
-    try {
-      await deleteBuild({ id: build.id, party: party });
-    } catch (error) {
-      setError((error as PostgresError).message);
-    }
-  };
-
+  const [deleteMenu, setDeleteMenu] = useState(false);
   return (
     <div className={styles.card}>
       <div
@@ -52,7 +44,7 @@ export default function Card({
         </div>
         {icons && (
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-            <button className="icon" onClick={handleDelete}>
+            <button className="icon" onClick={() => setDeleteMenu(true)}>
               <Image
                 src="/delete.svg"
                 height={24}
@@ -98,7 +90,14 @@ export default function Card({
           links={links}
         />
       </div>
-      <Error error={error} />
+      {deleteMenu && (
+        <DeleteBuild
+          party={party}
+          build={build}
+          setDeleteMenu={setDeleteMenu}
+          fetch={fetch}
+        />
+      )}
     </div>
   );
 }

@@ -1,8 +1,6 @@
   "use server"
+import { DisplayParty } from "@/utils/frontend-types";
 import { createClient } from "@/utils/supabase/server";
-import { revalidatePath } from "next/cache";
-import { DisplayParty } from "./page";
-
 
 export async function deleteParties(parties: DisplayParty[]): Promise<void> {
 

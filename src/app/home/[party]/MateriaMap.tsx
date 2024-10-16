@@ -1,5 +1,5 @@
 import { Database } from "@/utils/supabase/types";
-import { Materia } from "./page";
+import { Materia } from "./fetch";
 import Image from "next/image";
 import styles from "./page.module.css";
 import { useState } from "react";

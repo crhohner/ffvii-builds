@@ -15,7 +15,7 @@ export default function Header(props: HeaderProps) {
     </Link>,
   ];
   if (props.user) {
-    links.push(
+    links.unshift(
       <Link href="/home" key="home">
         Home
       </Link>

@@ -1,10 +1,11 @@
 //search as shown in UI step => also implement breadcrumbs while working on this?
 "use server";
+import { DisplayParty } from "@/utils/frontend-types";
 import { createClient } from "@/utils/supabase/server";
-import { DisplayParty } from "./page";
 
 
-export const fetchProps : () => Promise<DisplayParty[]> = async () =>  {
+
+export const fetchServerProps : () => Promise<DisplayParty[]> = async () =>  {
 
   // Fetch data from external API
   const supabase = createClient();

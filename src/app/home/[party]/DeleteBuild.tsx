@@ -3,35 +3,30 @@ import { Dispatch, SetStateAction, useState } from "react";
 import Image from "next/image";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
-import { deleteParties } from "./action";
-import { DisplayParty } from "@/utils/frontend-types";
+import { DisplayBuild, Party } from "@/utils/frontend-types";
+import { deleteBuild } from "./action";
+import { characterDisplayString } from "@/utils/util";
 
-export default function DeleteParty({
+export default function DeleteBuild({
   setDeleteMenu,
-  setSelected,
-  getSelected,
+  party,
+  build,
   fetch,
 }: {
   setDeleteMenu: Dispatch<SetStateAction<boolean>>;
-  getSelected: () => DisplayParty[];
-  setSelected: Dispatch<SetStateAction<DisplayParty[]>>;
+  party: Party;
+  build: DisplayBuild;
   fetch: () => Promise<void>;
 }) {
-  const selected = getSelected();
-
   const [error, setError] = useState<string | null>(null);
 
   const handleDelete = async () => {
     try {
-      await deleteParties(selected);
+      await deleteBuild({ id: build.id, party: party });
     } catch (error) {
       setError((error as PostgresError).message);
-      return;
     }
-
-    setSelected([]);
-    setDeleteMenu(false);
-    await fetch();
+    fetch();
   };
 
   return (
@@ -46,9 +41,11 @@ export default function DeleteParty({
           }}
         >
           <h2>
-            {selected.length > 1
-              ? "Delete " + selected.length + " parties?"
-              : "Delete " + selected[0].name + "?"}
+            {"Delete " +
+              characterDisplayString(build.character) +
+              " from " +
+              party.name +
+              "?"}
           </h2>
           <Image
             onClick={() => setDeleteMenu(false)}

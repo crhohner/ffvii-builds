@@ -13,14 +13,8 @@ import Image from "next/image";
 import NewParty from "./NewParty";
 import DeleteParty from "./DeleteParty";
 import Link from "next/link";
-import { Database } from "@/utils/supabase/types";
-import { fetchProps } from "./fetch";
-
-export type Character = Database["public"]["Enums"]["character"];
-export type Game = Database["public"]["Enums"]["game"];
-export type DisplayParty = Database["public"]["Tables"]["party"]["Row"] & {
-  characters: Character[];
-};
+import { fetchServerProps } from "./fetch";
+import { Character, DisplayParty, Game } from "@/utils/frontend-types";
 
 export type TagProps = { field: string; value: string };
 
@@ -39,7 +33,7 @@ export default function Page() {
   const [searchInput, setSearchInput] = useState<string>("");
 
   const fetchParties = async () => {
-    const response = await fetchProps();
+    const response = await fetchServerProps();
     setParties(response);
     updateDisplayedParties(tags, searchInput, response);
   };

@@ -10,11 +10,13 @@ export default function NewBuild({
   setNewMenu,
   party,
   characters,
+  fetch,
 }: {
   setNewMenu: Dispatch<SetStateAction<boolean>>;
 
   party: Database["public"]["Tables"]["party"]["Row"];
   characters: string[];
+  fetch: () => Promise<void>;
 }) {
   const [newBuildCharacter, setNewBuildCharacter] = useState("cloud");
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +36,7 @@ export default function NewBuild({
       return;
     }
     setNewMenu(false);
+    fetch();
   };
 
   return (
