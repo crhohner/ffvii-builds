@@ -7,8 +7,10 @@ import { addParty } from "./action";
 
 export default function NewParty({
   setNewMenu,
+  fetch,
 }: {
   setNewMenu: Dispatch<SetStateAction<boolean>>;
+  fetch: () => Promise<void>;
 }) {
   const [newPartyName, setNewPartyName] = useState("");
   const [newPartyGame, setNewPartyGame] = useState("og");
@@ -26,6 +28,7 @@ export default function NewParty({
       return; //ask ibi how to handle page props in a refreshy way.. or anirudh?
     }
     setNewMenu(false);
+    await fetch();
   };
 
   return (

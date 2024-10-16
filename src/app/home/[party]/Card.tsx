@@ -1,5 +1,4 @@
 import { characterDisplayString } from "@/utils/util";
-import { Character } from "../page";
 import { DisplayBuild } from "./page";
 import styles from "./page.module.css";
 import Image from "next/image";
@@ -9,6 +8,7 @@ import { useState } from "react";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
 import { deleteBuild } from "./action";
+import { Character } from "../page";
 
 export default function Card({
   build,

@@ -1,7 +1,8 @@
   "use server"
 import { createClient } from "@/utils/supabase/server";
-import { DisplayParty } from "./page";
 import { revalidatePath } from "next/cache";
+import { DisplayParty } from "./page";
+
 
 export async function deleteParties(parties: DisplayParty[]): Promise<void> {
 
@@ -18,8 +19,6 @@ export async function deleteParties(parties: DisplayParty[]): Promise<void> {
     const {error} = await supabase.from("build").delete().eq("id", id);
     if(error) {throw error; }
   }
-  revalidatePath("/home");
-
 
 }
 

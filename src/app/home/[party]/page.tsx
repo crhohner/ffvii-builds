@@ -11,7 +11,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { cache } from "react";
 import { Database } from "@/utils/supabase/types";
-import { Game } from "../page";
+import { Game } from "../fetch";
 import ViewParty from "./ViewParty";
 import { addBuild, updateParty } from "./action";
 

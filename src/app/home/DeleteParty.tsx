@@ -1,19 +1,21 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { DisplayParty } from "./page";
+
 import Image from "next/image";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
 import { deleteParties } from "./action";
+import { DisplayParty } from "./page";
 
 export default function DeleteParty({
   setDeleteMenu,
   setSelected,
   getSelected,
+  fetch,
 }: {
   setDeleteMenu: Dispatch<SetStateAction<boolean>>;
-
   getSelected: () => DisplayParty[];
   setSelected: Dispatch<SetStateAction<DisplayParty[]>>;
+  fetch: () => Promise<void>;
 }) {
   const selected = getSelected();
 
@@ -29,6 +31,7 @@ export default function DeleteParty({
 
     setSelected([]);
     setDeleteMenu(false);
+    await fetch();
   };
 
   return (
