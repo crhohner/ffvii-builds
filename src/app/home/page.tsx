@@ -236,6 +236,7 @@ export default function Page() {
       <div className={styles["card"]}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Link href={path + "/" + party.id}>{party.name}</Link>
+
           {selected.includes(party) ? (
             <Image
               src="check.svg"
@@ -245,6 +246,7 @@ export default function Page() {
               onClick={() => {
                 setSelected((selected) => selected.filter((p) => p !== party));
               }}
+              style={{ cursor: "pointer" }}
             />
           ) : (
             <div
@@ -252,6 +254,7 @@ export default function Page() {
                 setSelected((selected) => [...selected, party]);
               }}
               className={styles["circle"]}
+              style={{ cursor: "pointer" }}
             />
           )}
         </div>

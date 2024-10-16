@@ -43,19 +43,9 @@ export default function Card({
           )}
         </div>
         {icons && (
-          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-            <button className="icon" onClick={() => setDeleteMenu(true)}>
-              <Image
-                src="/delete.svg"
-                height={24}
-                width={24}
-                alt="delete icon"
-              />
-            </button>
-            <button className="icon">
-              <Image src="/edit.svg" height={24} width={24} alt="edit icon" />
-            </button>
-          </div>
+          <button className="icon" onClick={() => setDeleteMenu(true)}>
+            <Image src="/delete.svg" height={24} width={24} alt="delete icon" />
+          </button>
         )}
       </div>
 

@@ -2,14 +2,22 @@
 "use server";
 import { DisplayParty } from "@/utils/frontend-types";
 import { createClient } from "@/utils/supabase/server";
-
-
+import { cache } from "react";
 
 export const fetchServerProps : () => Promise<DisplayParty[]> = async () =>  {
 
   // Fetch data from external API
   const supabase = createClient();
-  const { data: parties } = await supabase.from("party").select("*");
+
+  const getParties = cache(async () => {
+    const data = await supabase.from("party").select("*");
+    return data
+
+  })
+  const {data: parties, error} = await getParties();
+  if(error) {
+    console.log(error) //TODO
+  }
 
   if (!parties) {
     return [];
@@ -17,10 +25,16 @@ export const fetchServerProps : () => Promise<DisplayParty[]> = async () =>  {
 
   const buildIds = parties.flatMap((party) => party.builds).filter(Boolean);
 
-  const { data: builds } = await supabase
+  const getBuilds = cache (async () => {
+    const data = await supabase
     .from("build")
     .select("*")
     .in("id", buildIds);
+    return data
+
+  })
+  const {data: builds} = await getBuilds();
+ 
 
   if (!builds) {
     const partiesWithCharacters = parties.map((party) => ({
