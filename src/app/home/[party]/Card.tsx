@@ -5,16 +5,34 @@ import styles from "./page.module.css";
 import Image from "next/image";
 import MateriaMap from "./MateriaMap";
 import { Database } from "@/utils/supabase/types";
+import { useState } from "react";
+import { PostgresError } from "postgres";
+import Error from "@/components/Error";
+import { deleteBuild } from "./action";
 
 export default function Card({
   build,
   leader,
-  links, //maybe we bring back edit parameter..
+  links,
+  icons,
+  party,
 }: {
   build: DisplayBuild;
   leader: boolean;
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
+  icons: boolean;
+  party: Database["public"]["Tables"]["party"]["Row"];
 }) {
+  const [error, setError] = useState<string | null>(null);
+
+  const handleDelete = async () => {
+    try {
+      await deleteBuild({ id: build.id, party: party });
+    } catch (error) {
+      setError((error as PostgresError).message);
+    }
+  };
+
   return (
     <div className={styles.card}>
       <div
@@ -28,14 +46,25 @@ export default function Card({
           <h1>{characterDisplayString(build.character as Character)}</h1>
           {leader && (
             <div style={{ paddingBottom: "4px" }}>
-              <Image src="/crown.svg" height={18} width={18} alt="crown" />
+              <Image src="/crown.svg" height={24} width={24} alt="crown" />
             </div>
           )}
         </div>
-        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-          {"view icon "}
-          {"trash icon"}
-        </div>
+        {icons && (
+          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+            <button className="icon" onClick={handleDelete}>
+              <Image
+                src="/delete.svg"
+                height={24}
+                width={24}
+                alt="delete icon"
+              />
+            </button>
+            <button className="icon">
+              <Image src="/edit.svg" height={24} width={24} alt="edit icon" />
+            </button>
+          </div>
+        )}
       </div>
 
       <div className={styles.property}>
@@ -69,6 +98,7 @@ export default function Card({
           links={links}
         />
       </div>
+      <Error error={error} />
     </div>
   );
 }

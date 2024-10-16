@@ -4,21 +4,18 @@ import { DisplayBuild } from "./page";
 import Card from "./Card";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
+import { updateParty } from "./action";
 
 export default function EditParty({
   party,
   setEdit,
   builds,
   links,
-  updateAction,
 }: {
   party: Database["public"]["Tables"]["party"]["Row"];
   setEdit: Dispatch<SetStateAction<boolean>>;
   builds: DisplayBuild[];
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
-  updateAction: (args: {
-    newParty: Database["public"]["Tables"]["party"]["Row"];
-  }) => Promise<void>;
 }) {
   const [editedName, setEditedName] = useState(party.name);
   const [editedDescription, setEditedDescription] = useState(party.description);
@@ -47,7 +44,7 @@ export default function EditParty({
       game: party.game,
     };
     try {
-      await updateAction({ newParty });
+      await updateParty({ newParty });
     } catch (error) {
       setError((error as PostgresError).message);
       setEdit(true);
@@ -58,8 +55,21 @@ export default function EditParty({
 
   return (
     <div>
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "1rem",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: "1rem",
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
           <input
             placeholder="name"
             value={editedName}
@@ -86,7 +96,13 @@ export default function EditParty({
           const build = builds?.filter((b) => b.id == id)[0]!; //ew
           return (
             <div key={index}>
-              <Card build={build} leader={index === 0} links={links} />
+              <Card
+                build={build}
+                leader={index === 0}
+                links={links}
+                icons={false}
+                party={party}
+              />
               {index !== editedBuilds.length - 1 && (
                 <div
                   className="center"

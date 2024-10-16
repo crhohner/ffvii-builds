@@ -13,15 +13,8 @@ export default function ViewParty(props: {
   party: Database["public"]["Tables"]["party"]["Row"];
   builds: DisplayBuild[] | null;
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
-  updateAction: (args: {
-    newParty: Database["public"]["Tables"]["party"]["Row"];
-  }) => Promise<void>;
-  addBuildAction: (args: {
-    character: string;
-    party: Database["public"]["Tables"]["party"]["Row"];
-  }) => Promise<void>;
 }) {
-  const { party, builds, links, updateAction, addBuildAction } = props;
+  const { party, builds, links } = props;
 
   const [edit, setEdit] = useState(false);
   const [newBuildMenu, setNewBuildMenu] = useState(false);
@@ -45,7 +38,13 @@ export default function ViewParty(props: {
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {builds?.map((build, index) => (
             <div key={index}>
-              <Card build={build} leader={index === 0} links={links} />
+              <Card
+                build={build}
+                leader={index === 0}
+                links={links}
+                icons
+                party={party}
+              />
             </div>
           ))}
           {builds!.length < 3 && (
@@ -66,7 +65,6 @@ export default function ViewParty(props: {
           setEdit={setEdit}
           builds={builds!}
           links={links}
-          updateAction={updateAction}
         />
       ) : (
         <View />
@@ -75,7 +73,6 @@ export default function ViewParty(props: {
         <NewBuild
           setNewMenu={setNewBuildMenu}
           party={party}
-          addAction={addBuildAction}
           characters={builds?.map((b) => b.character)!}
         />
       )}

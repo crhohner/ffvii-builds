@@ -3,17 +3,15 @@ import { DisplayParty } from "./page";
 import Image from "next/image";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
-import { TagProps } from "./PartyList";
-import { revalidatePath } from "next/cache";
+import { deleteParties } from "./action";
 
 export default function DeleteParty({
   setDeleteMenu,
   setSelected,
   getSelected,
-  deleteAction,
 }: {
   setDeleteMenu: Dispatch<SetStateAction<boolean>>;
-  deleteAction: (parties: DisplayParty[]) => Promise<void>;
+
   getSelected: () => DisplayParty[];
   setSelected: Dispatch<SetStateAction<DisplayParty[]>>;
 }) {
@@ -23,7 +21,7 @@ export default function DeleteParty({
 
   const handleDelete = async () => {
     try {
-      await deleteAction(selected);
+      await deleteParties(selected);
     } catch (error) {
       setError((error as PostgresError).message);
       return;

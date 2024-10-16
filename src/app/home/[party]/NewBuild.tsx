@@ -1,25 +1,18 @@
-import {
-  allChars,
-  characterDisplayString,
-  validCharacters,
-} from "@/utils/util";
+import { characterDisplayString, validCharacters } from "@/utils/util";
 import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
 import { Database } from "@/utils/supabase/types";
+import { addBuild } from "./action";
 
 export default function NewBuild({
   setNewMenu,
-  addAction,
   party,
   characters,
 }: {
   setNewMenu: Dispatch<SetStateAction<boolean>>;
-  addAction: (args: {
-    character: string;
-    party: Database["public"]["Tables"]["party"]["Row"];
-  }) => Promise<void>;
+
   party: Database["public"]["Tables"]["party"]["Row"];
   characters: string[];
 }) {
@@ -35,7 +28,7 @@ export default function NewBuild({
       return;
     }
     try {
-      await addAction(args);
+      await addBuild(args);
     } catch (error) {
       setError((error as PostgresError).message);
       return;

@@ -3,13 +3,12 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useState } from "react";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
+import { addParty } from "./action";
 
 export default function NewParty({
   setNewMenu,
-  addAction,
 }: {
   setNewMenu: Dispatch<SetStateAction<boolean>>;
-  addAction: (args: { name: string; game: string }) => Promise<void>;
 }) {
   const [newPartyName, setNewPartyName] = useState("");
   const [newPartyGame, setNewPartyGame] = useState("og");
@@ -21,7 +20,7 @@ export default function NewParty({
       return;
     }
     try {
-      await addAction(args);
+      await addParty(args);
     } catch (error) {
       setError((error as PostgresError).message);
       return; //ask ibi how to handle page props in a refreshy way.. or anirudh?

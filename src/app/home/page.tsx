@@ -14,15 +14,9 @@ export type DisplayParty = Database["public"]["Tables"]["party"]["Row"] & {
 
 export default async function Page() {
   const parties = await getParties();
-  return (
-    <PartyList
-      parties={parties}
-      deleteAction={deleteParties}
-      addAction={addParty}
-    />
-  );
+  return <PartyList parties={parties} />;
 }
-async function getParties(): Promise<DisplayParty[]> {
+export async function getParties(): Promise<DisplayParty[]> {
   // Fetch data from external API
   const supabase = createClient();
   const { data: parties } = await supabase.from("party").select("*");

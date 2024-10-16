@@ -17,11 +17,7 @@ import Link from "next/link";
 
 export type TagProps = { field: string; value: string };
 
-export default function PartyList(props: {
-  parties: DisplayParty[];
-  deleteAction: (parties: DisplayParty[]) => Promise<void>;
-  addAction: (args: { name: string; game: string }) => Promise<void>;
-}) {
+export default function PartyList(props: { parties: DisplayParty[] }) {
   const { parties } = props;
   const path = usePathname();
 
@@ -289,13 +285,10 @@ export default function PartyList(props: {
         <DeleteParty
           setDeleteMenu={setDeleteMenu}
           getSelected={getSelected}
-          deleteAction={props.deleteAction}
           setSelected={setSelected}
         />
       )}
-      {newMenu && (
-        <NewParty addAction={props.addAction} setNewMenu={setNewMenu} />
-      )}
+      {newMenu && <NewParty setNewMenu={setNewMenu} />}
     </>
   );
 }

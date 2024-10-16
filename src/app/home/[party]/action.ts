@@ -47,3 +47,18 @@ export async function addBuild(args: {character: string, party:  Database["publi
   if(result.error) throw error;
   
 }
+
+export async function deleteBuild(args: {id: string, party:  Database["public"]["Tables"]["party"]["Row"]}) {
+
+  const supabase = createClient();
+  const {error} = await supabase.from("build").delete().eq("id", args.id)
+  if(error) throw error;
+
+  const builds = args.party.builds.filter((id)=>id!=args.id)
+  const result = await supabase
+  .from('party')
+  .update({builds})
+  .eq('id', args.party.id);
+  if(result.error) throw error;
+
+}

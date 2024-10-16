@@ -117,8 +117,16 @@ select {
   font: inherit;
   max-width: fit-content;
 }
+button.icon {
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  outline: inherit;
+}
 
-button:active {
+button:active,
+button.icon:active {
   transform: scale(1.05, 1.05);
 }
 
