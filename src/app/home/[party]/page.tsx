@@ -4,7 +4,7 @@ import { Database } from "@/utils/supabase/types";
 
 import { characterDisplayString, gameDisplayString } from "@/utils/util";
 import { useEffect, useState } from "react";
-import EditParty from "./EditParty";
+
 import {
   Character,
   DisplayBuild,
@@ -13,7 +13,7 @@ import {
   Party,
 } from "@/utils/frontend-types";
 import { fetchProps, fetchProps as fetchServerProps } from "./fetch";
-import Orb from "./Orb";
+import Orb from "./MateriaView";
 import Image from "next/image";
 import styles from "./page.module.css";
 interface Params {
@@ -109,7 +109,9 @@ function ViewBuild({
 
       <div className={styles.property}>
         <h3>ACCESSORY</h3>
-        {build.accessory?.name}
+        {build.accessory?.name + " ("}
+        {build.accessory?.description}
+        {") "}
       </div>
       <div className={styles.property}>
         <h3>WEAPON</h3>
@@ -143,8 +145,6 @@ function ViewBuild({
 }
 
 export default function Page({ params }: Params) {
-  const [edit, setEdit] = useState(false);
-
   const [party, setParty] = useState<Party>();
   const [builds, setBuilds] = useState<DisplayBuild[]>([]);
   const [links, setLinks] = useState<Link[]>([]);
@@ -167,7 +167,6 @@ export default function Page({ params }: Params) {
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <h1>{party.name}</h1>
             <h2>{gameDisplayString(party.game)}</h2>
-            <button onClick={() => setEdit(true)}>edit</button>
           </div>
           <div style={{ width: "inherit", height: "fit-content" }}>
             <h3>{party.description}</h3>
@@ -186,23 +185,5 @@ export default function Page({ params }: Params) {
     );
   }
 
-  return (
-    <>
-      {party && (
-        <>
-          {edit ? (
-            <EditParty
-              party={party}
-              setEdit={setEdit}
-              builds={builds!}
-              links={links}
-              fetchProps={fetchPageProps}
-            />
-          ) : (
-            <View party={party} />
-          )}
-        </>
-      )}
-    </>
-  );
+  return <>{party && <View party={party} />}</>;
 }

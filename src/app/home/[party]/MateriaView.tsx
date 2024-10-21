@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 
-export default function Orb({ m }: { m: Materia }) {
+export default function MateriaView({ m }: { m: Materia }) {
   const [hover, setHover] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
 

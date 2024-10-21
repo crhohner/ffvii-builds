@@ -24,6 +24,8 @@ export const fetchProps: (id: string) => Promise<{
   party: Party;
   builds: DisplayBuild[];
   links: Link[];
+  accessories: Map<string, Accessory>
+  materia:  Map<string, Materia>
 }> = async (id: string) => {
   const supabase = createClient();
   const getParty = cache(async () => {
@@ -120,5 +122,5 @@ export const fetchProps: (id: string) => Promise<{
   }
 
   const builds = party.builds.map((id) => displayBuild(bldMap.get(id)!)); //fixes party order
-  return { party, builds, links };
+  return { party, builds, links, accessories: allAccessories, materia: allMateria};
 };
