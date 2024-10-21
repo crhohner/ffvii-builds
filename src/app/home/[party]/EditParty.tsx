@@ -1,60 +1,83 @@
 import { Database } from "@/utils/supabase/types";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-import Card from "./Card";
-import { PostgresError } from "postgres";
 import Error from "@/components/Error";
-import { updateParty } from "./action";
-import { DisplayBuild, Party } from "@/utils/frontend-types";
+import { DisplayBuild, Game, Link, Party } from "@/utils/frontend-types";
+
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
+import EditBuilds from "./EditBuilds";
+
+function buildValues(build: DisplayBuild): {
+  game: Game;
+  accessory: string | null;
+  armor_materia: string[];
+  armor_name: string | null;
+  armor_schema: Database["public"]["Enums"]["slot_type"][];
+  character: Database["public"]["Enums"]["character"];
+  id: string;
+  summon_materia: string | null;
+  weapon_materia: string[];
+  weapon_name: string | null;
+  weapon_schema: Database["public"]["Enums"]["slot_type"][];
+} {
+  return {
+    game: build.game,
+    accessory: build.accessory ? build.accessory.id : null,
+    armor_materia: build.armor_materia.map((m) => m.id),
+    armor_name: build.armor_name,
+    armor_schema: build.armor_materia.map((m) => {
+      return m.id as Database["public"]["Enums"]["slot_type"];
+    }),
+    character: build.character,
+    id: build.id,
+    summon_materia: build.summon_materia ? build.summon_materia.id : null,
+    weapon_materia: build.weapon_materia.map((m) => m.id),
+    weapon_name: build.weapon_name,
+    weapon_schema: build.weapon_materia.map((m) => {
+      return m.id as Database["public"]["Enums"]["slot_type"];
+    }),
+  };
+}
 
 export default function EditParty({
   party,
   setEdit,
   builds,
   links,
-  fetch,
+  fetchProps,
 }: {
   party: Party;
   setEdit: Dispatch<SetStateAction<boolean>>;
   builds: DisplayBuild[];
-  links: Database["public"]["Tables"]["materia_link"]["Row"][];
-  fetch: () => Promise<void>;
+  links: Link[];
+  fetchProps: () => Promise<void>;
 }) {
   const [editedName, setEditedName] = useState(party.name);
   const [editedDescription, setEditedDescription] = useState(party.description);
-  const [editedBuilds, setEditedBuilds] = useState(party.builds);
+  const [editedBuilds, setEditedBuilds] = useState(builds);
   const [error, setError] = useState<string | null>(null);
-
-  function handleArrow(index: number) {
-    setEditedBuilds((editedBuilds) => {
-      let builds = [...editedBuilds];
-
-      let temp = builds[index + 1];
-      builds[index + 1] = builds[index];
-      builds[index] = temp;
-
-      return builds;
-    });
-  }
 
   const handleSave = async () => {
     const newParty: Party = {
       name: editedName,
-      builds: editedBuilds,
+      builds: editedBuilds.map((b) => b.id),
       description: editedDescription,
       id: party.id,
       user_id: party.user_id,
       game: party.game,
     };
-    try {
-      await updateParty({ newParty });
-    } catch (error) {
-      setError((error as PostgresError).message);
-      setEdit(true);
-      return;
-    }
+
+    const deletedBuilds = party.builds.filter(
+      (b) => !newParty.builds.includes(b)
+    );
+    const addedBuilds = newParty.builds.filter(
+      (b) => !party.builds.includes(b)
+    );
+    const newBuilds = editedBuilds.map((b) => buildValues(b));
+
     setEdit(false);
-    fetch();
+    fetchProps();
   };
 
   return (
@@ -92,34 +115,11 @@ export default function EditParty({
             onChange={(e) => setEditedDescription(e.target.value)}
           />
         </div>
+        <DndProvider backend={HTML5Backend}>
+          <EditBuilds builds={builds} links={links} game={party.game} />
+        </DndProvider>
       </div>
       <br />
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-        {editedBuilds?.map((id, index) => {
-          const build = builds?.filter((b) => b.id == id)[0]!; //ew
-          return (
-            <div key={index}>
-              <Card
-                build={build}
-                leader={index === 0}
-                links={links}
-                icons={false}
-                party={party}
-                fetch={fetch}
-              />
-              {index !== editedBuilds.length - 1 && (
-                <div
-                  className="center"
-                  style={{ gap: "1rem", paddingTop: "1rem" }}
-                >
-                  <button onClick={() => handleArrow(index)}>↓ ↑</button>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 }

@@ -25,3 +25,4 @@ export type Materia = Database["public"]["Tables"]["materia"]["Row"];
 export type Accessory = Database["public"]["Tables"]["accessory"]["Row"];
 export type Party = Database["public"]["Tables"]["party"]["Row"];
 export type Link = Database["public"]["Tables"]["materia_link"]["Row"];
+export type Schema = Database["public"]["Enums"]["slot_type"][];
