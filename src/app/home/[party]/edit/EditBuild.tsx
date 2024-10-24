@@ -118,11 +118,12 @@ export default function EditBuild({
   index,
   updateBuild,
   accessories,
-  materia,
   handleAdd,
   handleLink,
+  handleDrop,
   handleSwap,
   handleRemove,
+  handlePut,
   weaponMateria,
   armorMateria,
   weaponSchema,
@@ -137,7 +138,9 @@ export default function EditBuild({
   handleLink: (link: boolean, row: number, col: number) => void;
   handleAdd: (row: number) => void;
   handleRemove: (row: number) => void;
-  handleSwap: (fromIndex: number[], toIndex: number[]) => void;
+  handleDrop: (toIndex: number[], item: Materia | null) => void;
+  handleSwap: (toIndex: number[], fromIndex: number[]) => void;
+  handlePut: (index: number[], item: Materia | null) => void;
   weaponMateria: (Materia | null)[];
   armorMateria: (Materia | null)[];
   weaponSchema: Schema;
@@ -185,6 +188,7 @@ export default function EditBuild({
         }}
       />
       <Loadout
+        handlePut={handlePut}
         row={index * 2}
         items={weaponMateria}
         schema={weaponSchema}
@@ -192,6 +196,7 @@ export default function EditBuild({
         handleAdd={handleAdd}
         handleRemove={handleRemove}
         handleLink={handleLink}
+        handleDrop={handleDrop}
         handleSwap={handleSwap}
       />
       <ArmorInput
@@ -202,6 +207,8 @@ export default function EditBuild({
         }}
       />
       <Loadout
+        handleSwap={handleSwap}
+        handlePut={handlePut}
         row={index * 2 + 1}
         items={armorMateria}
         schema={armorSchema}
@@ -209,7 +216,7 @@ export default function EditBuild({
         handleAdd={handleAdd}
         handleRemove={handleRemove}
         handleLink={handleLink}
-        handleSwap={handleSwap}
+        handleDrop={handleDrop}
       />
     </div>
   );

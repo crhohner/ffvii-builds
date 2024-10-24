@@ -17,6 +17,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { useEffect, useState } from "react";
 import { fetchProps } from "../fetch";
 import EditBuild from "./EditBuild";
+import SelectMateria from "./SelectMateria";
 
 function buildValues(build: DisplayBuild): {
   game: Game;
@@ -148,53 +149,72 @@ export default function Page({ params }: Params) {
   };
 
   // Handle the swapping logic
-  const handleSwap = (fromIndex: number[], toIndex: number[]) => {
+  const handleDrop = (toIndex: number[], item: Materia | null) => {
     const updatedItems = [...items];
+
+    updatedItems[toIndex[0]][toIndex[1]] = item!;
+
+    setItems(updatedItems); // Update state
+  };
+
+  const handleSwap = (toIndex: number[], fromIndex: number[]) => {
+    const updatedItems = [...items];
+
     [
       updatedItems[toIndex[0]][toIndex[1]],
-      updatedItems[fromIndex[0]][fromIndex[1]],
+      updatedItems[fromIndex![0]][fromIndex![1]],
     ] = [
-      updatedItems[fromIndex[0]][fromIndex[1]],
-      updatedItems[toIndex[0]][toIndex[1]],
+      updatedItems[fromIndex![0]][fromIndex![1]],
+      updatedItems[toIndex![0]][toIndex![1]],
     ]; // Swap items
+
+    setItems(updatedItems); // Update state
+  };
+
+  const handlePut = (index: number[], item: Materia | null) => {
+    const updatedItems = [...items];
+    updatedItems[index[0]][index[1]] = item;
     setItems(updatedItems); // Update state
   };
 
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "1rem",
-        }}
-      >
+    <DndProvider backend={HTML5Backend}>
+      <div style={{ display: "flex", gap: "1rem" }}>
         <div
           style={{
             display: "flex",
+            flexDirection: "column",
             gap: "1rem",
-            alignItems: "center",
-            flexWrap: "wrap",
+            minWidth: "60%",
           }}
         >
-          <input
-            placeholder="name"
-            value={editedName}
-            onChange={(e) => setEditedName(e.target.value)}
-          />
-        </div>
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
+            <input
+              placeholder="name"
+              value={editedName}
+              onChange={(e) => setEditedName(e.target.value)}
+            />
+          </div>
 
-        <div className="center" style={{ padding: "0 1.2rem" }}>
-          <textarea
-            placeholder="description"
-            value={editedDescription || ""}
-            style={{ minWidth: "100%" }}
-            onChange={(e) => setEditedDescription(e.target.value)}
-          />
-        </div>
+          <div className="center" style={{ padding: "0 1.2rem" }}>
+            <textarea
+              placeholder="description"
+              value={editedDescription || ""}
+              style={{ minWidth: "100%" }}
+              onChange={(e) => setEditedDescription(e.target.value)}
+            />
+          </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <DndProvider backend={HTML5Backend}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+          >
             {accessories && //only returns with props
               builds.map((build, index) => (
                 <EditBuild
@@ -213,18 +233,21 @@ export default function Page({ params }: Params) {
                   handleAdd={handleAdd}
                   handleLink={handleLink}
                   handleRemove={handleRemove}
+                  handleDrop={handleDrop}
                   handleSwap={handleSwap}
+                  handlePut={handlePut}
                   weaponMateria={items[index * 2]}
                   armorMateria={items[index * 2 + 1]}
                   weaponSchema={schemas[index * 2]}
                   armorSchema={schemas[index * 2 + 1]}
                 />
               ))}
-          </DndProvider>
+          </div>
         </div>
+
+        {materia && <SelectMateria allMateria={materia} />}
       </div>
-      <br />
-    </div>
+    </DndProvider>
   );
 }
 

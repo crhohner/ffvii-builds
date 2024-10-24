@@ -67,7 +67,7 @@ export const fetchProps: (id: string) => Promise<{
   if (error) console.log(error);
 
   const { data: mats } = await getGameMateria();
-  const allMateria = new Map<string, Materia>(mats!.map((m) => [m.id, m]));
+  const allMateria = new Map<string, Materia>(mats!.filter((m)=>m.materia_type != "empty").map((m) => [m.id, m]));
 
   const blues: string[] | undefined = mats
     ?.filter((m: Materia) => m.materia_type == "blue")

@@ -1,50 +1,29 @@
 import { Link, Materia } from "@/utils/frontend-types";
 import Image from "next/image";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
-import MateriaView from "../MateriaView";
-
-const ITEM_TYPE = "GRID_ITEM";
-
-const Draggable = ({ item, index }: { item: Materia; index: number[] }) => {
-  const [{ isDragging }, drag] = useDrag({
-    type: ITEM_TYPE,
-    item: { index }, // Provide the item's index to identify its position
-    collect: (monitor: any) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
-
-  const ref = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (ref.current) {
-      drag(ref.current); // Ensure the ref is properly connected
-    }
-  }, [drag]);
-
-  return (
-    <div ref={ref} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      <MateriaView m={item} />
-    </div>
-  );
-};
+import Draggable, { ITEM_TYPE } from "./Draggable";
 
 const Slot = ({
-  //make this pretty
   item,
   index,
+  handleDrop,
   handleSwap,
+  handlePut,
 }: {
   item: Materia | null;
   index: number[];
-  handleSwap: (fromIndex: number[], toIndex: number[]) => void;
+  handleDrop: (toIndex: number[], item: Materia | null) => void;
+  handleSwap: (toIndex: number[], fromIndex: number[]) => void;
+  handlePut: (index: number[], item: Materia | null) => void;
 }) => {
   const [, drop] = useDrop({
     accept: ITEM_TYPE,
-    drop: (draggedItem: { index: number[] }) => {
-      if (draggedItem.index !== index) {
-        handleSwap(draggedItem.index, index); // Trigger swap if dragged into a different slot
+    drop: (draggedItem: { item: Materia; index: number[] | null }) => {
+      if (draggedItem.index === null) {
+        handleDrop(index, draggedItem.item);
+      } else if (draggedItem.index !== index) {
+        handleSwap(index, draggedItem.index); // Trigger swap if dragged into a different slot
       }
     },
   });
@@ -56,13 +35,25 @@ const Slot = ({
     }
   }, [drop]);
 
+  function handleShiftClick(event: any) {
+    if (event.shiftKey) {
+      handlePut(index, null);
+    }
+  }
+
   return (
-    <div ref={ref} className="grid-slot">
-      {item ? (
-        <Draggable item={item} index={index} />
-      ) : (
-        <Image src={"/materia/empty.svg"} height={32} width={32} alt="/" />
-      )}
+    //TODO ADD DOUBLE CLICK DELETE / SINGLE CLICK CHANGE
+    <div style={{ position: "relative" }} onClick={handleShiftClick}>
+      <div ref={ref} className="grid-slot">
+        {item ? (
+          <Draggable item={item} index={index} />
+        ) : (
+          <Image src={"/materia/empty.svg"} height={32} width={32} alt="/" />
+        )}
+      </div>
+      <div
+        style={{ position: "absolute", left: "-2.8rem", width: "8rem" }}
+      ></div>
     </div>
   );
 };
@@ -74,8 +65,10 @@ export default function Loadout({
   items,
   links,
   handleAdd,
+  handleDrop,
   handleSwap,
   handleRemove,
+  handlePut,
   handleLink,
 }: {
   row: number;
@@ -85,7 +78,9 @@ export default function Loadout({
   handleLink: (link: boolean, row: number, col: number) => void;
   handleAdd: (row: number) => void;
   handleRemove: (row: number) => void;
-  handleSwap: (fromIndex: number[], toIndex: number[]) => void;
+  handlePut: (index: number[], item: Materia | null) => void;
+  handleDrop: (toIndex: number[], item: Materia | null) => void;
+  handleSwap: (toIndex: number[], fromIndex: number[]) => void;
 }) {
   let slots: JSX.Element[] = [];
   let i = 0;
@@ -94,9 +89,11 @@ export default function Loadout({
     if (slottype === "single") {
       slots.push(
         <Slot
+          handlePut={handlePut}
           key={`slot-${row}-${col}`}
           item={items[i]}
           index={[row, col]}
+          handleDrop={handleDrop}
           handleSwap={handleSwap}
         />,
         <button
@@ -126,10 +123,12 @@ export default function Loadout({
 
       slots.push(
         <Slot
+          handleSwap={handleSwap}
+          handlePut={handlePut}
           key={`slot-${row}-${col}`}
           item={items[col]}
           index={[row, col]}
-          handleSwap={handleSwap}
+          handleDrop={handleDrop}
         />,
         <button
           key={`button-eq-${row}-${col}`}
@@ -144,10 +143,12 @@ export default function Loadout({
           =
         </button>,
         <Slot
+          handleSwap={handleSwap}
+          handlePut={handlePut}
           key={`slot-${row}-${col + 1}`}
           item={items[col + 1]}
           index={[row, col + 1]}
-          handleSwap={handleSwap}
+          handleDrop={handleDrop}
         />,
         <button
           key={`button-x-${row}-${col}`}

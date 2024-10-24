@@ -47,7 +47,7 @@ export default function MateriaView({ m }: { m: Materia }) {
       {hover && !mouseDown && m.name !== "empty" && (
         <div className={styles.context}>
           <h3>{m.name}</h3>
-          <div>{m.description}</div>
+          {m.description && <div>{m.description}</div>}
         </div>
       )}
     </div>

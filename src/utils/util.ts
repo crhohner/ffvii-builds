@@ -88,3 +88,11 @@ export function validCharacters(game: Database["public"]["Enums"]["game"]) : Dat
  }
  else return allChars.slice(0,7);
 }
+
+export const allColors: Database["public"]["Enums"]["materia_type"][] = [
+  "blue",
+  "red",
+  "green",
+  "purple",
+  "yellow"
+]
