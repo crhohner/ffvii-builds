@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import {
   Character,
   DisplayBuild,
-  Link,
+  Link as MateriaLink,
   Materia,
   Party,
 } from "@/utils/frontend-types";
@@ -16,6 +16,8 @@ import { fetchProps, fetchProps as fetchServerProps } from "./fetch";
 import Orb from "./MateriaView";
 import Image from "next/image";
 import styles from "./page.module.css";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 interface Params {
   params: {
     party: string;
@@ -29,7 +31,7 @@ function Double({
 }: {
   m1: Materia;
   m2: Materia;
-  links: Link[];
+  links: MateriaLink[];
 }) {
   if (!m1 || !m2) {
     return null;
@@ -86,7 +88,7 @@ function ViewBuild({
 }: {
   build: DisplayBuild;
   leader: boolean;
-  links: Link[];
+  links: MateriaLink[];
 }) {
   return (
     <div className={styles["card"]}>
@@ -109,13 +111,13 @@ function ViewBuild({
 
       <div className={styles.property}>
         <h3>ACCESSORY</h3>
-        {build.accessory?.name + " ("}
-        {build.accessory?.description}
-        {") "}
+        {build.accessory
+          ? build.accessory?.name + " (" + build.accessory?.description + ")"
+          : "None"}
       </div>
       <div className={styles.property}>
         <h3>WEAPON</h3>
-        {build.weapon_name}
+        {build.weapon_name == null ? "None" : build.weapon_name}
       </div>
       <MateriaMap
         materia={build.weapon_materia}
@@ -124,7 +126,7 @@ function ViewBuild({
       />
       <div className={styles.property}>
         <h3>ARMOR</h3>
-        {build.armor_name}
+        {build.armor_name == null ? "None" : build.armor_name}
       </div>
       <div
         style={{
@@ -147,7 +149,7 @@ function ViewBuild({
 export default function Page({ params }: Params) {
   const [party, setParty] = useState<Party>();
   const [builds, setBuilds] = useState<DisplayBuild[]>([]);
-  const [links, setLinks] = useState<Link[]>([]);
+  const [links, setLinks] = useState<MateriaLink[]>([]);
 
   const fetchPageProps = async () => {
     const { party, builds, links } = await fetchServerProps(params.party);
@@ -161,12 +163,21 @@ export default function Page({ params }: Params) {
   }, []);
 
   function View({ party }: { party: Party }) {
+    const path = usePathname();
     return (
       <>
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <h1>{party.name}</h1>
             <h2>{gameDisplayString(party.game)}</h2>
+            <Link href={path + "/edit"}>
+              <Image
+                src="/edit.svg"
+                height={20}
+                width={20}
+                alt="pencil"
+              ></Image>
+            </Link>
           </div>
           <div style={{ width: "inherit", height: "fit-content" }}>
             <h3>{party.description}</h3>

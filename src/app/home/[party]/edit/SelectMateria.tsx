@@ -40,8 +40,18 @@ export default function SelectMateria({
         right: "10rem",
       }}
     >
+      <div
+        className="container"
+        style={{ gap: "1rem", textWrap: "pretty", maxWidth: "11rem" }}
+      >
+        <h3>User Guide:</h3>
+        <p>Use the + and - buttons to create weapon schematics.</p>
+        <p>Drag, drop, and swap materia to create builds.</p>
+        <p>Empty a slot by clicking it while holding SHIFT.</p>
+        <p>(Un)link two slots by pressing the x/= button between them.</p>
+      </div>
       <input
-        placeholder="search"
+        placeholder="search materia"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       ></input>
