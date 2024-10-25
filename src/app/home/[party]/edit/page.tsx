@@ -179,13 +179,12 @@ export default function Page({ params }: Params) {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div style={{ display: "flex", gap: "1rem" }}>
+      <div className="center" style={{ display: "flex", gap: "1rem" }}>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             gap: "1rem",
-            minWidth: "60%",
           }}
         >
           <div
@@ -203,7 +202,7 @@ export default function Page({ params }: Params) {
             />
           </div>
 
-          <div className="center" style={{ padding: "0 1.2rem" }}>
+          <div className="center" style={{ padding: "0 1rem" }}>
             <textarea
               placeholder="description"
               value={editedDescription || ""}
