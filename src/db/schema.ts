@@ -64,7 +64,7 @@ export const Build = pgTable("build", {
   weaponName: text("weapon_name"),
   armorMateria: uuid("armor_materia").array().notNull(),
   armorName: text("armor_name"),
-  summonMateria: text("summon_materia"),
+  summonMateria: uuid("summon_materia").references(() => Materia.id),
   weaponSchema: SlotType("weapon_schema").array().notNull(),
   armorSchema: SlotType("armor_schema").array().notNull(),
   game: Game("game").notNull(),

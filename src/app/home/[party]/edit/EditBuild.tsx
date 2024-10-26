@@ -13,7 +13,7 @@ import {
   Materia,
   Schema,
 } from "@/utils/frontend-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "../page.module.css";
 import { characterDisplayString, validCharacters } from "@/utils/util";
 import Loadout, { Slot } from "./Loadout";
@@ -31,7 +31,12 @@ function CharacterInput({
   return (
     <div className={styles.property}>
       <h3>CHARACTER</h3>
-      <select value={character} onChange={(e) => onChange(e.target.value)}>
+      <select
+        value={character}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+      >
         {validCharacters(game).map((character) => {
           return (
             <option key={character} value={character}>
@@ -154,6 +159,12 @@ export default function EditBuild({
     build.accessory ? build.accessory.id : null
   );
 
+  useEffect(() => {
+    if (character || accessory || weapon || armor) {
+      handleUpdate();
+    }
+  }, [character, accessory, weapon, armor]);
+
   function handleUpdate() {
     const newBuild = { ...build };
     newBuild.accessory = accessory ? accessories.get(accessory)! : null;
@@ -171,7 +182,6 @@ export default function EditBuild({
           game={build.game}
           onChange={(newCharacter: string) => {
             setCharacter(newCharacter as Character);
-            handleUpdate();
           }}
         />
         {build.game !== "og" && (
@@ -189,14 +199,12 @@ export default function EditBuild({
         accessory={accessory}
         onChange={(new_id: string) => {
           setAccessory(new_id);
-          handleUpdate();
         }}
       />
       <WeaponInput
         weapon_name={weapon}
         onChange={(new_name: string) => {
           setWeapon(new_name);
-          handleUpdate();
         }}
       />
       <Loadout
@@ -214,7 +222,6 @@ export default function EditBuild({
         armor_name={armor}
         onChange={(new_name: string) => {
           setArmor(new_name);
-          handleUpdate();
         }}
       />
       <Loadout

@@ -98,10 +98,12 @@ export default function SelectMateria({
               <Draggable item={m} index={null} />
               <div
                 style={{
-                  textOverflow: "ellipsis",
+                  maxWidth: "8rem",
+                  overflow: "hidden",
                 }}
               >
-                {m.name}
+                <text>{m.name}</text>
+                <h3>{m.description}</h3>
               </div>
             </div>
           ))}

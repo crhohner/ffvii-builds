@@ -11,6 +11,7 @@ import {
   Link as MateriaLink,
   Materia,
   Party,
+  emptyMateria,
 } from "@/utils/frontend-types";
 import { fetchProps, fetchProps as fetchServerProps } from "./fetch";
 import MateriaView from "./MateriaView";
@@ -29,8 +30,8 @@ function Double({
   m2,
   links,
 }: {
-  m1: Materia;
-  m2: Materia;
+  m1: Materia | null;
+  m2: Materia | null;
   links: MateriaLink[];
 }) {
   if (!m1 || !m2) {
@@ -59,7 +60,7 @@ function MateriaMap({
   slots,
   links,
 }: {
-  materia: Materia[];
+  materia: (Materia | null)[];
   slots: Database["public"]["Enums"]["slot_type"][];
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
 }) {
@@ -107,6 +108,9 @@ function ViewBuild({
             </div>
           )}
         </div>
+        <MateriaView
+          m={build.summon_materia ? build.summon_materia : emptyMateria}
+        />
       </div>
 
       <div className={styles.property}>

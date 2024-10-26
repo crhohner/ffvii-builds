@@ -153,7 +153,6 @@ select {
   background-repeat: no-repeat;
   background-position: right 0 center;
   background-size: 16px;
-  text-overflow: ellipsis;
 }
 option {
   min-width: fit-content;

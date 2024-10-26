@@ -98,14 +98,19 @@ export const fetchProps: (id: string) => Promise<{
       ? (allAccessories.get(build.accessory) as Accessory)
       : null;
     const armor_materia = build.armor_materia.map((id) =>
-      allMateria.get(id)
-    ) as Materia[];
+      {const check = allMateria.get(id); if (check === undefined || check.materia_type === "empty") {
+        return null;
+      } return check;}
+    ) as (Materia | null) [];
     const weapon_materia = build.weapon_materia.map((id) =>
-      allMateria.get(id)
-    ) as Materia[];
-    const summon_materia = build.summon_materia
-      ? (allMateria.get(build.summon_materia) as Materia)
-      : null;
+      {const check = allMateria.get(id); if (check === undefined || check.materia_type === "empty") {
+        return null;
+      } return check;}
+    ) as (Materia | null) [];
+    let summon_materia : Materia | null = allMateria.get(build.summon_materia) as Materia;
+    if (summon_materia.materia_type === "empty") summon_materia = null;
+    
+  
     return {
       game: build.game,
       armor_materia,

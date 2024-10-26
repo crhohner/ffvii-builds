@@ -1,5 +1,3 @@
-
-
 export type Database = {
   public: {
     Tables: {
@@ -31,13 +29,13 @@ export type Database = {
           armor_name: string | null
           armor_schema: Database["public"]["Enums"]["slot_type"][]
           character: Database["public"]["Enums"]["character"]
+          game: Database["public"]["Enums"]["game"]
           id: string
-          summon_materia: string | null
+          summon_materia: string
           user_id: string
           weapon_materia: string[]
           weapon_name: string | null
           weapon_schema: Database["public"]["Enums"]["slot_type"][]
-          game: Database["public"]["Enums"]["game"]
         }
         Insert: {
           accessory?: string | null
@@ -45,13 +43,13 @@ export type Database = {
           armor_name?: string | null
           armor_schema: Database["public"]["Enums"]["slot_type"][]
           character: Database["public"]["Enums"]["character"]
+          game: Database["public"]["Enums"]["game"]
           id?: string
-          summon_materia?: string | null
+          summon_materia?: string
           user_id: string
           weapon_materia: string[]
           weapon_name?: string | null
           weapon_schema: Database["public"]["Enums"]["slot_type"][]
-          game: Database["public"]["Enums"]["game"]
         }
         Update: {
           accessory?: string | null
@@ -59,13 +57,13 @@ export type Database = {
           armor_name?: string | null
           armor_schema?: Database["public"]["Enums"]["slot_type"][]
           character?: Database["public"]["Enums"]["character"]
+          game?: Database["public"]["Enums"]["game"]
           id?: string
-          summon_materia?: string | null
+          summon_materia?: string
           user_id?: string
           weapon_materia?: string[]
           weapon_name?: string | null
           weapon_schema?: Database["public"]["Enums"]["slot_type"][]
-          game: Database["public"]["Enums"]["game"]
         }
         Relationships: [
           {
@@ -76,10 +74,17 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "build_user_fkey"
-            columns: ["user_id"]
+            foreignKeyName: "build_summon_materia_fkey"
+            columns: ["summon_materia"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "materia"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_summon_materia_materia_id_fk"
+            columns: ["summon_materia"]
+            isOneToOne: false
+            referencedRelation: "materia"
             referencedColumns: ["id"]
           },
         ]
@@ -163,15 +168,7 @@ export type Database = {
           name?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "party_user_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
     }
     Views: {
@@ -281,4 +278,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never

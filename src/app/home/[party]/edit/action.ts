@@ -1,64 +1,61 @@
 "use server"
 import { createClient } from "@/utils/supabase/server";
 import { Database } from "@/utils/supabase/types";
-import { nullId } from "@/utils/util";
 
+export async function updateParty(args: {newParty:  Database["public"]["Tables"]["party"]["Row"], 
+  updatedBuilds: Database["public"]["Tables"]["build"]["Row"][], 
+ }): Promise<void> {
 
-export async function updateParty(args: {newParty:  Database["public"]["Tables"]["party"]["Row"]}) {
-
+  const prevBuilds = args.newParty.builds;
   const supabase = createClient();
-  const { error } = await supabase
-  .from('party')
-  .update(args.newParty)
-  .eq('id', args.newParty.id);
-  if(error) throw error;
-}
 
-export async function addBuild(args: {character: string, party:  Database["public"]["Tables"]["party"]["Row"]}) {
+  const buildIds : string[]= []
+  for (const build of args.updatedBuilds) {
+    const values = {
+      accessory: build.accessory,
+      armor_materia: build.armor_materia,
+      weapon_materia: build.weapon_materia,
+      armor_name: build.armor_name,
+      weapon_name: build.weapon_name, 
+      armor_schema: build.armor_schema,
+      weapon_schema: build.weapon_schema,
+      character: build.character,
+      game: args.newParty.game,
+      summon_materia: build.summon_materia,
+      user_id: args.newParty.user_id
+    }
+    if (prevBuilds.includes(build.id)) {
+      //update
+      console.log(build.id)
+      const {error: update_error} = await supabase.from("build").update(values).eq("id", build.id);
+      if(update_error) throw update_error;
+      buildIds.push(build.id)
+      console.log("here")
 
-  const supabase = createClient();
-  const user_id = await (await supabase.auth.getUser()).data.user?.id;
-
-  const build = {
-    accessory: null,
-    armor_materia:[nullId],
-    weapon_materia: [nullId],
-    armor_name: "Cool Armor",
-    weapon_name: "Cooler Weapon", //maybe customize to be starting weapons for cuteness?
-    armor_schema: ["single"],
-    weapon_schema: ["single"],
-    character: args.character,
-    game: args.party.game,
-    summon_materia: null,
-    user_id
+    } else  {
+      //insert
+      const {data, error: insert_error} = await supabase.from("build").insert(values).select();
+      if(insert_error) {throw insert_error}
+      buildIds.push(data![0].id)
+    }
+    
   }
 
+  //delete builds
+
+
+  const deletedBuilds = prevBuilds.filter((b) => !(args.updatedBuilds.map((bd)=>bd.id).includes(b)))
+  const {error: delete_error} = await supabase.from("build").delete().in("id", deletedBuilds)
+  if (delete_error) throw delete_error;
+
+ 
+
+  //update party
+  const values = {...args.newParty}
+  values.builds =  buildIds;
+
+  const {error: update_error} = await supabase.from("party").update(values).eq("id", args.newParty.id)
+  if (update_error) throw update_error;
+
   
-
-  const {data, error} = await supabase.from("build").insert(build).select();
-  if(error) throw error;
-
-  const id = (data[0] as Database["public"]["Tables"]["build"]["Row"]).id;
-
-  const result = await supabase
-  .from('party')
-  .update({builds: [...args.party.builds, id]})
-  .eq('id', args.party.id);
-  if(result.error) throw error;
-  
-}
-
-export async function deleteBuild(args: {id: string, party:  Database["public"]["Tables"]["party"]["Row"]}) {
-
-  const supabase = createClient();
-  const {error} = await supabase.from("build").delete().eq("id", args.id)
-  if(error) throw error;
-
-  const builds = args.party.builds.filter((id)=>id!=args.id)
-  const result = await supabase
-  .from('party')
-  .update({builds})
-  .eq('id', args.party.id);
-  if(result.error) throw error;
-
-}
+  }

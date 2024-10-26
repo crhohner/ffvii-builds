@@ -1,11 +1,10 @@
 "use client";
 
 import { Database } from "@/utils/supabase/types";
-
-import Error from "@/components/Error";
 import {
   Accessory,
   DisplayBuild,
+  emptyMateria,
   Game,
   Link,
   Materia,
@@ -18,38 +17,9 @@ import { useEffect, useState } from "react";
 import { fetchProps } from "../fetch";
 import EditBuild from "./EditBuild";
 import SelectMateria from "./SelectMateria";
-
-function buildValues(build: DisplayBuild): {
-  game: Game;
-  accessory: string | null;
-  armor_materia: string[];
-  armor_name: string | null;
-  armor_schema: Database["public"]["Enums"]["slot_type"][];
-  character: Database["public"]["Enums"]["character"];
-  id: string;
-  summon_materia: string | null;
-  weapon_materia: string[];
-  weapon_name: string | null;
-  weapon_schema: Database["public"]["Enums"]["slot_type"][];
-} {
-  return {
-    game: build.game,
-    accessory: build.accessory ? build.accessory.id : null,
-    armor_materia: build.armor_materia.map((m) => m.id),
-    armor_name: build.armor_name,
-    armor_schema: build.armor_materia.map((m) => {
-      return m.id as Database["public"]["Enums"]["slot_type"];
-    }),
-    character: build.character,
-    id: build.id,
-    summon_materia: build.summon_materia ? build.summon_materia.id : null,
-    weapon_materia: build.weapon_materia.map((m) => m.id),
-    weapon_name: build.weapon_name,
-    weapon_schema: build.weapon_materia.map((m) => {
-      return m.id as Database["public"]["Enums"]["slot_type"];
-    }),
-  };
-}
+import { nullId } from "@/utils/util";
+import { updateParty } from "./action";
+import { useRouter } from "next/navigation";
 
 interface Params {
   params: {
@@ -62,6 +32,7 @@ export default function Page({ params }: Params) {
   const [links, setLinks] = useState<Link[]>([]);
   const [materia, setMateria] = useState<Map<string, Materia>>();
   const [accessories, setAccessories] = useState<Map<string, Accessory>>();
+  const [party, setParty] = useState<Party>(); //need for update
 
   const fetchPageProps = async () => {
     const { party, builds, links, accessories, materia } = await fetchProps(
@@ -73,12 +44,11 @@ export default function Page({ params }: Params) {
     setAccessories(accessories);
     setMateria(materia);
     const initialItems = builds.flatMap((b) => [
-      b.weapon_materia.map((m) => (m.materia_type == "empty" ? null : m)),
-      b.armor_materia.map((m) => (m.materia_type == "empty" ? null : m)),
+      b.weapon_materia,
+      b.armor_materia,
     ]);
-    if (party.game !== "og") {
-      initialItems.push(builds.map((b) => b.summon_materia));
-    }
+
+    initialItems.push(builds.map((b) => b.summon_materia));
     setItems(initialItems);
 
     const initialSchemas = builds.flatMap((b) => [
@@ -88,7 +58,6 @@ export default function Page({ params }: Params) {
     setSchemas(initialSchemas);
     setEditedName(party.name);
     setEditedDescription(party.description || "");
-    if (builds.length === 0) addBuild();
   };
 
   useEffect(() => {
@@ -100,8 +69,56 @@ export default function Page({ params }: Params) {
   const [schemas, setSchemas] = useState<("single" | "double")[][]>([]);
   const [editedName, setEditedName] = useState<string>();
   const [editedDescription, setEditedDescription] = useState<string>();
-  const [party, setParty] = useState<Party>(); //need for update
   const [builds, setBuilds] = useState<DisplayBuild[]>([]);
+
+  const router = useRouter();
+
+  function buildValues(
+    build: DisplayBuild
+  ): Database["public"]["Tables"]["build"]["Row"] {
+    return {
+      game: build.game,
+      accessory: build.accessory ? build.accessory.id : null,
+      armor_materia: build.armor_materia.map((m) => (m ? m.id : nullId)),
+      armor_name: build.armor_name,
+      armor_schema: build.armor_schema,
+      character: build.character,
+      id: build.id,
+      summon_materia: build.summon_materia ? build.summon_materia.id : nullId,
+      weapon_materia: build.weapon_materia.map((m) => (m ? m.id : nullId)),
+      weapon_name: build.weapon_name,
+      weapon_schema: build.weapon_schema,
+      user_id: party!.user_id,
+    };
+  }
+
+  const handleSave = async () => {
+    // make builds by placing items / schemas and converting
+    const updatedBuilds: Database["public"]["Tables"]["build"]["Row"][] =
+      builds.map((build, index) => {
+        const newBuild = { ...build };
+        newBuild.weapon_materia = items[index * 2];
+        newBuild.armor_materia = items[index * 2 + 1];
+        newBuild.weapon_schema = schemas[index * 2];
+        newBuild.armor_schema = schemas[index * 2 + 1];
+        newBuild.summon_materia = items[items.length - 1][index];
+        return buildValues(newBuild);
+      });
+    //new builds will have weird ids...
+
+    const newParty = { ...party! };
+    newParty.description = editedDescription!;
+    newParty.name = editedName!;
+
+    try {
+      await updateParty({ newParty, updatedBuilds });
+    } catch (error) {
+      console.log(error);
+    }
+    router.back();
+    //make new party with new fields, desc, ignoring builds
+    //pass to server call
+  };
 
   const handleAdd = (row: number) => {
     const updatedItems = [...items];
@@ -181,31 +198,76 @@ export default function Page({ params }: Params) {
     setItems(updatedItems);
   };
 
+  const swapBuilds = (idx1: number, idx2: number) => {
+    const updatedItems = [...items];
+    [updatedItems[idx1 * 2], updatedItems[idx2 * 2]] = [
+      //weapons
+      updatedItems[idx2 * 2],
+      updatedItems[idx1 * 2],
+    ];
+    [updatedItems[idx1 * 2 + 1], updatedItems[idx2 * 2 + 1]] = [
+      //armor
+      updatedItems[idx2 * 2 + 1],
+      updatedItems[idx1 * 2 + 1],
+    ];
+
+    //summons?
+    [
+      updatedItems[items.length - 1][idx1],
+      updatedItems[items.length - 1][idx2],
+    ] = [
+      updatedItems[items.length - 1][idx2],
+      updatedItems[items.length - 1][idx1],
+    ];
+
+    const updatedSchemas = [...schemas];
+
+    [updatedSchemas[idx1 * 2], updatedSchemas[idx2 * 2]] = [
+      //weapons
+      updatedSchemas[idx2 * 2],
+      updatedSchemas[idx1 * 2],
+    ];
+    [updatedSchemas[idx1 * 2 + 1], updatedSchemas[idx2 * 2 + 1]] = [
+      //armor
+      updatedSchemas[idx2 * 2 + 1],
+      updatedSchemas[idx1 * 2 + 1],
+    ];
+
+    const updatedBuilds = [...builds];
+    [updatedBuilds[idx1], updatedBuilds[idx2]] = [
+      updatedBuilds[idx2],
+      updatedBuilds[idx1],
+    ];
+    setBuilds(updatedBuilds);
+    setItems(updatedItems);
+    setSchemas(updatedSchemas);
+  };
+
   const addBuild = () => {
     const updatedItems = [...items];
-    updatedItems.splice(Math.max(items.length - 2, 0), 0, [null], [null]); //materia
+
+    updatedItems.splice(Math.max(items.length - 2, 0), 0, [null]); //weapon
+    updatedItems.splice(Math.max(items.length - 3, 1), 0, [null]); //armor
+
     updatedItems[updatedItems.length - 1].push(null); //null summon
+
     const updatedSchemas = [...schemas];
-    updatedSchemas.splice(
-      //schemas
-      Math.max(items.length - 2, 0),
-      0,
-      ["single"],
-      ["single"]
-    );
+    updatedSchemas.push(["single"]); //weapon
+    updatedSchemas.push(["single"]); //armor
+
     const updatedBuilds = [...builds];
     updatedBuilds.push({
-      game: party?.game!,
       accessory: null,
+      armor_materia: [null],
+      weapon_materia: [null],
+      armor_name: "Cooler Armor",
+      weapon_name: "Cool Weapon",
+      armor_schema: ["single"],
+      weapon_schema: ["single"],
       character: "cloud",
-      armor_materia: [],
-      armor_schema: [],
-      weapon_materia: [],
-      weapon_schema: [],
-      armor_name: "",
-      weapon_name: "",
-      id: "",
+      game: party!.game,
       summon_materia: null,
+      id: "",
     });
     setBuilds(updatedBuilds);
     setItems(updatedItems);
@@ -214,108 +276,121 @@ export default function Page({ params }: Params) {
 
   const deleteBuild = () => {
     const updatedItems = [...items];
-    updatedItems.splice(Math.max(items.length - 2, 0), 1); //materia
+    updatedItems.splice(items.length - 2, 1); //materia
     updatedItems[updatedItems.length - 1].pop(); //summon
     const updatedSchemas = [...schemas];
-    updatedSchemas.splice(
-      //schemas
-      Math.max(items.length - 2, 0),
-      2
-    );
+    updatedSchemas.pop();
+    updatedSchemas.pop();
     const updatedBuilds = [...builds];
     updatedBuilds.pop();
     setBuilds(updatedBuilds);
     setItems(updatedItems);
     setSchemas(updatedSchemas);
   };
+  const updateBuild = (index: number, updatedBuild: DisplayBuild) =>
+    setBuilds((builds) => {
+      const b = [...builds];
+      b[index] = updatedBuild;
+      return b;
+    });
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="center" style={{ display: "flex", gap: "1rem" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              alignItems: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <input
-              placeholder="name"
-              value={editedName}
-              onChange={(e) => setEditedName(e.target.value)}
-            />
-            <button>save</button>
-          </div>
-
-          <div className="center" style={{ padding: "0 1rem" }}>
-            <textarea
-              placeholder="description"
-              value={editedDescription || ""}
-              style={{ minWidth: "100%" }}
-              onChange={(e) => setEditedDescription(e.target.value)}
-            />
-          </div>
-
+      {party && (
+        <div className="center" style={{ display: "flex", gap: "1rem" }}>
           <div
             style={{
               display: "flex",
               flexDirection: "column",
               gap: "1rem",
-              alignItems: "center",
             }}
           >
-            {accessories && //only returns with props
-              builds.map((build, index) => (
-                <>
-                  <EditBuild
-                    summon={items[items.length - 1][index]}
-                    key={build.id}
-                    build={build}
-                    links={links}
-                    accessories={accessories!}
-                    materia={materia!}
-                    index={index}
-                    updateBuild={(index: number, updatedBuild: DisplayBuild) =>
-                      setBuilds((builds) => {
-                        const b = [...builds];
-                        b[index] = updatedBuild;
-                        return b;
-                      })
-                    }
-                    handleAdd={handleAdd}
-                    handleLink={handleLink}
-                    handleRemove={handleRemove}
-                    handleSwap={handleSwap}
-                    handlePut={handlePut}
-                    weaponMateria={items[index * 2]}
-                    armorMateria={items[index * 2 + 1]}
-                    weaponSchema={schemas[index * 2]}
-                    armorSchema={schemas[index * 2 + 1]}
-                  />
-                  {index < builds.length - 1 && (
-                    <div style={{ display: "flex", gap: "1rem" }}>
-                      <button>↑ ↓</button>
-                    </div>
-                  )}
-                </>
-              ))}
-            <div style={{ display: "flex", gap: "1rem" }}>
-              {builds.length > 1 && <button onClick={deleteBuild}>-</button>}
-              {builds.length < 3 && <button onClick={addBuild}>+</button>}
+            <div
+              style={{
+                display: "flex",
+                gap: "1rem",
+                alignItems: "center",
+                flexWrap: "wrap",
+              }}
+            >
+              <input
+                placeholder="name"
+                value={editedName}
+                onChange={(e) => setEditedName(e.target.value)}
+              />
+              <button onClick={handleSave}>save</button>
+            </div>
+
+            <div className="center" style={{ padding: "0 1rem" }}>
+              <textarea
+                placeholder="description"
+                value={editedDescription || ""}
+                style={{ minWidth: "100%" }}
+                onChange={(e) => setEditedDescription(e.target.value)}
+              />
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              {accessories && //only returns with props
+                builds.map((build, index) => (
+                  <>
+                    <EditBuild
+                      summon={items[items.length - 1][index]}
+                      key={build.id}
+                      build={build}
+                      links={links}
+                      accessories={accessories!}
+                      materia={materia!}
+                      index={index}
+                      updateBuild={updateBuild}
+                      handleAdd={handleAdd}
+                      handleLink={handleLink}
+                      handleRemove={handleRemove}
+                      handleSwap={handleSwap}
+                      handlePut={handlePut}
+                      weaponMateria={items[index * 2]}
+                      armorMateria={items[index * 2 + 1]}
+                      weaponSchema={schemas[index * 2]}
+                      armorSchema={schemas[index * 2 + 1]}
+                    />
+                    {index < builds.length - 1 && (
+                      <div
+                        key={"swap" + index}
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <button onClick={() => swapBuilds(index, index + 1)}>
+                          ↑ ↓
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ))}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  justifyContent: "center",
+                }}
+              >
+                {builds.length > 1 && <button onClick={deleteBuild}>-</button>}
+                {builds.length < 3 && <button onClick={addBuild}>+</button>}
+              </div>
             </div>
           </div>
-        </div>
 
-        {materia && <SelectMateria allMateria={materia} />}
-      </div>
+          {materia && <SelectMateria allMateria={materia} />}
+        </div>
+      )}
     </DndProvider>
   );
 }
