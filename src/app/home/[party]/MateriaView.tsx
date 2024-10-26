@@ -7,10 +7,6 @@ export default function MateriaView({ m }: { m: Materia }) {
   const [hover, setHover] = useState(false);
   const [mouseDown, setMouseDown] = useState(false);
 
-  if (!m) {
-    return null;
-  }
-
   useEffect(() => {
     function handleMouseDown() {
       setMouseDown(true);

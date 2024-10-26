@@ -13,6 +13,7 @@ export default function SelectMateria({
 
   const mapMateria = () => {
     const mats = Array.from(allMateria.values())
+      .filter((m) => m.materia_type !== "empty")
       .sort((a, b) => {
         if (a.materia_type == b.materia_type) {
           if (a.name > b.name) return 1;
@@ -87,6 +88,7 @@ export default function SelectMateria({
         >
           {mapMateria().map((m) => (
             <div
+              key={m.name}
               style={{
                 alignItems: "center",
                 display: "flex",

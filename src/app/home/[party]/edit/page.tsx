@@ -76,6 +76,9 @@ export default function Page({ params }: Params) {
       b.weapon_materia.map((m) => (m.materia_type == "empty" ? null : m)),
       b.armor_materia.map((m) => (m.materia_type == "empty" ? null : m)),
     ]);
+    if (party.game !== "og") {
+      initialItems.push(builds.map((b) => b.summon_materia));
+    }
     setItems(initialItems);
 
     const initialSchemas = builds.flatMap((b) => [
@@ -96,7 +99,7 @@ export default function Page({ params }: Params) {
   const [schemas, setSchemas] = useState<("single" | "double")[][]>([]);
   const [editedName, setEditedName] = useState<string>();
   const [editedDescription, setEditedDescription] = useState<string>();
-  const [party, setParty] = useState<Party>();
+  const [party, setParty] = useState<Party>(); //need for update
   const [builds, setBuilds] = useState<DisplayBuild[]>([]);
 
   const handleAdd = (row: number) => {
@@ -144,20 +147,12 @@ export default function Page({ params }: Params) {
     if (popped === "double") {
       updatedSchemas[row].push("single");
     }
-    setItems(updatedItems); //not clearing off the end
+    setItems(updatedItems);
     setSchemas(updatedSchemas);
   };
 
-  // Handle the swapping logic
-  const handleDrop = (toIndex: number[], item: Materia | null) => {
-    const updatedItems = [...items];
-
-    updatedItems[toIndex[0]][toIndex[1]] = item!;
-
-    setItems(updatedItems); // Update state
-  };
-
   const handleSwap = (toIndex: number[], fromIndex: number[]) => {
+    if (toIndex[0] === -1 || fromIndex[0] === -1) return;
     const updatedItems = [...items];
 
     [
@@ -166,15 +161,18 @@ export default function Page({ params }: Params) {
     ] = [
       updatedItems[fromIndex![0]][fromIndex![1]],
       updatedItems[toIndex![0]][toIndex![1]],
-    ]; // Swap items
+    ];
 
-    setItems(updatedItems); // Update state
+    setItems(updatedItems);
   };
 
   const handlePut = (index: number[], item: Materia | null) => {
+    if (index[0] == -1 && item?.materia_type !== "red") return;
+    const col = index[1];
+    const row = index[0] === -1 ? items.length - 1 : index[0];
     const updatedItems = [...items];
-    updatedItems[index[0]][index[1]] = item;
-    setItems(updatedItems); // Update state
+    updatedItems[row][col] = item;
+    setItems(updatedItems);
   };
 
   return (
@@ -200,6 +198,7 @@ export default function Page({ params }: Params) {
               value={editedName}
               onChange={(e) => setEditedName(e.target.value)}
             />
+            <button>save</button>
           </div>
 
           <div className="center" style={{ padding: "0 1rem" }}>
@@ -217,6 +216,8 @@ export default function Page({ params }: Params) {
             {accessories && //only returns with props
               builds.map((build, index) => (
                 <EditBuild
+                  summon={items[items.length - 1][index]}
+                  key={build.id}
                   build={build}
                   links={links}
                   accessories={accessories!}
@@ -232,7 +233,6 @@ export default function Page({ params }: Params) {
                   handleAdd={handleAdd}
                   handleLink={handleLink}
                   handleRemove={handleRemove}
-                  handleDrop={handleDrop}
                   handleSwap={handleSwap}
                   handlePut={handlePut}
                   weaponMateria={items[index * 2]}
@@ -249,5 +249,3 @@ export default function Page({ params }: Params) {
     </DndProvider>
   );
 }
-
-//maybe make the rows children on edit build so they're managed separately??

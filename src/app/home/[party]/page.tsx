@@ -13,7 +13,7 @@ import {
   Party,
 } from "@/utils/frontend-types";
 import { fetchProps, fetchProps as fetchServerProps } from "./fetch";
-import Orb from "./MateriaView";
+import MateriaView from "./MateriaView";
 import Image from "next/image";
 import styles from "./page.module.css";
 import Link from "next/link";
@@ -45,8 +45,8 @@ function Double({
 
   return (
     <div style={{ display: "flex", gap: "0.6rem", position: "relative" }}>
-      <Orb m={m1} />
-      <Orb m={m2} />
+      <MateriaView m={m1} />
+      <MateriaView m={m2} />
       <div style={{ position: "absolute", left: "28%" }}>
         <Image src={`/materia/${src}.svg`} width={32} height={32} alt="" />
       </div>
@@ -73,7 +73,7 @@ function MateriaMap({
       );
       j += 2;
     } else {
-      slotIcons.push(<Orb key={i} m={materia[j]} />);
+      slotIcons.push(<MateriaView key={i} m={materia[j]} />);
       j++;
     }
   });

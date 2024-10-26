@@ -16,7 +16,8 @@ import {
 import { useState } from "react";
 import styles from "../page.module.css";
 import { characterDisplayString, validCharacters } from "@/utils/util";
-import Loadout from "./Loadout";
+import Loadout, { Slot } from "./Loadout";
+import Draggable from "./Draggable";
 
 function CharacterInput({
   character,
@@ -120,7 +121,6 @@ export default function EditBuild({
   accessories,
   handleAdd,
   handleLink,
-  handleDrop,
   handleSwap,
   handleRemove,
   handlePut,
@@ -128,6 +128,7 @@ export default function EditBuild({
   armorMateria,
   weaponSchema,
   armorSchema,
+  summon,
 }: {
   build: DisplayBuild;
   links: Link[];
@@ -138,13 +139,13 @@ export default function EditBuild({
   handleLink: (link: boolean, row: number, col: number) => void;
   handleAdd: (row: number) => void;
   handleRemove: (row: number) => void;
-  handleDrop: (toIndex: number[], item: Materia | null) => void;
   handleSwap: (toIndex: number[], fromIndex: number[]) => void;
   handlePut: (index: number[], item: Materia | null) => void;
   weaponMateria: (Materia | null)[];
   armorMateria: (Materia | null)[];
   weaponSchema: Schema;
   armorSchema: Schema;
+  summon: Materia | null;
 }) {
   const [character, setCharacter] = useState<Character>(build.character);
   const [armor, setArmor] = useState<string>(build.armor_name || "");
@@ -164,14 +165,25 @@ export default function EditBuild({
 
   return (
     <div className={styles.card}>
-      <CharacterInput
-        character={character}
-        game={build.game}
-        onChange={(newCharacter: string) => {
-          setCharacter(newCharacter as Character);
-          handleUpdate();
-        }}
-      />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <CharacterInput
+          character={character}
+          game={build.game}
+          onChange={(newCharacter: string) => {
+            setCharacter(newCharacter as Character);
+            handleUpdate();
+          }}
+        />
+        {build.game !== "og" && (
+          <Slot
+            item={summon}
+            index={[-1, index]}
+            handleSwap={handleSwap}
+            handlePut={handlePut}
+          />
+        )}
+      </div>
+
       <AccessoryInput
         accessories={accessories}
         accessory={accessory}
@@ -196,7 +208,6 @@ export default function EditBuild({
         handleAdd={handleAdd}
         handleRemove={handleRemove}
         handleLink={handleLink}
-        handleDrop={handleDrop}
         handleSwap={handleSwap}
       />
       <ArmorInput
@@ -216,7 +227,6 @@ export default function EditBuild({
         handleAdd={handleAdd}
         handleRemove={handleRemove}
         handleLink={handleLink}
-        handleDrop={handleDrop}
       />
     </div>
   );

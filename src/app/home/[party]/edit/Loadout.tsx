@@ -4,16 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { useDrag, useDrop } from "react-dnd";
 import Draggable, { ITEM_TYPE } from "./Draggable";
 
-const Slot = ({
+export const Slot = ({
   item,
   index,
-  handleDrop,
   handleSwap,
   handlePut,
 }: {
   item: Materia | null;
   index: number[];
-  handleDrop: (toIndex: number[], item: Materia | null) => void;
   handleSwap: (toIndex: number[], fromIndex: number[]) => void;
   handlePut: (index: number[], item: Materia | null) => void;
 }) => {
@@ -21,7 +19,7 @@ const Slot = ({
     accept: ITEM_TYPE,
     drop: (draggedItem: { item: Materia; index: number[] | null }) => {
       if (draggedItem.index === null) {
-        handleDrop(index, draggedItem.item);
+        handlePut(index, draggedItem.item);
       } else if (draggedItem.index !== index) {
         handleSwap(index, draggedItem.index); // Trigger swap if dragged into a different slot
       }
@@ -65,7 +63,7 @@ export default function Loadout({
   items,
   links,
   handleAdd,
-  handleDrop,
+
   handleSwap,
   handleRemove,
   handlePut,
@@ -79,7 +77,7 @@ export default function Loadout({
   handleAdd: (row: number) => void;
   handleRemove: (row: number) => void;
   handlePut: (index: number[], item: Materia | null) => void;
-  handleDrop: (toIndex: number[], item: Materia | null) => void;
+
   handleSwap: (toIndex: number[], fromIndex: number[]) => void;
 }) {
   let slots: JSX.Element[] = [];
@@ -93,7 +91,6 @@ export default function Loadout({
           key={`slot-${row}-${col}`}
           item={items[i]}
           index={[row, col]}
-          handleDrop={handleDrop}
           handleSwap={handleSwap}
         />,
         <button
@@ -128,7 +125,6 @@ export default function Loadout({
           key={`slot-${row}-${col}`}
           item={items[col]}
           index={[row, col]}
-          handleDrop={handleDrop}
         />,
         <button
           key={`button-eq-${row}-${col}`}
@@ -148,7 +144,6 @@ export default function Loadout({
           key={`slot-${row}-${col + 1}`}
           item={items[col + 1]}
           index={[row, col + 1]}
-          handleDrop={handleDrop}
         />,
         <button
           key={`button-x-${row}-${col}`}
