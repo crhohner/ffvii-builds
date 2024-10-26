@@ -43,29 +43,16 @@ export default function Header(props: HeaderProps) {
           </Link>
         </div>
 
-        {!props.mobile && (
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              color: "var(--secondary-text-color)",
-            }}
-          >
-            {links}
-          </div>
-        )}
-      </header>
-      {props.mobile && (
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
-            padding: "0 5rem 1rem 5rem",
+            gap: "1rem",
+            color: "var(--secondary-text-color)",
           }}
         >
           {links}
         </div>
-      )}
+      </header>
     </>
   );
 }

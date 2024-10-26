@@ -8,7 +8,6 @@
   border-style: solid;
   font: inherit;
   background: var(--background-color);
-  width: 100;
   gap: 0.5rem;
 }
 

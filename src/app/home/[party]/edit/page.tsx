@@ -88,6 +88,7 @@ export default function Page({ params }: Params) {
     setSchemas(initialSchemas);
     setEditedName(party.name);
     setEditedDescription(party.description || "");
+    if (builds.length === 0) addBuild();
   };
 
   useEffect(() => {
@@ -152,15 +153,18 @@ export default function Page({ params }: Params) {
   };
 
   const handleSwap = (toIndex: number[], fromIndex: number[]) => {
-    if (toIndex[0] === -1 || fromIndex[0] === -1) return;
+    if (toIndex[0] === -1 || fromIndex[0] === -1) {
+      if (toIndex[0] !== fromIndex[0]) return;
+    }
+
+    const toRow = toIndex[0] === -1 ? items.length - 1 : toIndex[0];
+    const fromRow = fromIndex[0] === -1 ? items.length - 1 : fromIndex[0];
+
     const updatedItems = [...items];
 
-    [
-      updatedItems[toIndex[0]][toIndex[1]],
-      updatedItems[fromIndex![0]][fromIndex![1]],
-    ] = [
-      updatedItems[fromIndex![0]][fromIndex![1]],
-      updatedItems[toIndex![0]][toIndex![1]],
+    [updatedItems[toRow][toIndex[1]], updatedItems[fromRow][fromIndex![1]]] = [
+      updatedItems[fromRow][fromIndex![1]],
+      updatedItems[toRow][toIndex![1]],
     ];
 
     setItems(updatedItems);
@@ -168,11 +172,61 @@ export default function Page({ params }: Params) {
 
   const handlePut = (index: number[], item: Materia | null) => {
     if (index[0] == -1 && item?.materia_type !== "red") return;
+    if (party!.game !== "og" && index[0] !== -1 && item?.materia_type === "red")
+      return;
     const col = index[1];
     const row = index[0] === -1 ? items.length - 1 : index[0];
     const updatedItems = [...items];
     updatedItems[row][col] = item;
     setItems(updatedItems);
+  };
+
+  const addBuild = () => {
+    const updatedItems = [...items];
+    updatedItems.splice(Math.max(items.length - 2, 0), 0, [null], [null]); //materia
+    updatedItems[updatedItems.length - 1].push(null); //null summon
+    const updatedSchemas = [...schemas];
+    updatedSchemas.splice(
+      //schemas
+      Math.max(items.length - 2, 0),
+      0,
+      ["single"],
+      ["single"]
+    );
+    const updatedBuilds = [...builds];
+    updatedBuilds.push({
+      game: party?.game!,
+      accessory: null,
+      character: "cloud",
+      armor_materia: [],
+      armor_schema: [],
+      weapon_materia: [],
+      weapon_schema: [],
+      armor_name: "",
+      weapon_name: "",
+      id: "",
+      summon_materia: null,
+    });
+    setBuilds(updatedBuilds);
+    setItems(updatedItems);
+    setSchemas(updatedSchemas);
+  };
+
+  const deleteBuild = () => {
+    const updatedItems = [...items];
+    updatedItems.splice(Math.max(items.length - 2, 0), 1); //materia
+    updatedItems[updatedItems.length - 1].pop(); //summon
+    const updatedSchemas = [...schemas];
+    updatedSchemas.splice(
+      //schemas
+      Math.max(items.length - 2, 0),
+      2
+    );
+    const updatedBuilds = [...builds];
+    updatedBuilds.pop();
+    setBuilds(updatedBuilds);
+    setItems(updatedItems);
+    setSchemas(updatedSchemas);
   };
 
   return (
@@ -211,36 +265,52 @@ export default function Page({ params }: Params) {
           </div>
 
           <div
-            style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "1rem",
+              alignItems: "center",
+            }}
           >
             {accessories && //only returns with props
               builds.map((build, index) => (
-                <EditBuild
-                  summon={items[items.length - 1][index]}
-                  key={build.id}
-                  build={build}
-                  links={links}
-                  accessories={accessories!}
-                  materia={materia!}
-                  index={index}
-                  updateBuild={(index: number, updatedBuild: DisplayBuild) =>
-                    setBuilds((builds) => {
-                      const b = [...builds];
-                      b[index] = updatedBuild;
-                      return b;
-                    })
-                  }
-                  handleAdd={handleAdd}
-                  handleLink={handleLink}
-                  handleRemove={handleRemove}
-                  handleSwap={handleSwap}
-                  handlePut={handlePut}
-                  weaponMateria={items[index * 2]}
-                  armorMateria={items[index * 2 + 1]}
-                  weaponSchema={schemas[index * 2]}
-                  armorSchema={schemas[index * 2 + 1]}
-                />
+                <>
+                  <EditBuild
+                    summon={items[items.length - 1][index]}
+                    key={build.id}
+                    build={build}
+                    links={links}
+                    accessories={accessories!}
+                    materia={materia!}
+                    index={index}
+                    updateBuild={(index: number, updatedBuild: DisplayBuild) =>
+                      setBuilds((builds) => {
+                        const b = [...builds];
+                        b[index] = updatedBuild;
+                        return b;
+                      })
+                    }
+                    handleAdd={handleAdd}
+                    handleLink={handleLink}
+                    handleRemove={handleRemove}
+                    handleSwap={handleSwap}
+                    handlePut={handlePut}
+                    weaponMateria={items[index * 2]}
+                    armorMateria={items[index * 2 + 1]}
+                    weaponSchema={schemas[index * 2]}
+                    armorSchema={schemas[index * 2 + 1]}
+                  />
+                  {index < builds.length - 1 && (
+                    <div style={{ display: "flex", gap: "1rem" }}>
+                      <button>↑ ↓</button>
+                    </div>
+                  )}
+                </>
               ))}
+            <div style={{ display: "flex", gap: "1rem" }}>
+              {builds.length > 1 && <button onClick={deleteBuild}>-</button>}
+              {builds.length < 3 && <button onClick={addBuild}>+</button>}
+            </div>
           </div>
         </div>
 

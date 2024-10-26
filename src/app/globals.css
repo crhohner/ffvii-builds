@@ -151,7 +151,7 @@ select {
   appearance: none;
   background: url("/caret.svg") no-repeat;
   background-repeat: no-repeat;
-  background-position: right 10px center;
+  background-position: right 0 center;
   background-size: 16px;
   text-overflow: ellipsis;
 }
