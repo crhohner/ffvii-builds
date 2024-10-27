@@ -44,7 +44,7 @@ export const Slot = ({
     <div style={{ position: "relative" }} onClick={handleShiftClick}>
       <div ref={ref} className="grid-slot">
         {item ? (
-          <Draggable item={item} index={index} />
+          <Draggable item={item} index={index} context />
         ) : (
           <Image src={"/materia/empty.svg"} height={32} width={32} alt="/" />
         )}

@@ -34,20 +34,21 @@ function Double({
   m2: Materia | null;
   links: MateriaLink[];
 }) {
-  if (!m1 || !m2) {
-    return null;
+  let active = false;
+  if (m1 && m2) {
+    active = links.some(
+      (link) =>
+        (link.blue_id === m1.id && link.target_id === m2.id) ||
+        (link.blue_id === m2.id && link.target_id === m1.id)
+    );
   }
-  const active = links.some(
-    (link) =>
-      (link.blue_id === m1.id && link.target_id === m2.id) ||
-      (link.blue_id === m2.id && link.target_id === m1.id)
-  );
+
   const src = active ? "active-link" : "link";
 
   return (
     <div style={{ display: "flex", gap: "0.6rem", position: "relative" }}>
-      <MateriaView m={m1} />
-      <MateriaView m={m2} />
+      <MateriaView context={true} m={m1} />
+      <MateriaView context={true} m={m2} />
       <div style={{ position: "absolute", left: "28%" }}>
         <Image src={`/materia/${src}.svg`} width={32} height={32} alt="" />
       </div>
@@ -57,29 +58,27 @@ function Double({
 
 function MateriaMap({
   materia,
-  slots,
+  schema,
   links,
 }: {
   materia: (Materia | null)[];
-  slots: Database["public"]["Enums"]["slot_type"][];
+  schema: Database["public"]["Enums"]["slot_type"][];
   links: Database["public"]["Tables"]["materia_link"]["Row"][];
 }) {
-  const slotIcons: JSX.Element[] = [];
-  let j = 0;
-
-  slots.forEach((slot, i) => {
-    if (slot === "double") {
-      slotIcons.push(
-        <Double key={i} m1={materia[j]} m2={materia[j + 1]} links={links} />
-      );
-      j += 2;
+  let slots: JSX.Element[] = [];
+  let i = 0;
+  for (const slot of schema) {
+    if (slot === "single") {
+      console.log(materia[i]);
+      slots.push(<MateriaView m={materia[i]} context />);
+      i += 1;
     } else {
-      slotIcons.push(<MateriaView key={i} m={materia[j]} />);
-      j++;
+      slots.push(<Double m1={materia[i]} m2={materia[i + 1]} links={links} />);
+      i += 2;
     }
-  });
+  }
 
-  return <div style={{ display: "flex", gap: "0.5rem" }}>{slotIcons}</div>;
+  return <div style={{ display: "flex", gap: "0.5rem" }}>{slots}</div>;
 }
 
 function ViewBuild({
@@ -108,9 +107,12 @@ function ViewBuild({
             </div>
           )}
         </div>
-        <MateriaView
-          m={build.summon_materia ? build.summon_materia : emptyMateria}
-        />
+        {build.game !== "og" && (
+          <MateriaView
+            context={true}
+            m={build.summon_materia ? build.summon_materia : emptyMateria}
+          />
+        )}
       </div>
 
       <div className={styles.property}>
@@ -125,7 +127,7 @@ function ViewBuild({
       </div>
       <MateriaMap
         materia={build.weapon_materia}
-        slots={build.weapon_schema}
+        schema={build.weapon_schema}
         links={links}
       />
       <div className={styles.property}>
@@ -142,7 +144,7 @@ function ViewBuild({
       >
         <MateriaMap
           materia={build.armor_materia}
-          slots={build.armor_schema}
+          schema={build.armor_schema}
           links={links}
         />
       </div>

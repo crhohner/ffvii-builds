@@ -58,8 +58,8 @@ export function characterDisplayString(
 
 export const allChars: Database["public"]["Enums"]["character"][] = [
   "cloud",
-  "tifa",
   "barret",
+  "tifa",
   "aerith",
   "red-xiii",
   "yuffie",

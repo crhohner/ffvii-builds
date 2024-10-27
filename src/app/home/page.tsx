@@ -14,7 +14,11 @@ import NewParty from "./NewParty";
 import DeleteParty from "./DeleteParty";
 import Link from "next/link";
 import { fetchServerProps } from "./fetch";
-import { Character, DisplayParty, Game } from "@/utils/frontend-types";
+import { Character, DisplayParty, Game, Party } from "@/utils/frontend-types";
+import { duplicateParty } from "./action";
+import { Database } from "@/utils/supabase/types";
+import Error from "@/components/Error";
+import { PostgresError } from "postgres";
 
 export type TagProps = { field: string; value: string };
 
@@ -31,6 +35,7 @@ export default function Page() {
   const [deleteMenu, setDeleteMenu] = useState(false);
   const [newMenu, setNewMenu] = useState(false);
   const [searchInput, setSearchInput] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
 
   const fetchParties = async () => {
     const response = await fetchServerProps();
@@ -104,6 +109,23 @@ export default function Page() {
       });
     }
   }
+
+  const handleDuplicate = async (displayParty: DisplayParty) => {
+    const party: Database["public"]["Tables"]["party"]["Row"] = {
+      id: displayParty.id,
+      name: displayParty.name,
+      builds: displayParty.builds,
+      game: displayParty.game,
+      user_id: displayParty.user_id,
+      description: displayParty.description,
+    };
+    try {
+      await duplicateParty({ party });
+    } catch (error) {
+      setError((error as PostgresError).message);
+    }
+    fetchParties();
+  };
 
   function Tag(props: TagProps) {
     const { field, value } = props;
@@ -234,29 +256,41 @@ export default function Page() {
   function Card({ party }: { party: DisplayParty }) {
     return (
       <div className={styles["card"]}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Link href={path + "/" + party.id}>{party.name}</Link>
-
-          {selected.includes(party) ? (
-            <Image
-              src="check.svg"
-              height={20}
-              width={20}
-              alt=""
-              onClick={() => {
-                setSelected((selected) => selected.filter((p) => p !== party));
-              }}
-              style={{ cursor: "pointer" }}
-            />
-          ) : (
-            <div
-              onClick={() => {
-                setSelected((selected) => [...selected, party]);
-              }}
-              className={styles["circle"]}
-              style={{ cursor: "pointer" }}
-            />
-          )}
+          <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
+            <button onClick={() => handleDuplicate(party)} className="icon">
+              <Image src="duplicate.svg" height={24} width={24} alt="" />
+            </button>
+            {selected.includes(party) ? (
+              <Image
+                src="check.svg"
+                height={20}
+                width={20}
+                alt=""
+                onClick={() => {
+                  setSelected((selected) =>
+                    selected.filter((p) => p !== party)
+                  );
+                }}
+                style={{ cursor: "pointer" }}
+              />
+            ) : (
+              <div
+                onClick={() => {
+                  setSelected((selected) => [...selected, party]);
+                }}
+                className={styles["circle"]}
+                style={{ cursor: "pointer" }}
+              />
+            )}
+          </div>
         </div>
         <div style={{ display: "flex", gap: "0.2rem" }}>
           <h3>GAME</h3>
@@ -291,6 +325,7 @@ export default function Page() {
         {tags.map(({ field, value }) => (
           <Tag field={field} value={value} key={value} />
         ))}
+        <Error error={error} />
       </div>
 
       <div className={styles["parties"]}>

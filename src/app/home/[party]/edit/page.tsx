@@ -20,6 +20,8 @@ import SelectMateria from "./SelectMateria";
 import { nullId } from "@/utils/util";
 import { updateParty } from "./action";
 import { useRouter } from "next/navigation";
+import { PostgresError } from "postgres";
+import Error from "@/components/Error";
 
 interface Params {
   params: {
@@ -70,6 +72,7 @@ export default function Page({ params }: Params) {
   const [editedName, setEditedName] = useState<string>();
   const [editedDescription, setEditedDescription] = useState<string>();
   const [builds, setBuilds] = useState<DisplayBuild[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -113,7 +116,8 @@ export default function Page({ params }: Params) {
     try {
       await updateParty({ newParty, updatedBuilds });
     } catch (error) {
-      console.log(error);
+      setError((error as PostgresError).message);
+      return;
     }
     router.back();
     //make new party with new fields, desc, ignoring builds
@@ -320,6 +324,7 @@ export default function Page({ params }: Params) {
               />
               <button onClick={handleSave}>save</button>
             </div>
+            <Error error={error} />
 
             <div className="center" style={{ padding: "0 1rem" }}>
               <textarea

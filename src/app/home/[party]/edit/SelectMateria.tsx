@@ -95,11 +95,11 @@ export default function SelectMateria({
                 gap: "1rem",
               }}
             >
-              <Draggable item={m} index={null} />
+              <Draggable item={m} index={null} context={false} />
               <div
                 style={{
                   maxWidth: "8rem",
-                  overflow: "hidden",
+                  wordBreak: "break-word",
                 }}
               >
                 <text>{m.name}</text>

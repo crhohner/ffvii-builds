@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { PostgresError } from "postgres";
 import Error from "@/components/Error";
 import { addParty } from "./action";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function NewParty({
   setNewMenu,
@@ -16,19 +17,23 @@ export default function NewParty({
   const [newPartyGame, setNewPartyGame] = useState("og");
   const [error, setError] = useState<string | null>(null);
 
+  const router = useRouter();
+  const path = usePathname();
+  let id = "";
   const handleNew = async (args: { name: string; game: string }) => {
     if (args.name === "") {
       setError("Party name cannot be empty!");
       return;
     }
     try {
-      await addParty(args);
+      id = await addParty(args);
     } catch (error) {
       setError((error as PostgresError).message);
-      return; //ask ibi how to handle page props in a refreshy way.. or anirudh?
+      return;
     }
-    setNewMenu(false);
-    await fetch();
+    //setNewMenu(false);
+    //await fetch();
+    router.push(path + "/" + id + "/edit");
   };
 
   return (

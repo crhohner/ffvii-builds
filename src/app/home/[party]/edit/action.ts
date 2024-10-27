@@ -26,11 +26,11 @@ export async function updateParty(args: {newParty:  Database["public"]["Tables"]
     }
     if (prevBuilds.includes(build.id)) {
       //update
-      console.log(build.id)
+      
       const {error: update_error} = await supabase.from("build").update(values).eq("id", build.id);
       if(update_error) throw update_error;
       buildIds.push(build.id)
-      console.log("here")
+
 
     } else  {
       //insert

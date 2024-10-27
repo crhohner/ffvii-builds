@@ -12,6 +12,8 @@ export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const session = async () => (await supabase.auth.getSession()).data!.session;
+  if (session() !== null) router.push("/home");
 
   async function login(email: string, password: string) {
     const data = {

@@ -35,8 +35,7 @@
   font: inherit;
   background: var(--background-color);
   gap: 0.25rem;
-  flex-wrap: wrap;
-  min-width: fit-content;
+  width: fit-content;
 }
 
 .dragged {
