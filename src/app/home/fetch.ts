@@ -2,6 +2,7 @@
 "use server";
 import { DisplayParty } from "@/utils/frontend-types";
 import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 import { cache } from "react";
 
 export const fetchServerProps : () => Promise<DisplayParty[]> = async () =>  {
@@ -15,8 +16,8 @@ export const fetchServerProps : () => Promise<DisplayParty[]> = async () =>  {
 
   })
   const {data: parties, error} = await getParties();
-  if(error) {
-    console.log(error) //TODO
+  if(error) { //ehhh
+    redirect("/error");
   }
 
   if (!parties) {

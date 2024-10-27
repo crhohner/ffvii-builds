@@ -19,6 +19,8 @@ import {
   Materia,
   Party,
 } from "@/utils/frontend-types";
+import { redirect } from "next/navigation";
+
 
 export const fetchProps: (id: string) => Promise<{
   party: Party;
@@ -57,17 +59,19 @@ export const fetchProps: (id: string) => Promise<{
     return builds;
   });
 
-  const response = await getParty();
-  const party: Party = response.data![0];
+  const {error, data} = await getParty();
+  if (error || data.length === 0) redirect("/error");
+  const party: Party = data![0];
 
-  const { error, data: accs } = await getGameAccessories();
+  const { error: accessories_error, data: accs } = await getGameAccessories();
   const allAccessories = new Map<string, Accessory>(
     accs!.map((a) => [a.id, a])
   );
-  if (error) console.log(error);
+  if (accessories_error) redirect("/error");
 
-  const { data: mats } = await getGameMateria();
+  const { error:materia_error, data: mats } = await getGameMateria();
   const allMateria = new Map<string, Materia>(mats!.map((m) => [m.id, m]));
+  if (materia_error) redirect("/error");
 
   const blues: string[] | undefined = mats
     ?.filter((m: Materia) => m.materia_type == "blue")
@@ -81,15 +85,17 @@ export const fetchProps: (id: string) => Promise<{
     return links;
   });
 
-  let { data: links } = await getLinks();
+  let { error: links_error,  data: links } = await getLinks();
   if (!links) {
     links = [];
   }
+  if (links_error) redirect("/error");
 
-  const { data: blds } = await getBuilds(); //will sort the party order by table order
+  const { error: builds_error, data: blds } = await getBuilds(); //will sort the party order by table order
   const bldMap = new Map<string, Database["public"]["Tables"]["build"]["Row"]>(
     blds!.map((b) => [b.id, b])
   );
+  if (builds_error || blds.length !== party.builds.length) redirect("/error");
 
   function displayBuild(
     build: Database["public"]["Tables"]["build"]["Row"]

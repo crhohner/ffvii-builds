@@ -158,7 +158,9 @@ export default function Page({ params }: Params) {
   const [links, setLinks] = useState<MateriaLink[]>([]);
 
   const fetchPageProps = async () => {
-    const { party, builds, links } = await fetchServerProps(params.party);
+    const result = await fetchServerProps(params.party);
+    if (result === undefined) return;
+    const { party, builds, links } = result;
     setParty(party);
     setBuilds(builds);
     setLinks(links);

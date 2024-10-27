@@ -37,9 +37,9 @@ export default function Page({ params }: Params) {
   const [party, setParty] = useState<Party>(); //need for update
 
   const fetchPageProps = async () => {
-    const { party, builds, links, accessories, materia } = await fetchProps(
-      params.party
-    );
+    const result = await fetchProps(params.party);
+    if (result === undefined) return;
+    const { party, builds, links, accessories, materia } = result;
     setParty(party);
     setBuilds(builds);
     setLinks(links);
