@@ -19,6 +19,10 @@ export default function Page() {
           If you have any suggestions for improvement, or notice any bugs,
           please reach out using the link in the footer!
         </p>
+        <p style={{ maxWidth: "240px" }}>
+          This is a free, fan-made application. All characters and items
+          mentioned belong to Square Enix.
+        </p>
       </div>
     </div>
   );
