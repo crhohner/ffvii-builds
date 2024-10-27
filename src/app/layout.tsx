@@ -28,7 +28,7 @@ export default async function RootLayout({
       <body className={reactor7.className}>
         <Header user={data.user} mobile={mobileCheck} />
         <main>{children}</main>
-        <Footer />
+        <Footer user={data.user} />
       </body>
     </html>
   );

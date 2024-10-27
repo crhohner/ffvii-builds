@@ -18,5 +18,6 @@ export const config = {
     "/password/reset/:path*",
     "/logout/:path*",
     "/home/:path*",
+    "/delete-account/:path*"
   ],
 };
