@@ -13,11 +13,11 @@ function isMeshType(object?: Object3D): object is Mesh {
 
 export function Model(props: any) {
   const { nodes, materials } = useGLTF("/savepoint.glb");
+  const myMesh = React.useRef<any>();
+  useFrame(({ clock }) => {
+    myMesh.current.rotation.y = clock.getElapsedTime();
+  });
   if (isMeshType(nodes.point)) {
-    const myMesh = React.useRef<any>();
-    useFrame(({ clock }) => {
-      myMesh.current.rotation.y = clock.getElapsedTime();
-    });
     return (
       <group {...props} dispose={null}>
         <mesh
