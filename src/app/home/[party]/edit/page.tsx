@@ -251,7 +251,7 @@ export default function Page({ params }: Params) {
     const updatedItems = [...items];
 
     updatedItems.splice(Math.max(items.length - 2, 0), 0, [null]); //weapon
-    updatedItems.splice(Math.max(items.length - 3, 1), 0, [null]); //armor
+    updatedItems.splice(Math.max(items.length - 2, 0), 0, [null]); //armor
 
     updatedItems[updatedItems.length - 1].push(null); //null summon
 
@@ -280,7 +280,7 @@ export default function Page({ params }: Params) {
 
   const deleteBuild = () => {
     const updatedItems = [...items];
-    updatedItems.splice(items.length - 2, 1); //materia
+    updatedItems.splice(items.length - 3, 2); //materia - but this only gets one row right?
     updatedItems[updatedItems.length - 1].pop(); //summon
     const updatedSchemas = [...schemas];
     updatedSchemas.pop();
