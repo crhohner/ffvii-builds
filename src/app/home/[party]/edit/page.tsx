@@ -9,6 +9,7 @@ import {
   Link,
   Materia,
   Party,
+  Schema,
 } from "@/utils/frontend-types";
 
 import { DndProvider } from "react-dnd";
@@ -249,15 +250,14 @@ export default function Page({ params }: Params) {
 
   const addBuild = () => {
     const updatedItems = [...items];
-
-    updatedItems.splice(Math.max(items.length - 2, 0), 0, [null]); //weapon
-    updatedItems.splice(Math.max(items.length - 2, 0), 0, [null]); //armor
+    const newItems = [[null], [null]];
+    const newSchemas: Schema[] = [["single"], ["single"]];
+    updatedItems.splice(updatedItems.length - 1, 0, ...newItems);
 
     updatedItems[updatedItems.length - 1].push(null); //null summon
 
     const updatedSchemas = [...schemas];
-    updatedSchemas.push(["single"]); //weapon
-    updatedSchemas.push(["single"]); //armor
+    updatedSchemas.push(...newSchemas);
 
     const updatedBuilds = [...builds];
     updatedBuilds.push({
