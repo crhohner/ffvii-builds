@@ -210,9 +210,12 @@ label {
 
 .err {
   color: var(--error-color);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .popup {
+  width: 12rem;
   display: flex;
   flex-direction: column;
   border-radius: 16px;
@@ -227,8 +230,10 @@ label {
   left: 50%;
   top: 20%;
   margin-left: -7.45em; /* idk why this works */
-
   background: var(--background-color);
+}
+.popup input {
+  width: 9.5rem;
 }
 
 .shade {

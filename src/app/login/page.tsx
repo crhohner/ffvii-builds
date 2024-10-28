@@ -54,7 +54,6 @@ export default function Login() {
     <div className="center">
       <div className={"container"}>
         <h1>Welcome back!</h1>
-
         <form onSubmit={handleSubmit} className="form">
           <div className="labeled-field">
             <label htmlFor="email">email:</label>
@@ -65,7 +64,6 @@ export default function Login() {
               type="email"
             />
           </div>
-
           <div className="labeled-field">
             <label htmlFor="password">password:</label>
             <input
@@ -75,7 +73,6 @@ export default function Login() {
               type="password"
             />
           </div>
-
           <div className="center">
             <button type="submit">log in</button>
           </div>
@@ -83,7 +80,6 @@ export default function Login() {
         <div className="center">
           <Error error={error} />
         </div>
-
         <Link href="/signup">New user?</Link>
         <Link href="/password/forgot">Forgot password?</Link>
       </div>
