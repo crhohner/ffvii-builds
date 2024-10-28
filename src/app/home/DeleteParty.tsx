@@ -45,7 +45,7 @@ export default function DeleteParty({
             width: "100%",
           }}
         >
-          <h2>
+          <h2 style={{ paddingRight: "1rem" }}>
             {selected.length > 1
               ? "Delete " + selected.length + " parties?"
               : "Delete " + selected[0].name + "?"}
@@ -58,7 +58,6 @@ export default function DeleteParty({
             alt=""
           />
         </div>
-        <br />
         <div className="center" style={{ gap: "1rem" }}>
           <button onClick={() => setDeleteMenu(false)}>cancel</button>
           <button onClick={handleDelete}>delete</button>

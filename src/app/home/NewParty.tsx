@@ -56,28 +56,28 @@ export default function NewParty({
             alt=""
           />
         </div>
-        <br />
         <div className="form">
-          <label>name:</label>
-          <input
-            type="text"
-            value={newPartyName}
-            onChange={(e) => setNewPartyName(e.target.value)}
-          />
-          <br />
-          <label>game:</label>
-          <select
-            value={newPartyGame}
-            onChange={(e) => setNewPartyGame(e.target.value)}
-          >
-            {allGames.map((game) => (
-              <option key={game} value={game}>
-                {gameDisplayString(game)}
-              </option>
-            ))}
-          </select>
-          <br />
-          <br />
+          <div className="labeled-field">
+            <label>name:</label>
+            <input
+              type="text"
+              value={newPartyName}
+              onChange={(e) => setNewPartyName(e.target.value)}
+            />
+          </div>
+          <div className="labeled-field">
+            <label>game:</label>
+            <select
+              value={newPartyGame}
+              onChange={(e) => setNewPartyGame(e.target.value)}
+            >
+              {allGames.map((game) => (
+                <option key={game} value={game}>
+                  {gameDisplayString(game)}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="center" style={{ gap: "1rem" }}>
             <button onClick={() => setNewMenu(false)}>cancel</button>
             <button

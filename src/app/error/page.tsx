@@ -3,7 +3,6 @@ export default function ErrorPage() {
   return (
     <div>
       <h1>An error occured :(</h1>
-      <br />
       <Link href="/">Return Home</Link>
     </div>
   );

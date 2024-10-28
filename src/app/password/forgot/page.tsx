@@ -41,18 +41,18 @@ export default function ForgotPassword() {
           <h3>Check your email for a reset link!</h3>
         ) : (
           <>
-            <br />
             <h1>Forgot your password?</h1>
-
             <form onSubmit={handleSubmit} className="form">
-              <label htmlFor="email">email:</label>
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                id="email"
-                name="email"
-                type="email"
-              />
-              <br />
+              <div className="labeled-field">
+                <label htmlFor="email">email:</label>
+                <input
+                  onChange={(e) => setEmail(e.target.value)}
+                  id="email"
+                  name="email"
+                  type="email"
+                />
+              </div>
+
               <div className="center">
                 <button type="submit">send reset link</button>
               </div>

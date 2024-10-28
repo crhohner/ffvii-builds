@@ -198,15 +198,12 @@ export default function Page() {
               alt=""
             />
           </div>
-
-          <br />
-          <h3>Games</h3>
+          <h3 style={{ paddingTop: "1rem" }}>Games</h3>
           <div
             style={{
               display: "flex",
               flexWrap: "wrap",
               gap: "1rem",
-              padding: "1rem 0 0 0",
             }}
           >
             {allGames.map((game) => (
@@ -218,14 +215,13 @@ export default function Page() {
               />
             ))}
           </div>
-          <br />
-          <h3>Characters</h3>
+          <h3 style={{ paddingTop: "1rem" }}>Characters</h3>
           <div
             style={{
               display: "flex",
               flexWrap: "wrap",
               gap: "1rem",
-              padding: "1rem 0 0 0",
+              paddingBottom: "1rem",
             }}
           >
             {allChars.map((character) => (
@@ -237,7 +233,6 @@ export default function Page() {
               />
             ))}
           </div>
-          <br />
           <button
             onClick={() =>
               setTags(() => {
@@ -263,7 +258,9 @@ export default function Page() {
             alignItems: "center",
           }}
         >
-          <Link href={path + "/" + party.id}>{party.name}</Link>
+          <Link style={{ paddingRight: "1rem" }} href={path + "/" + party.id}>
+            {party.name}
+          </Link>
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <button onClick={() => handleDuplicate(party)} className="icon">
               <Image src="duplicate.svg" height={24} width={24} alt="" />
@@ -292,7 +289,7 @@ export default function Page() {
             )}
           </div>
         </div>
-        <div style={{ display: "flex", gap: "0.2rem" }}>
+        <div style={{ display: "flex", gap: "0.2rem", paddingTop: "0.2rem" }}>
           <h3>GAME</h3>
           {gameDisplayString(party.game)}
         </div>

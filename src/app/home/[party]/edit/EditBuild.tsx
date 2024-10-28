@@ -106,13 +106,15 @@ function AccessoryInput({
         <option key="None" value={undefined}>
           None
         </option>
-        {Array.from(accessories.values()).map((a) => {
-          return (
-            <option key={a.id} value={a.id}>
-              {a.name}
-            </option>
-          );
-        })}
+        {Array.from(accessories.values())
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((a) => {
+            return (
+              <option key={a.id} value={a.id}>
+                {a.name}
+              </option>
+            );
+          })}
       </select>
     </div>
   );

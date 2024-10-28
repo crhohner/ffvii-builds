@@ -21,9 +21,7 @@ export default function Logout() {
   return (
     <div className="center">
       <div className={"container"}>
-        <br />
-        <h1>{"Goodbye " + name + " :("}</h1>
-        <br />
+        <h1 style={{ paddingBottom: "0.5rem" }}>{"Goodbye " + name + " :("}</h1>
         <button onClick={(e) => logout()}>log out</button>
       </div>
     </div>

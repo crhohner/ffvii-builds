@@ -43,7 +43,7 @@ export default function SelectMateria({
     >
       <div
         className="container"
-        style={{ gap: "1rem", textWrap: "pretty", maxWidth: "11rem" }}
+        style={{ textWrap: "pretty", maxWidth: "11rem" }}
       >
         <h3>User Guide:</h3>
         <p>Use the + and - buttons to create weapon schematics.</p>

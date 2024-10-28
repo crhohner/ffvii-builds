@@ -7,6 +7,7 @@
   --h-size: 24px;
   --footer-height: 13rem;
   --body-font: "Reactor7";
+  line-height: 0.75;
 }
 
 html,
@@ -30,6 +31,7 @@ a {
 p {
   color: inherit;
   margin: 0;
+  padding-top: 1rem;
 }
 
 main {
@@ -129,7 +131,6 @@ input {
   border-width: 2px;
   border-style: solid;
   font: inherit;
-  max-width: fit-content;
   overflow-x: scroll;
 }
 
@@ -184,8 +185,14 @@ label {
   border-width: 2px;
   border-style: solid;
   font: inherit;
-
   background: var(--background-color);
+}
+
+.labeled-field {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .center {
@@ -197,7 +204,7 @@ label {
 .form {
   padding-top: 16px;
   display: flex;
-
+  gap: 1rem;
   flex-direction: column;
 }
 
@@ -206,7 +213,6 @@ label {
 }
 
 .popup {
-  width: 12em;
   display: flex;
   flex-direction: column;
   border-radius: 16px;
@@ -217,7 +223,7 @@ label {
   font: inherit;
   z-index: 10;
   position: absolute;
-
+  gap: 0.5rem;
   left: 50%;
   top: 20%;
   margin-left: -7.45em; /* idk why this works */

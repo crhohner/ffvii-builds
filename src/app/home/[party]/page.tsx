@@ -174,7 +174,12 @@ export default function Page({ params }: Params) {
     const path = usePathname();
     return (
       <>
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
             <h1>{party.name}</h1>
             <h2>{gameDisplayString(party.game)}</h2>
@@ -187,11 +192,17 @@ export default function Page({ params }: Params) {
               ></Image>
             </Link>
           </div>
-          <div style={{ width: "inherit", height: "fit-content" }}>
+          <div
+            style={{
+              width: "inherit",
+              height: "fit-content",
+              paddingBottom: "1rem",
+              paddingTop: "0.5rem",
+            }}
+          >
             <h3>{party.description}</h3>
           </div>
         </div>
-        <br />
 
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {builds?.map((build, index) => (

@@ -53,26 +53,29 @@ export default function Login() {
   return (
     <div className="center">
       <div className={"container"}>
-        <br />
         <h1>Welcome back!</h1>
-        <br />
+
         <form onSubmit={handleSubmit} className="form">
-          <label htmlFor="email">email:</label>
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            id="email"
-            name="email"
-            type="email"
-          />
-          <br />
-          <label htmlFor="password">password:</label>
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            id="password"
-            name="password"
-            type="password"
-          />
-          <br />
+          <div className="labeled-field">
+            <label htmlFor="email">email:</label>
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              id="email"
+              name="email"
+              type="email"
+            />
+          </div>
+
+          <div className="labeled-field">
+            <label htmlFor="password">password:</label>
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              id="password"
+              name="password"
+              type="password"
+            />
+          </div>
+
           <div className="center">
             <button type="submit">log in</button>
           </div>
@@ -80,7 +83,7 @@ export default function Login() {
         <div className="center">
           <Error error={error} />
         </div>
-        <br />
+
         <Link href="/signup">New user?</Link>
         <Link href="/password/forgot">Forgot password?</Link>
       </div>

@@ -23,7 +23,7 @@ export default function Home() {
         <h1 style={{ fontSize: "38px" }}>Savepoint</h1>
         <h3>{"A build management system for"}</h3>
         <h3>{"Final Fantasy VII"}</h3>
-        <br />
+
         <div
           style={{ maxWidth: "200px", minHeight: "250px" }}
           id="canvas-container"
@@ -32,7 +32,6 @@ export default function Home() {
             <Model />
           </Canvas>
         </div>
-        <br />
 
         <button onClick={() => router.push("/login")}>Get started!</button>
       </div>

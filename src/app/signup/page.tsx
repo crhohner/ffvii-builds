@@ -49,32 +49,32 @@ export default function Signup() {
 
   return (
     <div className="center">
-      <div className={"container"}>
+      <div className="container">
         {success ? (
           <h3>Check your email for a validation link!</h3>
         ) : (
           <>
-            {" "}
-            <br />
             <h1>Welcome!</h1>
-            <br />
             <form onSubmit={handleSubmit} className="form">
-              <label htmlFor="email">email:</label>
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                id="email"
-                name="email"
-                type="email"
-              />
-              <br />
-              <label htmlFor="password">password:</label>
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                id="password"
-                name="password"
-                type="password"
-              />
-              <br />
+              <div className="labeled-field">
+                <label htmlFor="email">email:</label>
+                <input
+                  onChange={(e) => setEmail(e.target.value)}
+                  id="email"
+                  name="email"
+                  type="email"
+                />
+              </div>
+
+              <div className="labeled-field">
+                <label htmlFor="password">password:</label>
+                <input
+                  onChange={(e) => setPassword(e.target.value)}
+                  id="password"
+                  name="password"
+                  type="password"
+                />
+              </div>
               <div className="center">
                 <button type="submit">sign up</button>
               </div>
@@ -82,7 +82,6 @@ export default function Signup() {
             <div className="center">
               <Error error={error} />
             </div>
-            <br />
             <Link href="/login">Already have an account?</Link>
           </>
         )}

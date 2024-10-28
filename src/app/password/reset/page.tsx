@@ -40,27 +40,27 @@ export default function ForgotPassword() {
         {success ? (
           <>
             <h3>{"Password reset! :)"}</h3>
-            <br />
             <Link href={"/"}>Return home</Link>
           </>
         ) : (
           <>
-            <br />
             <h1>Reset password</h1>
             <form onSubmit={handleSubmit} className="form">
-              <label htmlFor="password">new password:</label>
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                id="password"
-                name="password"
-                type="password"
-              />
-              <br />
+              <div className="labeled-field">
+                <label htmlFor="password">new password:</label>
+                <input
+                  onChange={(e) => setPassword(e.target.value)}
+                  id="password"
+                  name="password"
+                  type="password"
+                />
+              </div>
+
               <div className="center">
                 <button type="submit">reset</button>
               </div>
             </form>
-            <br />
+
             <div className="err">{error}</div>
           </>
         )}
