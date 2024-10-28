@@ -9,7 +9,7 @@ import { headers } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Savepoint",
-  description: "A build management system for FFVI",
+  description: "A build management system for FFVII",
 };
 
 const reactor7 = localFont({ src: "../../public/font/Reactor7.woff" });
