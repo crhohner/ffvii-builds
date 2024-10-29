@@ -258,7 +258,10 @@ export default function Page() {
             alignItems: "center",
           }}
         >
-          <Link style={{ paddingRight: "1rem" }} href={path + "/" + party.id}>
+          <Link
+            style={{ paddingRight: "1rem", textWrap: "wrap" }}
+            href={path + "/" + party.id}
+          >
             {party.name}
           </Link>
           <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
