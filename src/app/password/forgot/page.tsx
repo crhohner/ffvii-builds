@@ -14,7 +14,7 @@ export default function ForgotPassword() {
       email: email,
     };
     const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
-      redirectTo: "http://localhost:3000/password/reset",
+      redirectTo: "https://www.ffvii-savepoint.com/password/reset",
     });
 
     if (error) {
