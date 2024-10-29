@@ -259,7 +259,11 @@ export default function Page() {
           }}
         >
           <Link
-            style={{ paddingRight: "1rem", textWrap: "wrap" }}
+            style={{
+              paddingRight: "1rem",
+              textWrap: "wrap",
+              wordBreak: "break-word",
+            }}
             href={path + "/" + party.id}
           >
             {party.name}
