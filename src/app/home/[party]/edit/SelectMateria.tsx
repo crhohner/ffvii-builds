@@ -2,6 +2,7 @@ import { Materia } from "@/utils/frontend-types";
 import Draggable from "./Draggable";
 import { allColors } from "@/utils/util";
 import { useState } from "react";
+import CustomSelect, { Option } from "@/components/CustomSelect";
 
 export default function SelectMateria({
   allMateria,
@@ -30,6 +31,12 @@ export default function SelectMateria({
 
     return mats;
   };
+
+  const colorOptions = allColors.map((c) => ({
+    value: c as any,
+    label: c as string,
+  }));
+  colorOptions.unshift({ value: "all", label: "all" });
 
   return (
     <div
@@ -65,16 +72,17 @@ export default function SelectMateria({
         }}
       >
         <h3>COLOR</h3>
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <option value={"all"} key={"all"}>
-            all
-          </option>
-          {allColors.map((c) => (
-            <option value={c} key={c}>
-              {c}
-            </option>
-          ))}
-        </select>
+        <CustomSelect
+          options={colorOptions}
+          value={
+            {
+              value: filter,
+              label: filter,
+            } as Option
+          }
+          searchable={false}
+          handler={(option: Option | null) => setFilter(option!.value)}
+        />
       </div>
       <div className="container">
         <div

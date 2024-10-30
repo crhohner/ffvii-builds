@@ -69,7 +69,6 @@ function MateriaMap({
   let i = 0;
   for (const slot of schema) {
     if (slot === "single") {
-      console.log(materia[i]);
       slots.push(<MateriaView m={materia[i]} context />);
       i += 1;
     } else {

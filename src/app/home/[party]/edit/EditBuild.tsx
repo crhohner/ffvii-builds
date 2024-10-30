@@ -18,6 +18,7 @@ import styles from "../page.module.css";
 import { characterDisplayString, validCharacters } from "@/utils/util";
 import Loadout, { Slot } from "./Loadout";
 import Draggable from "./Draggable";
+import CustomSelect, { Option } from "@/components/CustomSelect";
 
 function CharacterInput({
   character,
@@ -28,23 +29,29 @@ function CharacterInput({
   game: Game;
   onChange: (newCharacter: string) => void;
 }) {
+  const options: Option[] = validCharacters(game).map((character) => {
+    return {
+      value: character,
+      label: characterDisplayString(character),
+    };
+  });
+
   return (
     <div className={styles.property}>
       <h3>CHARACTER</h3>
-      <select
-        value={character}
-        onChange={(e) => {
-          onChange(e.target.value);
+      <CustomSelect
+        options={options}
+        searchable={false}
+        value={
+          {
+            value: character,
+            label: characterDisplayString(character),
+          } as Option
+        }
+        handler={(option: Option | null) => {
+          onChange(option!.value);
         }}
-      >
-        {validCharacters(game).map((character) => {
-          return (
-            <option key={character} value={character}>
-              {characterDisplayString(character)}
-            </option>
-          );
-        })}
-      </select>
+      />
     </div>
   );
 }
@@ -94,28 +101,33 @@ function AccessoryInput({
 }: {
   accessory: string | null;
   accessories: Map<string, Accessory>;
-  onChange: (new_id: string) => void;
+  onChange: (new_id: string | null) => void;
 }) {
+  const options = Array.from(accessories.values())
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((a) => {
+      return { value: a.id as any, label: a.name };
+    });
+  options.unshift({ value: undefined, label: "None" });
+
   return (
     <div className={styles.property}>
       <h3>ACCESSORY</h3>
-      <select
-        value={accessory ? accessory : undefined}
-        onChange={(e) => onChange(e.target.value)}
-      >
-        <option key="None" value={undefined}>
-          None
-        </option>
-        {Array.from(accessories.values())
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((a) => {
-            return (
-              <option key={a.id} value={a.id}>
-                {a.name}
-              </option>
-            );
-          })}
-      </select>
+      <CustomSelect
+        options={options}
+        handler={(option: Option | null) => {
+          onChange(option ? option.value : null);
+        }}
+        searchable={true}
+        value={
+          !accessory
+            ? null
+            : ({
+                value: accessory,
+                label: accessories.get(accessory!)?.name,
+              } as Option)
+        }
+      />
     </div>
   );
 }
@@ -199,7 +211,7 @@ export default function EditBuild({
       <AccessoryInput
         accessories={accessories}
         accessory={accessory}
-        onChange={(new_id: string) => {
+        onChange={(new_id: string | null) => {
           setAccessory(new_id);
         }}
       />
