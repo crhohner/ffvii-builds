@@ -13,8 +13,8 @@
 
 .property {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
-  align-items: center;
 }
 
 .orb {
@@ -33,6 +33,11 @@
   font: inherit;
   background: var(--background-color);
   gap: 0.25rem;
+  width: 8rem;
+  top: 2.5rem;
+  right: -4.2rem;
+  text-wrap: wrap;
+  word-wrap: break-word;
 }
 
 .dragged {

@@ -1,3 +1,4 @@
+import { Character, Materia, Schema } from "./frontend-types";
 import { Database } from "./supabase/types"; 
 
 export function gameDisplayString(
@@ -18,6 +19,58 @@ export function gameDisplayString(
     }
   }
 }
+
+
+
+export function createDefaultBuild(
+  game: Database["public"]["Enums"]["game"]
+) {
+  const val = {
+    accessory: null,
+    armor_materia: [null],
+    weapon_materia: [null],
+    armor_name: "",
+    weapon_name: "Buster Sword",
+    armor_schema: ["single"] as Schema,
+    weapon_schema: ["single"] as Schema,
+    character: "cloud" as Character,
+    game,
+    summon_materia: null,
+    id: "",
+    notes: ""
+  };
+  switch (game) {
+    case "remake":
+    case "og": {
+      val.armor_name = "Bronze Bangle"
+      val.armor_materia = []
+      val.armor_schema = []
+      val.weapon_schema = ["double"] as Schema
+      val.weapon_materia = [null,null]
+      break;
+    }
+    case "rebirth": {
+      val.armor_name = "Metal Bracer"
+      val.armor_materia = [null]
+      val.weapon_materia = [null, null, null, null, null];
+      val.armor_schema = ["single"] as Schema,
+      val.weapon_schema = ["double","double","single"] as Schema
+      break;
+    }
+    default: {
+      throw TypeError("Invalid game");
+    }
+  }
+  return val
+}
+
+export function compareMateria(a: Materia, b: Materia) {
+  if (a.materia_type == b.materia_type) {
+    if (a.name > b.name) return 1;
+    else return -1;
+  }
+  if (a.materia_type > b.materia_type) return 1;
+  return -1; }
 
 export function characterDisplayString(
   character: Database["public"]["Enums"]["character"]

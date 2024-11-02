@@ -24,11 +24,14 @@
     "perf_hooks": "^0.0.1",
     "postgres": "^3.4.4",
     "react": "^18",
+    "react-device-detect": "^2.2.3",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
+    "react-dnd-touch-backend": "^16.0.1",
     "react-select": "^5.8.1",
     "three": "^0.168.0",
-    "tls": "^0.0.1"
+    "tls": "^0.0.1",
+    "use-double-click": "^1.0.5"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.0",
@@ -37,6 +40,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/use-double-click": "^1.0.5",
     "dotenv-flow": "^4.1.0",
     "drizzle-kit": "^0.24.0",
     "eslint": "^8",

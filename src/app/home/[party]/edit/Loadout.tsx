@@ -1,57 +1,116 @@
 import { Link, Materia } from "@/utils/frontend-types";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { useDrag, useDrop } from "react-dnd";
+import { useDrop } from "react-dnd";
 import Draggable, { ITEM_TYPE } from "./Draggable";
+import useDoubleClick from "use-double-click";
+import MateriaSelect, { MateriaOption } from "@/components/MateriaSelect";
+import { isMobile } from "react-device-detect";
 
 export const Slot = ({
   item,
   index,
   handleSwap,
   handlePut,
+  options,
 }: {
   item: Materia | null;
   index: number[];
   handleSwap: (toIndex: number[], fromIndex: number[]) => void;
-  handlePut: (index: number[], item: Materia | null) => void;
+  handlePut: (index: number[], id: string | null) => void;
+  options: MateriaOption[];
 }) => {
   const [, drop] = useDrop({
     accept: ITEM_TYPE,
     drop: (draggedItem: { item: Materia; index: number[] | null }) => {
       if (draggedItem.index === null) {
-        handlePut(index, draggedItem.item);
+        handlePut(index, draggedItem.item.id);
       } else if (draggedItem.index !== index) {
         handleSwap(index, draggedItem.index); // Trigger swap if dragged into a different slot
       }
     },
   });
-  const ref = useRef<HTMLDivElement | null>(null);
+  const slotRef = useRef<HTMLDivElement | null>(null);
+  const selectRef = useRef<HTMLDivElement | null>(null);
+  const [select, setSelect] = useState(false);
+  const [context, setContext] = useState(!isMobile);
+
+  useDoubleClick({
+    onSingleClick: (e) => {
+      if (!select) {
+        setSelect(true);
+        setContext(false);
+      }
+    },
+    onDoubleClick: (e) => {
+      handlePut(index, null);
+    },
+    ref: slotRef,
+    latency: 200,
+  });
 
   useEffect(() => {
-    if (ref.current) {
-      drop(ref.current); // Ensure the ref is properly connected
+    if (slotRef.current) {
+      drop(slotRef.current); // Ensure the ref is properly connected
     }
   }, [drop]);
 
-  function handleShiftClick(event: any) {
-    if (event.shiftKey) {
-      handlePut(index, null);
-    }
-  }
+  useEffect(() => {
+    const handleClickOutside = (event: any) => {
+      if (selectRef.current && !selectRef.current.contains(event.target)) {
+        setSelect(false);
+        setContext(true);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [selectRef, setSelect]);
 
   return (
-    //TODO ADD DOUBLE CLICK DELETE / SINGLE CLICK CHANGE
-    <div style={{ position: "relative" }} onClick={handleShiftClick}>
-      <div ref={ref} className="grid-slot">
+    <div style={{ position: "relative" }}>
+      <div ref={slotRef} className="grid-slot">
         {item ? (
-          <Draggable item={item} index={index} context />
+          <Draggable item={item} index={index} context={context} />
         ) : (
           <Image src={"/materia/empty.svg"} height={32} width={32} alt="/" />
         )}
       </div>
-      <div
-        style={{ position: "absolute", left: "-2.8rem", width: "8rem" }}
-      ></div>
+      {select && (
+        <div
+          style={{
+            position: "absolute",
+            left: "-3.5rem",
+            top: "2.5rem",
+          }}
+          ref={selectRef}
+        >
+          <MateriaSelect
+            options={options}
+            searchable={true}
+            value={
+              item
+                ? {
+                    value: item.id,
+                    label: item.name,
+                    context: item.description,
+                    color: item.materia_type,
+                  }
+                : null
+            }
+            handler={(option: MateriaOption | null) => {
+              if (option !== null) {
+                handlePut(index, option.value); //look into clearable logic..
+              } else {
+                handlePut(index, null);
+              }
+              setSelect(false);
+              setContext(true);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -63,11 +122,11 @@ export default function Loadout({
   items,
   links,
   handleAdd,
-
   handleSwap,
   handleRemove,
   handlePut,
   handleLink,
+  options,
 }: {
   row: number;
   schema: ("single" | "double")[];
@@ -76,9 +135,9 @@ export default function Loadout({
   handleLink: (link: boolean, row: number, col: number) => void;
   handleAdd: (row: number) => void;
   handleRemove: (row: number) => void;
-  handlePut: (index: number[], item: Materia | null) => void;
-
+  handlePut: (index: number[], id: string | null) => void;
   handleSwap: (toIndex: number[], fromIndex: number[]) => void;
+  options: MateriaOption[];
 }) {
   let slots: JSX.Element[] = [];
   let i = 0;
@@ -87,6 +146,7 @@ export default function Loadout({
     if (slottype === "single") {
       slots.push(
         <Slot
+          options={options}
           handlePut={handlePut}
           key={`slot-${row}-${col}`}
           item={items[i]}
@@ -120,6 +180,7 @@ export default function Loadout({
 
       slots.push(
         <Slot
+          options={options}
           handleSwap={handleSwap}
           handlePut={handlePut}
           key={`slot-${row}-${col}`}
@@ -139,6 +200,7 @@ export default function Loadout({
           =
         </button>,
         <Slot
+          options={options}
           handleSwap={handleSwap}
           handlePut={handlePut}
           key={`slot-${row}-${col + 1}`}

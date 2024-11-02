@@ -8,6 +8,7 @@ import {
   Accessory,
   Character,
   DisplayBuild,
+  Equipment,
   Game,
   Link,
   Materia,
@@ -15,9 +16,12 @@ import {
 } from "@/utils/frontend-types";
 import { useEffect, useState } from "react";
 import styles from "../page.module.css";
-import { characterDisplayString, validCharacters } from "@/utils/util";
+import {
+  characterDisplayString,
+  compareMateria,
+  validCharacters,
+} from "@/utils/util";
 import Loadout, { Slot } from "./Loadout";
-import Draggable from "./Draggable";
 import CustomSelect, { Option } from "@/components/CustomSelect";
 
 function CharacterInput({
@@ -49,47 +53,105 @@ function CharacterInput({
           } as Option
         }
         handler={(option: Option | null) => {
-          onChange(option!.value);
+          onChange(option!.value!);
         }}
       />
     </div>
   );
 }
 
-function WeaponInput({
-  weapon_name,
+function NotesInput({
+  notes,
   onChange,
 }: {
-  weapon_name: string;
-  onChange: (new_name: string) => void;
+  notes: string;
+  onChange: (new_notes: string) => void;
 }) {
   return (
     <div className={styles.property}>
-      <h3>WEAPON</h3>
-      <input
-        name="weapon_name"
-        value={weapon_name}
+      <h3>NOTES</h3>
+      <textarea
+        style={{
+          //need max width..
+          minHeight: "1rem",
+          minWidth: "fit-content",
+        }}
+        name="notes" //it is so bad that the column is misnamed now..
+        value={notes} //guess i have to finish the DB then test this on my existing builds to make sure it is not destructive
         onChange={(e) => onChange(e.target.value)}
-      ></input>
+      ></textarea>
+    </div>
+  );
+}
+
+function WeaponInput({
+  weapon,
+  schema,
+  onChange,
+  equipment,
+  character,
+}: {
+  weapon: string;
+  onChange: (new_name: string, new_schema: Schema) => void;
+  equipment: Equipment[];
+  schema: Schema;
+  character: Character;
+}) {
+  const options = equipment
+    .filter((e) => e.character === character)
+    .map((e) => ({ label: e.name, value: e.schema } as Option));
+
+  return (
+    <div className={styles.property}>
+      <h3>WEAPON</h3>
+      <CustomSelect
+        options={options}
+        handler={(option: Option | null) => {
+          if (option) {
+            onChange(option.label, option.value);
+          }
+        }}
+        searchable={true}
+        value={{
+          value: schema,
+          label: weapon,
+        }}
+      />
     </div>
   );
 }
 
 function ArmorInput({
+  equipment,
+  schema,
   armor_name,
   onChange,
 }: {
+  schema: Schema;
+  equipment: Equipment[];
   armor_name: string;
-  onChange: (new_name: string) => void;
+  onChange: (new_name: string, new_schema: Schema) => void;
 }) {
+  const options = equipment
+    .filter((e) => e.character === null)
+    .map((e) => ({ label: e.name, value: e.schema } as Option));
+
   return (
     <div className={styles.property}>
       <h3>ARMOR</h3>
-      <input
-        name="armor_name"
-        value={armor_name}
-        onChange={(e) => onChange(e.target.value)}
-      ></input>
+      <CustomSelect
+        options={options}
+        handler={(option: Option | null) => {
+          if (option) {
+            onChange(option.label, option.value);
+          }
+        }}
+        searchable={true}
+        value={{
+          value: schema,
+          label: armor_name,
+        }}
+      />
     </div>
   );
 }
@@ -106,9 +168,9 @@ function AccessoryInput({
   const options = Array.from(accessories.values())
     .sort((a, b) => a.name.localeCompare(b.name))
     .map((a) => {
-      return { value: a.id as any, label: a.name };
+      return { value: a.id as any, label: a.name, context: a.description };
     });
-  options.unshift({ value: undefined, label: "None" });
+  options.unshift({ value: undefined, label: "None", context: null });
 
   return (
     <div className={styles.property}>
@@ -138,11 +200,14 @@ export default function EditBuild({
   index,
   updateBuild,
   accessories,
+  materia,
+  equipment,
   handleAdd,
   handleLink,
   handleSwap,
   handleRemove,
   handlePut,
+  setSchema,
   weaponMateria,
   armorMateria,
   weaponSchema,
@@ -154,12 +219,14 @@ export default function EditBuild({
   index: number;
   accessories: Map<string, Accessory>;
   materia: Map<string, Materia>;
+  equipment: Equipment[];
   updateBuild: (index: number, updatedBuild: DisplayBuild) => void;
   handleLink: (link: boolean, row: number, col: number) => void;
   handleAdd: (row: number) => void;
   handleRemove: (row: number) => void;
   handleSwap: (toIndex: number[], fromIndex: number[]) => void;
-  handlePut: (index: number[], item: Materia | null) => void;
+  handlePut: (index: number[], id: string | null) => void;
+  setSchema: (index: number, schema: Schema) => void;
   weaponMateria: (Materia | null)[];
   armorMateria: (Materia | null)[];
   weaponSchema: Schema;
@@ -172,12 +239,29 @@ export default function EditBuild({
   const [accessory, setAccessory] = useState<string | null>(
     build.accessory ? build.accessory.id : null
   );
+  const [notes, setNotes] = useState<string>(build.notes);
+
+  const allOptions = Array.from(materia.values())
+    .sort(compareMateria)
+    .map((m) => ({
+      label: m.name,
+      context: m.description,
+      color: m.materia_type,
+      value: m.id,
+    }))
+    .filter((m) => m.color !== "empty");
+
+  const summonOnly = allOptions.filter((m) => m.color === "red");
+
+  const noSummons = allOptions.filter((m) => m.color !== "red");
+
+  const options = build.game === "og" ? allOptions : noSummons;
 
   useEffect(() => {
     if (character || accessory || weapon || armor) {
       handleUpdate();
     }
-  }, [character, accessory, weapon, armor]);
+  }, [character, accessory, weapon, armor, notes]);
 
   function handleUpdate() {
     const newBuild = { ...build };
@@ -185,6 +269,7 @@ export default function EditBuild({
     newBuild.weapon_name = weapon;
     newBuild.weapon_name = weapon;
     newBuild.character = character;
+    newBuild.notes = notes;
     updateBuild(index, newBuild);
   }
 
@@ -200,6 +285,7 @@ export default function EditBuild({
         />
         {build.game !== "og" && (
           <Slot
+            options={summonOnly}
             item={summon}
             index={[-1, index]}
             handleSwap={handleSwap}
@@ -215,13 +301,19 @@ export default function EditBuild({
           setAccessory(new_id);
         }}
       />
+
       <WeaponInput
-        weapon_name={weapon}
-        onChange={(new_name: string) => {
+        character={character}
+        schema={weaponSchema}
+        equipment={equipment}
+        weapon={weapon}
+        onChange={(new_name: string, new_schema: Schema) => {
           setWeapon(new_name);
+          setSchema(index * 2, new_schema);
         }}
       />
       <Loadout
+        options={options}
         handlePut={handlePut}
         row={index * 2}
         items={weaponMateria}
@@ -232,13 +324,18 @@ export default function EditBuild({
         handleLink={handleLink}
         handleSwap={handleSwap}
       />
+
       <ArmorInput
+        equipment={equipment}
+        schema={armorSchema}
         armor_name={armor}
-        onChange={(new_name: string) => {
+        onChange={(new_name: string, new_schema) => {
           setArmor(new_name);
+          setSchema(index * 2 + 1, new_schema);
         }}
       />
       <Loadout
+        options={options}
         handleSwap={handleSwap}
         handlePut={handlePut}
         row={index * 2 + 1}
@@ -248,6 +345,12 @@ export default function EditBuild({
         handleAdd={handleAdd}
         handleRemove={handleRemove}
         handleLink={handleLink}
+      />
+      <NotesInput
+        notes={notes}
+        onChange={(new_notes: string) => {
+          setNotes(new_notes);
+        }}
       />
     </div>
   );

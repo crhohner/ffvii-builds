@@ -147,6 +147,7 @@ function ViewBuild({
           links={links}
         />
       </div>
+      <h3>{build.notes}</h3>
     </div>
   );
 }

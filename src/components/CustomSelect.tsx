@@ -1,8 +1,9 @@
 import Select, { StylesConfig } from "react-select";
 
 export interface Option {
-  value: string;
+  value: any | null;
   label: string;
+  context?: string;
 }
 
 export default function CustomSelect({
@@ -21,9 +22,10 @@ export default function CustomSelect({
       ...base,
       color: "white",
       borderRadius: "12px",
-      background: "none",
+      background: "var(--background-color)",
       borderWidth: "2px",
     }),
+
     menu: (base) => ({
       ...base,
       color: "rgb(0, 0, 50)",
@@ -39,7 +41,7 @@ export default function CustomSelect({
       backgroundColor: state.isSelected ? "rgb(0, 142, 171)" : "white",
 
       ":hover": {
-        backgroundColor: "var(--secondary-text-color)",
+        backgroundColor: "rgb(0, 142, 171)",
         color: "white",
       },
     }),
@@ -60,6 +62,16 @@ export default function CustomSelect({
   return (
     <Select
       options={options}
+      formatOptionLabel={(option, { context }) =>
+        context === "menu" ? (
+          <div>
+            {option.label}
+            <h3>{option.context}</h3>
+          </div>
+        ) : (
+          <div>{option.label}</div>
+        )
+      }
       value={value}
       isSearchable={searchable}
       onChange={handler}

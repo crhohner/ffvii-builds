@@ -1,4 +1,5 @@
-import { Database } from "./supabase/types";
+import { Database } from "./types";
+
 
 export type Character = Database["public"]["Enums"]["character"];
 export type Game = Database["public"]["Enums"]["game"];
@@ -18,6 +19,7 @@ export type DisplayBuild = {
   weapon_materia: (Materia | null) [];
   weapon_name: string | null;
   weapon_schema: Database["public"]["Enums"]["slot_type"][];
+  notes: string
 };
 
 export const emptyMateria : Materia = {
@@ -33,4 +35,5 @@ export type Materia = Database["public"]["Tables"]["materia"]["Row"];
 export type Accessory = Database["public"]["Tables"]["accessory"]["Row"];
 export type Party = Database["public"]["Tables"]["party"]["Row"];
 export type Link = Database["public"]["Tables"]["materia_link"]["Row"];
+export type Equipment = Database["public"]["Tables"]["equipment"]["Row"]
 export type Schema = Database["public"]["Enums"]["slot_type"][];

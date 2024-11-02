@@ -2,11 +2,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { User } from "@supabase/supabase-js";
-import { useState } from "react";
 
 type HeaderProps = {
   user: User | null;
-  mobile: boolean;
+  isMobile: boolean;
 };
 export default function Header(props: HeaderProps) {
   const links = [
@@ -42,17 +41,29 @@ export default function Header(props: HeaderProps) {
             <h1>Savepoint</h1>
           </Link>
         </div>
-
+        {!props.isMobile && (
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              color: "var(--secondary-text-color)",
+            }}
+          >
+            {links}
+          </div>
+        )}
+      </header>
+      {props.isMobile && (
         <div
           style={{
             display: "flex",
-            gap: "1rem",
-            color: "var(--secondary-text-color)",
+            justifyContent: "space-between",
+            padding: "0 5rem 1rem 5rem",
           }}
         >
           {links}
         </div>
-      </header>
+      )}
     </>
   );
 }

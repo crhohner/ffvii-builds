@@ -30,6 +30,16 @@ export const Materia = pgTable("materia", {
   games: Game("games").array().notNull(),
 });
 
+export const Equipment = pgTable(
+  "equipment",
+  {
+    name: text("name").notNull(),
+    id: uuid("id").primaryKey().defaultRandom(),
+    schema: SlotType("schema").array().notNull(),
+    game: Game("game").notNull(),
+    character: Character("character") //null for armor, duh
+  });
+
 export const MateriaLink = pgTable(
   "materia_link",
   {
@@ -61,9 +71,9 @@ export const Build = pgTable("build", {
   character: Character("character").notNull(),
   accessory: uuid("accessory").references(() => Accessory.id),
   weaponMateria: uuid("weapon_materia").array().notNull(),
-  weaponName: text("weapon_name"),
+  weaponName: text("weapon_name").notNull(),
   armorMateria: uuid("armor_materia").array().notNull(),
-  armorName: text("armor_name"),
+  armorName: text("armor_name").notNull(),
   summonMateria: uuid("summon_materia").references(() => Materia.id),
   weaponSchema: SlotType("weapon_schema").array().notNull(),
   armorSchema: SlotType("armor_schema").array().notNull(),

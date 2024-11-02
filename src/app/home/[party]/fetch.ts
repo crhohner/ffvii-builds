@@ -15,6 +15,7 @@ import { Database } from "@/utils/supabase/types";
 import {
   Accessory,
   DisplayBuild,
+  Equipment,
   Link,
   Materia,
   Party,
@@ -26,8 +27,9 @@ export const fetchProps: (id: string) => Promise<{
   party: Party;
   builds: DisplayBuild[];
   links: Link[];
-  accessories: Map<string, Accessory>
-  materia:  Map<string, Materia>
+  accessories: Map<string, Accessory>;
+  materia:  Map<string, Materia>;
+  equipment : Equipment[],
 }> = async (id: string) => {
   const supabase = createClient();
   const getParty = cache(async () => {
@@ -40,6 +42,14 @@ export const fetchProps: (id: string) => Promise<{
       .from("accessory")
       .select("*")
       .contains("games", [party.game]);
+    return item;
+  });
+
+  const getGameEquipment= cache(async () => {
+    const item = await supabase
+      .from("equipment")
+      .select("*")
+      .eq("game", party.game);
     return item;
   });
 
@@ -68,6 +78,9 @@ export const fetchProps: (id: string) => Promise<{
     accs!.map((a) => [a.id, a])
   );
   if (accessories_error) redirect("/error");
+
+  const { error: equipment_error, data: equipment } = await getGameEquipment();
+  if (equipment_error) redirect("/error");
 
   const { error:materia_error, data: mats } = await getGameMateria();
   const allMateria = new Map<string, Materia>(mats!.map((m) => [m.id, m]));
@@ -129,9 +142,10 @@ export const fetchProps: (id: string) => Promise<{
       weapon_name: build.weapon_name,
       armor_name: build.armor_name,
       summon_materia,
+      notes: build.notes,
     };
   }
 
   const builds = party.builds.map((id) => displayBuild(bldMap.get(id)!)); //fixes party order
-  return { party, builds, links, accessories: allAccessories, materia: allMateria};
+  return { party, builds, links, accessories: allAccessories, materia: allMateria, equipment};
 };

@@ -7,7 +7,7 @@ export const ITEM_TYPE = "GRID_ITEM";
 const Draggable = ({
   item,
   index,
-  context = true,
+  context,
 }: {
   item: Materia;
   index: number[] | null;

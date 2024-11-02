@@ -22,7 +22,8 @@ export async function updateParty(args: {newParty:  Database["public"]["Tables"]
       character: build.character,
       game: args.newParty.game,
       summon_materia: build.summon_materia,
-      user_id: args.newParty.user_id
+      user_id: args.newParty.user_id,
+      notes: build.notes
     }
     if (prevBuilds.includes(build.id)) {
       //update

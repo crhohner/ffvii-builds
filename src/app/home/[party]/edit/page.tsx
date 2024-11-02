@@ -5,6 +5,7 @@ import {
   Accessory,
   DisplayBuild,
   emptyMateria,
+  Equipment,
   Game,
   Link,
   Materia,
@@ -17,17 +18,45 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { useEffect, useState } from "react";
 import { fetchProps } from "../fetch";
 import EditBuild from "./EditBuild";
-import SelectMateria from "./SelectMateria";
-import { nullId } from "@/utils/util";
+import { TouchBackend } from "react-dnd-touch-backend";
+import { createDefaultBuild, nullId } from "@/utils/util";
 import { updateParty } from "./action";
 import { useRouter } from "next/navigation";
 import { PostgresError } from "postgres";
+import { isMobile } from "react-device-detect";
 import Error from "@/components/Error";
+import Image from "next/image";
 
 interface Params {
   params: {
     party: string;
   };
+}
+
+function Info({ close }: { close: () => void }) {
+  return (
+    <>
+      <div className="shade" />
+      <div className="popup" style={{ textWrap: "pretty" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            width: "100%",
+          }}
+        >
+          <h2>User Guide:</h2>
+          <Image src="/esc.svg" height={20} width={20} alt="" onClick={close} />
+        </div>
+        <p>Select a weapon to load in its default layout.</p>
+        <p>Use the + and - buttons to edit weapon layouts.</p>
+        <p>Click once on any slot to select materia.</p>{" "}
+        <p>Click once on any slot to empty it.</p>
+        <p>Drag and drop materia between slots.</p>
+        <p>(Un)link two slots by pressing the x/= button between them.</p>
+      </div>
+    </>
+  );
 }
 
 export default function Page({ params }: Params) {
@@ -36,20 +65,25 @@ export default function Page({ params }: Params) {
   const [materia, setMateria] = useState<Map<string, Materia>>();
   const [accessories, setAccessories] = useState<Map<string, Accessory>>();
   const [party, setParty] = useState<Party>(); //need for update
+  const [equipment, setEquipment] = useState<Equipment[]>([]);
+
+  const backend = isMobile ? TouchBackend : HTML5Backend;
 
   const fetchPageProps = async () => {
     const result = await fetchProps(params.party);
     if (result === undefined) return;
-    const { party, builds, links, accessories, materia } = result;
+    const { party, builds, links, accessories, materia, equipment } = result;
     setParty(party);
     setBuilds(builds);
     setLinks(links);
     setAccessories(accessories);
+    setEquipment(equipment);
     setMateria(materia);
     const initialItems = builds.flatMap((b) => [
       b.weapon_materia,
       b.armor_materia,
     ]);
+    setEquipment(equipment);
 
     initialItems.push(builds.map((b) => b.summon_materia));
     setItems(initialItems);
@@ -74,6 +108,7 @@ export default function Page({ params }: Params) {
   const [editedDescription, setEditedDescription] = useState<string>();
   const [builds, setBuilds] = useState<DisplayBuild[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [info, setInfo] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -93,6 +128,7 @@ export default function Page({ params }: Params) {
       weapon_name: build.weapon_name,
       weapon_schema: build.weapon_schema,
       user_id: party!.user_id,
+      notes: build.notes,
     };
   }
 
@@ -149,7 +185,7 @@ export default function Page({ params }: Params) {
 
     if (!link) {
       updatedSchemas[row][i] = "single";
-      updatedSchemas[row].splice(i + 1, 0, "single");
+      updatedSchemas[row].splice(i + 1, 0, "single"); //hmmm
     } else {
       const left = updatedSchemas[row][i];
       if (left === "double") return;
@@ -160,6 +196,26 @@ export default function Page({ params }: Params) {
     }
 
     setSchemas(updatedSchemas);
+  };
+
+  const setSchema = (index: number, schema: Schema) => {
+    const updatedSchemas = [...schemas];
+    updatedSchemas[index] = schema;
+    let i = 0;
+    let j = 0;
+    while (i < schema.length) {
+      if (schema[i] === "double") {
+        j += 2;
+      } else {
+        j += 1;
+      }
+      i += 1;
+    }
+    const updatedItems = [...items];
+    updatedItems[index] = updatedItems[index].slice(0, j);
+    while (updatedItems[index].length < j) updatedItems[index].push(null); //stupid
+    setSchemas(updatedSchemas);
+    setItems(updatedItems);
   };
 
   const handleRemove = (row: number) => {
@@ -192,8 +248,10 @@ export default function Page({ params }: Params) {
     setItems(updatedItems);
   };
 
-  const handlePut = (index: number[], item: Materia | null) => {
-    if (index[0] == -1 && item?.materia_type !== "red") return;
+  const handlePut = (index: number[], id: string | null) => {
+    const item = id ? materia!.get(id)! : null;
+    if (index[0] == -1 && !(item === null || item?.materia_type === "red"))
+      return;
     if (party!.game !== "og" && index[0] !== -1 && item?.materia_type === "red")
       return;
     const col = index[1];
@@ -249,30 +307,20 @@ export default function Page({ params }: Params) {
   };
 
   const addBuild = () => {
-    const updatedItems = [...items];
-    const newItems = [[null], [null]];
-    const newSchemas: Schema[] = [["single"], ["single"]];
-    updatedItems.splice(updatedItems.length - 1, 0, ...newItems);
+    const build = createDefaultBuild(party!.game);
+    const newItems = [build.weapon_materia, build.armor_materia];
+    const newSchemas: Schema[] = [build.weapon_schema, build.armor_schema];
 
-    updatedItems[updatedItems.length - 1].push(null); //null summon
+    const updatedItems = [...items];
+    updatedItems.splice(updatedItems.length - 1, 0, ...newItems);
+    updatedItems[updatedItems.length - 1].push(null); //null summon - eh...
 
     const updatedSchemas = [...schemas];
     updatedSchemas.push(...newSchemas);
 
     const updatedBuilds = [...builds];
-    updatedBuilds.push({
-      accessory: null,
-      armor_materia: [null],
-      weapon_materia: [null],
-      armor_name: "Cooler Armor",
-      weapon_name: "Cool Weapon",
-      armor_schema: ["single"],
-      weapon_schema: ["single"],
-      character: "cloud",
-      game: party!.game,
-      summon_materia: null,
-      id: "",
-    });
+    updatedBuilds.push(build);
+
     setBuilds(updatedBuilds);
     setItems(updatedItems);
     setSchemas(updatedSchemas);
@@ -299,14 +347,15 @@ export default function Page({ params }: Params) {
     });
 
   return (
-    <DndProvider backend={HTML5Backend}>
+    <DndProvider backend={backend}>
       {party && (
-        <div className="center" style={{ display: "flex", gap: "1rem" }}>
+        <>
           <div
             style={{
               display: "flex",
               flexDirection: "column",
               gap: "1rem",
+              width: "100%",
             }}
           >
             <div
@@ -323,9 +372,15 @@ export default function Page({ params }: Params) {
                 onChange={(e) => setEditedName(e.target.value)}
               />
               <button onClick={handleSave}>save</button>
+              <Image
+                src="/info.svg"
+                alt=""
+                height={24}
+                width={24}
+                onClick={() => setInfo(true)}
+              />
             </div>
             <Error error={error} />
-
             <div className="center" style={{ padding: "0 1rem" }}>
               <textarea
                 placeholder="description"
@@ -346,12 +401,14 @@ export default function Page({ params }: Params) {
                 builds.map((build, index) => (
                   <>
                     <EditBuild
+                      setSchema={setSchema}
                       summon={items[items.length - 1][index]}
                       key={build.id}
                       build={build}
                       links={links}
                       accessories={accessories!}
                       materia={materia!}
+                      equipment={equipment}
                       index={index}
                       updateBuild={updateBuild}
                       handleAdd={handleAdd}
@@ -392,9 +449,8 @@ export default function Page({ params }: Params) {
               </div>
             </div>
           </div>
-
-          {materia && <SelectMateria allMateria={materia} />}
-        </div>
+          {info && <Info close={() => setInfo(false)} />}
+        </>
       )}
     </DndProvider>
   );

@@ -1,3 +1,4 @@
+
 export type Database = {
   public: {
     Tables: {
@@ -26,7 +27,7 @@ export type Database = {
         Row: {
           accessory: string | null
           armor_materia: string[]
-          armor_name: string | null
+          armor_name: string
           armor_schema: Database["public"]["Enums"]["slot_type"][]
           character: Database["public"]["Enums"]["character"]
           game: Database["public"]["Enums"]["game"]
@@ -34,14 +35,13 @@ export type Database = {
           summon_materia: string
           user_id: string
           weapon_materia: string[]
-          weapon_name: string | null
+          weapon_name: string
           weapon_schema: Database["public"]["Enums"]["slot_type"][]
-          notes: string
         }
         Insert: {
           accessory?: string | null
           armor_materia: string[]
-          armor_name?: string | null
+          armor_name: string
           armor_schema: Database["public"]["Enums"]["slot_type"][]
           character: Database["public"]["Enums"]["character"]
           game: Database["public"]["Enums"]["game"]
@@ -49,13 +49,13 @@ export type Database = {
           summon_materia?: string
           user_id: string
           weapon_materia: string[]
-          weapon_name?: string | null
+          weapon_name: string
           weapon_schema: Database["public"]["Enums"]["slot_type"][]
         }
         Update: {
           accessory?: string | null
           armor_materia?: string[]
-          armor_name?: string | null
+          armor_name?: string
           armor_schema?: Database["public"]["Enums"]["slot_type"][]
           character?: Database["public"]["Enums"]["character"]
           game?: Database["public"]["Enums"]["game"]
@@ -63,7 +63,7 @@ export type Database = {
           summon_materia?: string
           user_id?: string
           weapon_materia?: string[]
-          weapon_name?: string | null
+          weapon_name?: string
           weapon_schema?: Database["public"]["Enums"]["slot_type"][]
         }
         Relationships: [
@@ -89,6 +89,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      equipment: {
+        Row: {
+          character: Database["public"]["Enums"]["character"] | null
+          game: Database["public"]["Enums"]["game"]
+          id: string
+          name: string
+          schema: Database["public"]["Enums"]["slot_type"][]
+        }
+        Insert: {
+          character?: Database["public"]["Enums"]["character"] | null
+          game: Database["public"]["Enums"]["game"]
+          id?: string
+          name: string
+          schema: Database["public"]["Enums"]["slot_type"][]
+        }
+        Update: {
+          character?: Database["public"]["Enums"]["character"] | null
+          game?: Database["public"]["Enums"]["game"]
+          id?: string
+          name?: string
+          schema?: Database["public"]["Enums"]["slot_type"][]
+        }
+        Relationships: []
       }
       materia: {
         Row: {

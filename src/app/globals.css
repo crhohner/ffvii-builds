@@ -143,6 +143,7 @@ textarea {
   border-width: 2px;
   border-style: solid;
   font: inherit;
+  resize: none;
 }
 
 select {

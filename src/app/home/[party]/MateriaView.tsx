@@ -11,28 +11,8 @@ export default function MateriaView({
   context: boolean;
 }) {
   const [hover, setHover] = useState(false);
-  const [mouseDown, setMouseDown] = useState(false);
+
   const type = m ? m.materia_type : "empty";
-
-  useEffect(() => {
-    function handleMouseDown() {
-      setMouseDown(true);
-    }
-    window.addEventListener("mousedown", handleMouseDown);
-    return () => {
-      window.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, []);
-
-  useEffect(() => {
-    function handleMouseUp() {
-      setMouseDown(false);
-    }
-    window.addEventListener("mouseup", handleMouseUp);
-    return () => {
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
-  }, []);
 
   return (
     <div style={{ position: "relative" }}>
@@ -42,7 +22,7 @@ export default function MateriaView({
       >
         <Image src={`/materia/${type}.svg`} width={32} height={32} alt="" />
       </div>
-      {hover && context && !mouseDown && m && (
+      {hover && context && m && (
         <div className={styles.context}>
           <h3>{m.name}</h3>
           {m.description && <div>{m.description}</div>}
