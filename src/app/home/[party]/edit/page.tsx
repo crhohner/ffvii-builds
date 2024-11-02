@@ -48,11 +48,15 @@ function Info({ close }: { close: () => void }) {
           <h2>User Guide:</h2>
           <Image src="/esc.svg" height={20} width={20} alt="" onClick={close} />
         </div>
+        <p>
+          New instructions! Please leave feedback if you preferred the last
+          version!
+        </p>
         <p>Select a weapon to load in its default layout.</p>
         <p>Use the + and - buttons to edit weapon layouts.</p>
         <p>Click once on any slot to select materia.</p>{" "}
-        <p>Click once on any slot to empty it.</p>
-        <p>Drag and drop materia between slots.</p>
+        <p>Click twice on any slot to empty it.</p>
+        <p>Drag and drop materia between slots and characters.</p>
         <p>(Un)link two slots by pressing the x/= button between them.</p>
       </div>
     </>
