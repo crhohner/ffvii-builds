@@ -69,7 +69,9 @@ export default function Page() {
     });
 
     if (searchInput != "") {
-      displayed = displayed.filter((party) => party.name.includes(searchInput));
+      displayed = displayed.filter((party) =>
+        party.name.toLowerCase().includes(searchInput.toLowerCase())
+      );
     }
 
     setSelected((selected) => selected.filter((s) => displayed.includes(s)));

@@ -375,7 +375,15 @@ export default function Page({ params }: Params) {
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
               />
-              <button onClick={handleSave}>save</button>
+              <button
+                style={{
+                  color: "var(--green)",
+                  borderColor: "var(--green)",
+                }}
+                onClick={handleSave}
+              >
+                save
+              </button>
               <Image
                 src="/info.svg"
                 alt=""
