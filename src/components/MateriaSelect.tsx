@@ -98,10 +98,10 @@ export default function MateriaSelect({
             <div
               style={{ display: "flex", gap: "0.2rem", alignItems: "center" }}
             >
-              {option.label}
               <div style={{ fontSize: "14px" }}>
                 {emojiFromColor(option.color)}
               </div>
+              {option.label}
             </div>
             <h3>{option.context}</h3>
           </>
